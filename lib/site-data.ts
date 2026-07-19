@@ -1,0 +1,203 @@
+export const CONTACT = {
+  phone: "+51 984 123 456",
+  whatsapp: "51984123456",
+  email: "contacto@grupotutierra.com",
+  address: "Av. El Sol 123, Cusco, Perú",
+  hours: "Lun - Sáb: 9:00 am - 7:00 pm",
+  domain: "grupotutierra.com",
+};
+
+export const SOCIAL = {
+  instagram: "https://instagram.com/tutierra.pe",
+  facebook: "https://facebook.com/tutierragrupoinmobiliario",
+  tiktok: "https://tiktok.com/@tutierra.pe",
+};
+
+export type Proyecto = {
+  slug: string;
+  nombre: string;
+  ubicacion: string;
+  precioDesde: string;
+  areaDesde: string;
+  resumen: string;
+  descripcion: string;
+  caracteristicas: string[];
+  imagenPrincipal: string;
+  galeria: string[];
+  logo: string;
+  extension: string;
+  lotesDisponiblesPct: number;
+  areasComunes: string[];
+  beneficiosCortos: string[];
+};
+
+export const PROYECTOS: Proyecto[] = [
+  {
+    slug: "chinchero",
+    nombre: "Tutierra Chinchero",
+    ubicacion: "Chinchero, Cusco",
+    precioDesde: "USD 28,000",
+    areaDesde: "180 m²",
+    resumen: "Terrenos con vista a los Andes, a 15 min del aeropuerto internacional.",
+    descripcion:
+      "Proyecto ubicado en las alturas de Chinchero, con vista panorámica a la cordillera. Saneamiento urbano garantizado e independización individual para cada lote.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Pistas y veredas",
+      "Agua y luz domiciliaria",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "/images/proyectos/proyecto-chinchero-01.jpg",
+    galeria: [
+      "/images/proyectos/proyecto-chinchero-01.jpg",
+      "/images/proyectos/proyecto-chinchero-02.jpg",
+      "/images/proyectos/proyecto-chinchero-03.jpg",
+    ],
+    logo: "/logo.svg",
+    extension: "180 m² – 420 m²",
+    lotesDisponiblesPct: 62,
+    areasComunes: ["Mirador", "Portón vigilado", "Áreas verdes", "Vías asfaltadas"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Agua y luz", "Cerco perimétrico"],
+  },
+  {
+    slug: "pisac",
+    nombre: "Tutierra Pisac",
+    ubicacion: "Pisac, Valle Sagrado",
+    precioDesde: "USD 32,000",
+    areaDesde: "200 m²",
+    resumen: "A orillas del río Vilcanota, entorno natural y turístico consolidado.",
+    descripcion:
+      "Terrenos junto al valle de Pisac, zona de alta plusvalía turística. Ideal para proyectos de hospedaje o vivienda vacacional.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Zona turística consolidada",
+      "Acceso asfaltado",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "/images/proyectos/proyecto-pisac-01.jpg",
+    galeria: [
+      "/images/proyectos/proyecto-pisac-01.jpg",
+      "/images/proyectos/proyecto-pisac-02.jpg",
+      "/images/proyectos/proyecto-pisac-03.jpg",
+    ],
+    logo: "/logo.svg",
+    extension: "200 m² – 480 m²",
+    lotesDisponiblesPct: 48,
+    areasComunes: ["Acceso al río", "Zona de parrillas", "Áreas verdes", "Portón vigilado"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Acceso asfaltado", "Cerco perimétrico"],
+  },
+  {
+    slug: "urubamba",
+    nombre: "Tutierra Urubamba",
+    ubicacion: "Urubamba, Valle Sagrado",
+    precioDesde: "USD 30,000",
+    areaDesde: "220 m²",
+    resumen: "El corazón del Valle Sagrado, clima templado todo el año.",
+    descripcion:
+      "Desarrollo residencial en Urubamba, con clima privilegiado y cercanía a los principales atractivos del valle.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Clima templado todo el año",
+      "Áreas verdes comunes",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "/images/proyectos/proyecto-urubamba-01.jpg",
+    galeria: [
+      "/images/proyectos/proyecto-urubamba-01.jpg",
+      "/images/proyectos/proyecto-urubamba-02.jpg",
+      "/images/proyectos/proyecto-urubamba-03.jpg",
+    ],
+    logo: "/logo.svg",
+    extension: "220 m² – 500 m²",
+    lotesDisponiblesPct: 71,
+    areasComunes: ["Parque central", "Áreas verdes", "Zona de parrillas", "Portón vigilado"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Clima templado", "Cerco perimétrico"],
+  },
+  {
+    slug: "maras",
+    nombre: "Tutierra Maras",
+    ubicacion: "Maras, Cusco",
+    precioDesde: "USD 25,000",
+    areaDesde: "250 m²",
+    resumen: "Terrenos amplios cerca de las icónicas Salineras de Maras.",
+    descripcion:
+      "Lotes de gran extensión en Maras, ideales para proyectos agroturísticos o segunda vivienda con vistas abiertas.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Lotes de gran extensión",
+      "Cercanía a Salineras de Maras",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "/images/proyectos/proyecto-maras-01.jpg",
+    galeria: [
+      "/images/proyectos/proyecto-maras-01.jpg",
+      "/images/proyectos/proyecto-maras-02.jpg",
+      "/images/proyectos/proyecto-maras-03.jpg",
+    ],
+    logo: "/logo.svg",
+    extension: "250 m² – 600 m²",
+    lotesDisponiblesPct: 55,
+    areasComunes: ["Cerca a Salineras", "Áreas verdes", "Vías afirmadas", "Portón vigilado"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Lotes amplios", "Cerco perimétrico"],
+  },
+  {
+    slug: "ollantaytambo",
+    nombre: "Tutierra Ollantaytambo",
+    ubicacion: "Ollantaytambo, Cusco",
+    precioDesde: "USD 35,000",
+    areaDesde: "190 m²",
+    resumen: "Puerta de entrada a Machu Picchu, alta demanda turística.",
+    descripcion:
+      "Proyecto en Ollantaytambo, punto estratégico de acceso a Machu Picchu, con fuerte proyección de plusvalía por flujo turístico.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Alta plusvalía turística",
+      "Cercanía a estación de tren",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "/images/proyectos/proyecto-ollantaytambo-01.jpg",
+    galeria: [
+      "/images/proyectos/proyecto-ollantaytambo-01.jpg",
+      "/images/proyectos/proyecto-ollantaytambo-02.jpg",
+      "/images/proyectos/proyecto-ollantaytambo-03.jpg",
+    ],
+    logo: "/logo.svg",
+    extension: "190 m² – 410 m²",
+    lotesDisponiblesPct: 39,
+    areasComunes: ["Cerca a estación", "Áreas verdes", "Zona de parrillas", "Portón vigilado"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Alta plusvalía", "Cerco perimétrico"],
+  },
+  {
+    slug: "calca",
+    nombre: "Tutierra Calca",
+    ubicacion: "Calca, Valle Sagrado",
+    precioDesde: "USD 22,000",
+    areaDesde: "210 m²",
+    resumen: "Tranquilidad rural con proyección de crecimiento urbano.",
+    descripcion:
+      "Terrenos en Calca, zona en expansión con precios de entrada accesibles y alto potencial de revalorización.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Precio de entrada accesible",
+      "Zona en expansión urbana",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "/images/proyectos/proyecto-calca-01.jpg",
+    galeria: [
+      "/images/proyectos/proyecto-calca-01.jpg",
+      "/images/proyectos/proyecto-calca-02.jpg",
+      "/images/proyectos/proyecto-calca-03.jpg",
+    ],
+    logo: "/logo.svg",
+    extension: "210 m² – 460 m²",
+    lotesDisponiblesPct: 80,
+    areasComunes: ["Áreas verdes", "Zona en expansión", "Vías afirmadas", "Portón vigilado"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Precio accesible", "Cerco perimétrico"],
+  },
+];
