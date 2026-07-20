@@ -142,9 +142,15 @@ export default function RoundCarousel({
     overflow: "hidden",
     backfaceVisibility: "hidden",
     WebkitBackfaceVisibility: "hidden",
+  };
+  const imgLayer = (src?: string, extra?: React.CSSProperties): React.CSSProperties => ({
+    position: "absolute",
+    inset: 0,
     backgroundSize: "cover",
     backgroundPosition: "center",
-  };
+    backgroundImage: src ? `url(${src})` : undefined,
+    ...extra,
+  });
 
   return (
     <div
@@ -162,7 +168,9 @@ export default function RoundCarousel({
         perspective: `${perspective}px`,
         WebkitPerspective: `${perspective}px`,
         cursor: drag ? "grab" : "default",
-        touchAction: "none",
+        // pan-y: deja pasar el scroll vertical de la página en móvil; el drag
+        // horizontal del carrusel sigue funcionando.
+        touchAction: "pan-y",
       }}
       onPointerDown={onPointerDown}
       onPointerMove={onPointerMove}
@@ -193,6 +201,7 @@ export default function RoundCarousel({
             return (
               <div
                 key={i}
+                className="rc-card"
                 style={{
                   position: "absolute",
                   inset: 0,
@@ -206,20 +215,21 @@ export default function RoundCarousel({
                   style={{
                     ...faceBase,
                     backgroundColor: src ? "transparent" : "#222",
-                    backgroundImage: src ? `url(${src})` : undefined,
                     boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
                   }}
-                />
+                >
+                  <div className="rc-img" style={imgLayer(src)} />
+                </div>
                 <div
                   style={{
                     ...faceBase,
                     transform: "rotateY(180deg)",
                     WebkitTransform: "rotateY(180deg)",
                     backgroundColor: src ? "transparent" : "#181818",
-                    backgroundImage: src ? `url(${src})` : undefined,
-                    filter: `brightness(${innerDim / 10})`,
                   }}
-                />
+                >
+                  <div className="rc-img" style={imgLayer(src, { filter: `brightness(${innerDim / 10})` })} />
+                </div>
               </div>
             );
           })}
