@@ -40,10 +40,17 @@ export default function Hero() {
           </div>
         </div>
 
-        <div className="relative aspect-[9/16] h-[clamp(180px,32vw,420px)] shrink-0">
+        <div className="relative aspect-[9/16] h-[clamp(340px,40vw,440px)] shrink-0">
           <div className="pointer-events-none absolute inset-[-15%] rounded-full bg-tech-green/10 blur-3xl" />
           <div className="pointer-events-none relative h-full w-full">
-            <RoundCarousel images={CAROUSEL_IMAGES} imageWidth={170} imageHeight={300} cornerRadius={26} />
+            <RoundCarousel
+              images={CAROUSEL_IMAGES}
+              imageWidth={170}
+              imageHeight={300}
+              cornerRadius={26}
+              speed={4}
+              dwell={2.5}
+            />
           </div>
         </div>
       </div>

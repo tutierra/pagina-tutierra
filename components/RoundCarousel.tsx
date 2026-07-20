@@ -20,6 +20,7 @@ interface RoundCarouselProps {
   cornerRadius?: number;
   innerDim?: number;
   background?: string;
+  dwell?: number;
   style?: React.CSSProperties;
 }
 
@@ -37,6 +38,7 @@ export default function RoundCarousel({
   cornerRadius = 22,
   innerDim = 3.5,
   background = "transparent",
+  dwell = 0,
   style = {},
 }: RoundCarouselProps) {
   const items = images;
@@ -48,12 +50,16 @@ export default function RoundCarousel({
   const velRef = useRef(0);
   const lastRef = useRef(0);
   const dragRef = useRef({ active: false, x: 0 });
+  // Modo dwell: gira una carta, se detiene `dwell` segundos, avanza.
+  const targetRef = useRef(0);
+  const dwellAccRef = useRef(0);
 
   const angle = 360 / count;
   const factor = 1 + spacing * 0.15;
   const radius = (imageWidth * factor) / (2 * Math.tan(Math.PI / count));
   const radiusPx = cornerRadius;
-  const degPerSec = speed * 6 * (direction === "left" ? -1 : 1);
+  const dir = direction === "left" ? -1 : 1;
+  const degPerSec = speed * 6 * dir;
 
   useEffect(() => {
     const ring = ringRef.current;
@@ -72,11 +78,28 @@ export default function RoundCarousel({
       lastRef.current = now;
       const f = Math.min(dt, 0.1);
       const d = dragRef.current;
+
       if (!d.active) {
         if (Math.abs(velRef.current) > 0.01) {
+          // Inercia tras soltar el drag.
           rotYRef.current += velRef.current * f;
           velRef.current *= 0.94;
+        } else if (dwell > 0) {
+          // Paso + pausa: avanza hacia la siguiente carta, luego espera.
+          const diff = targetRef.current - rotYRef.current;
+          const step = degPerSec * 3 * f; // velocidad de transición entre cartas
+          if (Math.abs(diff) <= Math.abs(step) || Math.abs(step) < 0.001) {
+            rotYRef.current = targetRef.current;
+            dwellAccRef.current += dt;
+            if (dwellAccRef.current >= dwell) {
+              dwellAccRef.current = 0;
+              targetRef.current -= angle * dir;
+            }
+          } else {
+            rotYRef.current += Math.sign(diff) * Math.abs(step);
+          }
         } else {
+          // Rotación continua.
           rotYRef.current += degPerSec * f;
         }
       }
@@ -85,7 +108,7 @@ export default function RoundCarousel({
     };
     rafRef.current = requestAnimationFrame(draw);
     return () => cancelAnimationFrame(rafRef.current);
-  }, [radius, degPerSec, count]);
+  }, [radius, degPerSec, count, dwell, angle, dir]);
 
   const onPointerDown = (e: React.PointerEvent) => {
     if (!drag) return;
@@ -105,6 +128,11 @@ export default function RoundCarousel({
   const onPointerUp = (e: React.PointerEvent) => {
     e.currentTarget.releasePointerCapture?.(e.pointerId);
     dragRef.current.active = false;
+    if (dwell > 0) {
+      // Al soltar, ancla a la carta más cercana para retomar el ciclo.
+      targetRef.current = Math.round(rotYRef.current / angle) * angle;
+      dwellAccRef.current = 0;
+    }
   };
 
   const faceBase: React.CSSProperties = {
@@ -127,7 +155,9 @@ export default function RoundCarousel({
         display: "flex",
         alignItems: "center",
         justifyContent: "center",
-        overflow: "hidden",
+        // overflow visible: sin esto la carta frontal (más grande por la
+        // perspectiva) se recortaba contra el borde del contenedor.
+        overflow: "visible",
         background,
         perspective: `${perspective}px`,
         WebkitPerspective: `${perspective}px`,
