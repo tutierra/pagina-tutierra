@@ -59,7 +59,7 @@ export default function RefiereYGanaPage() {
             href={`https://wa.me/${CONTACT.whatsapp}?text=${whatsappMsg}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="mt-[2em] inline-block rounded-full bg-tech-green px-[1.8em] py-[0.9em] text-[0.95rem] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.97]"
+            className="mt-[2em] inline-block rounded-full bg-tech-green px-[1.8em] py-[0.9em] text-[0.95rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
           >
             Quiero ser referido
           </a>
@@ -105,7 +105,7 @@ export default function RefiereYGanaPage() {
             href={`https://wa.me/${CONTACT.whatsapp}?text=${whatsappMsg}`}
             target="_blank"
             rel="noopener noreferrer"
-            className="shrink-0 rounded-full bg-tech-green px-[1.8em] py-[0.9em] text-[0.95rem] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.97]"
+            className="shrink-0 rounded-full bg-tech-green px-[1.8em] py-[0.9em] text-[0.95rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
           >
             Hablar por WhatsApp
           </a>

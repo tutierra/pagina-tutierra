@@ -163,7 +163,7 @@ function ArrowButton({ side, onClick }: { side: "left" | "right"; onClick: () =>
         e.stopPropagation();
         onClick();
       }}
-      className="absolute top-1/2 z-[2000] flex h-[3em] w-[3em] -translate-y-1/2 items-center justify-center rounded-full bg-brand-gray text-brand-ink shadow-[0_6px_18px_rgba(0,0,0,0.35)] transition-transform duration-160 ease-out hover:scale-[0.94]"
+      className="absolute top-1/2 z-[2000] flex h-[3em] w-[3em] -translate-y-1/2 items-center justify-center rounded-full bg-brand-gray text-brand-ink shadow-[0_6px_18px_rgba(0,0,0,0.35)] transition-transform duration-160 ease-out-strong hover:scale-[0.94] active:scale-[0.94]"
       style={{ [isLeft ? "left" : "right"]: "0" }}
     >
       <svg width="30%" height="30%" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2.2} strokeLinecap="round" strokeLinejoin="round">

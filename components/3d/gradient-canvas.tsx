@@ -17,14 +17,17 @@ export default function GradientCanvas() {
     <div
       className="fixed inset-0 -z-50 w-full h-full pointer-events-none overflow-hidden"
       style={{
-        background: "#000000",
+        // Antes #000000: si el WebGL no llega a pintar (falla el contexto en
+        // ciertos móviles), esto se veía negro puro en vez del verde de marca.
+        background: "#05100b",
         contentVisibility: "auto",
         containIntrinsicSize: "100vh",
       }}
     >
       <Canvas
         camera={{ fov: 45, near: 0.1, far: 100, position: [0, 0, 1.5] }}
-        gl={{ antialias: true, alpha: false, powerPreference: "high-performance" }}
+        gl={{ antialias: true, alpha: false, powerPreference: "default" }}
+        dpr={[1, 1.8]}
         frameloop={isActive ? "always" : "demand"}
         style={{ width: "100%", height: "100%", position: "absolute", top: 0, left: 0 }}
       >

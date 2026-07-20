@@ -95,7 +95,7 @@ export default function ContactForm({ proyectoPreseleccionado }: { proyectoPrese
 
       <button
         type="submit"
-        className="mt-[0.5em] rounded-full bg-tech-green px-[1.8em] py-[0.9em] text-[0.95rem] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.97]"
+        className="mt-[0.5em] rounded-full bg-tech-green px-[1.8em] py-[0.9em] text-[0.95rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
       >
         Enviar por WhatsApp
       </button>

@@ -27,21 +27,24 @@ export default function Hero() {
           <div className="mt-[1.428em] flex flex-wrap items-center gap-[0.714em]">
             <Link
               href="/proyectos"
-              className="rounded-full bg-tech-green px-[1.071em] py-[0.5355em] text-[0.56525rem] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.97]"
+              className="rounded-full bg-tech-green px-[1.071em] py-[0.5355em] text-[0.56525rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
             >
               Ver proyectos
             </Link>
             <Link
               href="/contactanos"
-              className="rounded-full border border-brand-gray/30 px-[1.071em] py-[0.5355em] text-[0.56525rem] text-brand-gray transition-all duration-160 ease-out hover:scale-[0.97] hover:border-tech-green hover:text-tech-green"
+              className="rounded-full border border-brand-gray/30 px-[1.071em] py-[0.5355em] text-[0.56525rem] text-brand-gray transition-all duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97] hover:border-tech-green hover:text-tech-green"
             >
               Agenda una visita
             </Link>
           </div>
         </div>
 
-        <div className="pointer-events-none aspect-[9/16] h-[clamp(180px,32vw,420px)] shrink-0">
-          <RoundCarousel images={CAROUSEL_IMAGES} imageWidth={170} imageHeight={300} cornerRadius={26} />
+        <div className="relative aspect-[9/16] h-[clamp(180px,32vw,420px)] shrink-0">
+          <div className="pointer-events-none absolute inset-[-15%] rounded-full bg-tech-green/10 blur-3xl" />
+          <div className="pointer-events-none relative h-full w-full">
+            <RoundCarousel images={CAROUSEL_IMAGES} imageWidth={170} imageHeight={300} cornerRadius={26} />
+          </div>
         </div>
       </div>
 

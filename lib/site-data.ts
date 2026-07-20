@@ -141,7 +141,7 @@ export const PROYECTOS: Proyecto[] = [
     logo: "/logo.svg",
     extension: "250 m² – 600 m²",
     lotesDisponiblesPct: 55,
-    areasComunes: ["Cerca a Salineras", "Áreas verdes", "Vías afirmadas", "Portón vigilado"],
+    areasComunes: ["Cerca de Salineras", "Áreas verdes", "Vías afirmadas", "Portón vigilado"],
     beneficiosCortos: ["Saneamiento legal", "Independización", "Lotes amplios", "Cerco perimétrico"],
   },
   {
@@ -169,7 +169,7 @@ export const PROYECTOS: Proyecto[] = [
     logo: "/logo.svg",
     extension: "190 m² – 410 m²",
     lotesDisponiblesPct: 39,
-    areasComunes: ["Cerca a estación", "Áreas verdes", "Zona de parrillas", "Portón vigilado"],
+    areasComunes: ["Cerca de la estación", "Áreas verdes", "Zona de parrillas", "Portón vigilado"],
     beneficiosCortos: ["Saneamiento legal", "Independización", "Alta plusvalía", "Cerco perimétrico"],
   },
   {

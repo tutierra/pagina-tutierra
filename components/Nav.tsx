@@ -63,14 +63,14 @@ export default function Nav() {
           href={`https://wa.me/${CONTACT.whatsapp}`}
           target="_blank"
           rel="noopener noreferrer"
-          className="hidden shrink-0 rounded-full bg-tech-green px-[1.04em] py-[0.44em] text-[0.656rem] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.96] md:block"
+          className="hidden shrink-0 rounded-full bg-tech-green px-[1.04em] py-[0.44em] text-[0.656rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.96] active:scale-[0.96] md:block"
         >
           Agenda una visita
         </a>
 
         <button
           onClick={() => setOpen((v) => !v)}
-          aria-label="Abrir menú"
+          aria-label={open ? "Cerrar menú" : "Abrir menú"}
           aria-expanded={open}
           className="flex h-[1.6em] w-[1.6em] shrink-0 flex-col items-center justify-center gap-[0.24em] md:hidden"
         >
@@ -98,8 +98,14 @@ export default function Nav() {
         }`}
       >
         <ul className="flex flex-col gap-[0.88em] p-[6%]">
-          {LINKS.map((link) => (
-            <li key={link.href}>
+          {LINKS.map((link, i) => (
+            <li
+              key={link.href}
+              className={`transition-[opacity,transform] duration-300 ease-out-strong ${
+                open ? "translate-y-0 opacity-100" : "translate-y-[0.6em] opacity-0"
+              }`}
+              style={{ transitionDelay: open ? `${i * 45}ms` : "0ms" }}
+            >
               <Link
                 href={link.href}
                 className={`text-[0.84rem] text-brand-gray/90 transition-colors duration-200 ease-out hover:text-tech-green ${
@@ -110,12 +116,17 @@ export default function Nav() {
               </Link>
             </li>
           ))}
-          <li>
+          <li
+            className={`transition-[opacity,transform] duration-300 ease-out-strong ${
+              open ? "translate-y-0 opacity-100" : "translate-y-[0.6em] opacity-0"
+            }`}
+            style={{ transitionDelay: open ? `${LINKS.length * 45}ms` : "0ms" }}
+          >
             <a
               href={`https://wa.me/${CONTACT.whatsapp}`}
               target="_blank"
               rel="noopener noreferrer"
-              className="inline-block rounded-full bg-tech-green px-[1.12em] py-[0.48em] text-[0.72rem] text-brand-ink"
+              className="inline-block rounded-full bg-tech-green px-[1.12em] py-[0.48em] text-[0.72rem] text-brand-ink transition-transform duration-160 ease-out-strong active:scale-[0.96]"
             >
               Agenda una visita
             </a>

@@ -113,7 +113,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
 
             <Link
               href={`/contactanos?proyecto=${proyecto.slug}`}
-              className="mt-[2em] block rounded-full bg-tech-green px-[1.6em] py-[0.9em] text-center text-[0.9rem] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.97]"
+              className="mt-[2em] block rounded-full bg-tech-green px-[1.6em] py-[0.9em] text-center text-[0.9rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
             >
               Agendar visita a este proyecto
             </Link>

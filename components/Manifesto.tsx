@@ -1,4 +1,5 @@
 import AreaScaledCornerImage from "./AreaScaledCornerImage";
+import Reveal from "./Reveal";
 
 export default function Manifesto() {
   return (
@@ -12,7 +13,7 @@ export default function Manifesto() {
       />
 
       <div className="relative z-10 mx-auto grid w-[90%] grid-cols-1 gap-[4em] md:grid-cols-2">
-        <div>
+        <Reveal>
           <span className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-tech-green">
             [01]
           </span>
@@ -27,16 +28,16 @@ export default function Manifesto() {
             Brindando oportunidades de inversión seguras y rentables, integrando la naturaleza
             y el respeto por el entorno.
           </p>
-        </div>
+        </Reveal>
 
-        <div>
+        <Reveal delay={0.12}>
           <span className="font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-tech-green">
             [02]
           </span>
           <h2 className="mt-[0.3em] font-display text-[clamp(1.8rem,3vw,2.6rem)] font-light text-brand-gray">
             Visión
           </h2>
-        </div>
+        </Reveal>
       </div>
     </section>
   );

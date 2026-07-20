@@ -51,11 +51,17 @@ function ProjectMonogram({ ubicacion }: { ubicacion: string }) {
     .slice(0, 2)
     .toUpperCase();
   return (
+    // Monograma provisional por proyecto: hereda el lenguaje radial del logo
+    // Tutierra (anillos concéntricos segmentados) hasta tener logos reales.
     <div
-      className="flex h-[2.6em] w-[2.6em] shrink-0 items-center justify-center rounded-full bg-tech-green/20 font-display text-[0.95em] text-tech-green"
+      className="relative flex h-[2.8em] w-[2.8em] shrink-0 items-center justify-center rounded-full bg-tech-green/15"
       title={`Logo provisional — ${ubicacion}`}
     >
-      {initials}
+      <svg viewBox="0 0 48 48" fill="none" className="absolute inset-0 h-full w-full text-tech-green/50">
+        <circle cx="24" cy="24" r="22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="26 9" strokeLinecap="round" />
+        <circle cx="24" cy="24" r="17.5" stroke="currentColor" strokeWidth="1" strokeDasharray="17 11" strokeLinecap="round" opacity="0.6" />
+      </svg>
+      <span className="font-display text-[0.9em] text-tech-green">{initials}</span>
     </div>
   );
 }
@@ -77,9 +83,24 @@ export default function ProyectoModal({
   onClose: () => void;
 }) {
   const [slide, setSlide] = useState(0);
+  const [displayProyecto, setDisplayProyecto] = useState<Proyecto | null>(null);
+  const [visible, setVisible] = useState(false);
 
   useEffect(() => {
     setSlide(0);
+  }, [proyecto]);
+
+  // Mount-state pattern: al cerrar, el proyecto se sigue mostrando durante la
+  // animación de salida (200ms) en vez de desaparecer de golpe.
+  useEffect(() => {
+    if (proyecto) {
+      setDisplayProyecto(proyecto);
+      const raf = requestAnimationFrame(() => setVisible(true));
+      return () => cancelAnimationFrame(raf);
+    }
+    setVisible(false);
+    const t = setTimeout(() => setDisplayProyecto(null), 200);
+    return () => clearTimeout(t);
   }, [proyecto]);
 
   useEffect(() => {
@@ -111,19 +132,24 @@ export default function ProyectoModal({
     return () => clearInterval(id);
   }, [proyecto]);
 
-  if (!proyecto) return null;
+  if (!displayProyecto) return null;
 
   return (
     <div
-      className="fixed inset-0 z-[3000] flex items-center justify-center bg-brand-ink/80 p-[4%] backdrop-blur-sm"
+      className={`fixed inset-0 z-[3000] flex items-center justify-center bg-brand-ink/80 p-[4%] backdrop-blur-sm transition-opacity duration-200 ease-out-strong ${
+        visible ? "opacity-100" : "opacity-0"
+      }`}
       onClick={onClose}
       onWheel={(e) => e.stopPropagation()}
       onTouchMove={(e) => e.stopPropagation()}
     >
       <div
         onClick={(e) => e.stopPropagation()}
-        className="relative flex h-[85vh] w-full flex-col overflow-hidden rounded-[1.2rem] border border-brand-gray/10 bg-[#0c1e16] sm:h-[50vh] sm:w-[50vw] sm:flex-row"
+        className={`rounded-[1.5rem] bg-white/[0.05] p-[0.4rem] ring-1 ring-white/15 transition-[transform,opacity] duration-200 ease-out-strong ${
+          visible ? "scale-100 opacity-100" : "scale-95 opacity-0"
+        } h-[85vh] w-full sm:h-[50vh] sm:w-[50vw]`}
       >
+      <div className="relative flex h-full w-full flex-col overflow-hidden rounded-[1.2rem] bg-[#0c1e16] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.08)] sm:flex-row">
         <button
           type="button"
           aria-label="Cerrar"
@@ -137,13 +163,13 @@ export default function ProyectoModal({
         </button>
 
         <div className="relative h-[32%] w-full shrink-0 overflow-hidden sm:h-full sm:w-[45%]">
-          {proyecto.galeria.map((src, i) => (
+          {displayProyecto.galeria.map((src, i) => (
             <div key={src} className="absolute inset-0 transition-opacity duration-700 ease-out" style={{ opacity: i === slide ? 1 : 0 }}>
-              <Image src={src} alt={`${proyecto.nombre} foto ${i + 1}`} fill sizes="50vw" className="object-cover" />
+              <Image src={src} alt={`${displayProyecto.nombre} foto ${i + 1}`} fill sizes="50vw" className="object-cover" />
             </div>
           ))}
           <div className="absolute inset-x-0 bottom-0 flex justify-center gap-[0.5em] p-[4%]">
-            {proyecto.galeria.map((src, i) => (
+            {displayProyecto.galeria.map((src, i) => (
               <span
                 key={src}
                 className="h-[0.4em] w-[0.4em] rounded-full transition-colors duration-200 ease-out"
@@ -157,10 +183,10 @@ export default function ProyectoModal({
           <div className="min-h-0 flex-1 overflow-hidden p-[5%] pb-0">
             <div className="flex items-start justify-between gap-[1em] pr-[2.5em]">
               <div>
-                <p className="text-[0.78em] tracking-[0.15em] text-tech-green">{proyecto.ubicacion}</p>
-                <h3 className="mt-[0.15em] font-display text-[1.4em] font-light text-brand-gray">{proyecto.nombre}</h3>
+                <p className="text-[0.78em] tracking-[0.15em] text-tech-green">{displayProyecto.ubicacion}</p>
+                <h3 className="mt-[0.15em] font-display text-[1.4em] font-light text-brand-gray">{displayProyecto.nombre}</h3>
               </div>
-              <ProjectMonogram ubicacion={proyecto.ubicacion} />
+              <ProjectMonogram ubicacion={displayProyecto.ubicacion} />
             </div>
 
             <div className="mt-[0.7em] grid grid-cols-2 gap-[1em] text-[0.8em]">
@@ -168,21 +194,21 @@ export default function ProyectoModal({
                 <p className="flex items-center gap-[0.4em] text-brand-gray/50">
                   <Icon name="road" className="shrink-0" /> Extensión
                 </p>
-                <p className="mt-[0.2em] text-brand-gray">{proyecto.extension}</p>
+                <p className="mt-[0.2em] text-brand-gray">{displayProyecto.extension}</p>
               </div>
               <div>
                 <p className="text-brand-gray/50">Lotes disponibles</p>
                 <div className="mt-[0.3em] h-[0.4em] w-full overflow-hidden rounded-full bg-brand-gray/15">
-                  <div className="h-full rounded-full bg-tech-green" style={{ width: `${proyecto.lotesDisponiblesPct}%` }} />
+                  <div className="h-full rounded-full bg-tech-green" style={{ width: `${displayProyecto.lotesDisponiblesPct}%` }} />
                 </div>
-                <p className="mt-[0.2em] text-brand-gray">{proyecto.lotesDisponiblesPct}% disponible</p>
+                <p className="mt-[0.2em] text-brand-gray">{displayProyecto.lotesDisponiblesPct}% disponible</p>
               </div>
             </div>
 
             <div className="mt-[0.7em]">
               <p className="text-[0.75em] text-brand-gray/50">Beneficios</p>
               <div className="mt-[0.35em] flex flex-wrap gap-[0.35em]">
-                {proyecto.beneficiosCortos.map((item) => (
+                {displayProyecto.beneficiosCortos.map((item) => (
                   <Chip key={item} label={item} />
                 ))}
               </div>
@@ -191,7 +217,7 @@ export default function ProyectoModal({
             <div className="mt-[0.6em]">
               <p className="text-[0.75em] text-brand-gray/50">Áreas comunes</p>
               <div className="mt-[0.35em] flex flex-wrap gap-[0.35em]">
-                {proyecto.areasComunes.map((item) => (
+                {displayProyecto.areasComunes.map((item) => (
                   <Chip key={item} label={item} />
                 ))}
               </div>
@@ -199,13 +225,17 @@ export default function ProyectoModal({
           </div>
           <div className="flex justify-end p-[5%] pt-[0.8em]">
             <Link
-              href={`/proyectos/${proyecto.slug}`}
-              className="inline-flex items-center gap-[0.5em] rounded-full bg-tech-green px-[1.6em] py-[0.7em] text-[0.85em] text-brand-ink transition-transform duration-160 ease-out hover:scale-[0.97]"
+              href={`/proyectos/${displayProyecto.slug}`}
+              className="group inline-flex items-center gap-[0.6em] rounded-full bg-tech-green py-[0.35em] pl-[1.4em] pr-[0.35em] text-[0.85em] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
             >
-              Conoce más <span>→</span>
+              Conoce más
+              <span className="flex h-[2em] w-[2em] items-center justify-center rounded-full bg-brand-ink/10 transition-transform duration-200 ease-out-strong group-hover:translate-x-[0.15em]">
+                →
+              </span>
             </Link>
           </div>
         </div>
+      </div>
       </div>
     </div>
   );

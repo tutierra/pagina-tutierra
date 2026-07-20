@@ -1,4 +1,5 @@
 import Image from "next/image";
+import Reveal from "./Reveal";
 
 const ATRACTIVOS = [
   {
@@ -33,21 +34,25 @@ export default function AtractivosValle() {
       </div>
 
       <div className="relative mx-auto w-[90%]">
-        <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[04] VALLE SAGRADO</p>
-        <h2 className="mt-[0.4em] max-w-[24ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
-          Un entorno que se vuelve patrimonio
-        </h2>
+        <Reveal>
+          <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[04] VALLE SAGRADO</p>
+          <h2 className="mt-[0.4em] max-w-[24ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
+            Un entorno que se vuelve patrimonio
+          </h2>
+        </Reveal>
 
         <div className="mt-[3em] grid grid-cols-1 gap-[2em] sm:grid-cols-2 lg:grid-cols-4">
-          {ATRACTIVOS.map((item) => (
-            <div key={item.titulo} className="border-t border-brand-gray/15 pt-[1.5em]">
-              <h3 className="font-display text-[1.15rem] font-normal text-brand-gray">
-                {item.titulo}
-              </h3>
-              <p className="mt-[0.6em] text-[0.9rem] leading-[1.6] text-brand-gray/65">
-                {item.texto}
-              </p>
-            </div>
+          {ATRACTIVOS.map((item, i) => (
+            <Reveal key={item.titulo} delay={i * 0.08}>
+              <div className="border-t border-brand-gray/15 pt-[1.5em]">
+                <h3 className="font-display text-[1.15rem] font-normal text-brand-gray">
+                  {item.titulo}
+                </h3>
+                <p className="mt-[0.6em] text-[0.9rem] leading-[1.6] text-brand-gray/65">
+                  {item.texto}
+                </p>
+              </div>
+            </Reveal>
           ))}
         </div>
       </div>

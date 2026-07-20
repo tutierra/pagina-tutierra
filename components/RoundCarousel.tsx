@@ -58,8 +58,13 @@ export default function RoundCarousel({
   useEffect(() => {
     const ring = ringRef.current;
     if (!ring) return;
-    const apply = () =>
-      (ring.style.transform = `translateZ(${-radius}px) rotateY(${rotYRef.current}deg)`);
+    const apply = () => {
+      const t = `translateZ(${-radius}px) rotateY(${rotYRef.current}deg)`;
+      ring.style.transform = t;
+      // Safari móvil a veces solo respeta la propiedad -webkit- en cadenas
+      // 3D anidadas (preserve-3d + perspective); se fija en paralelo.
+      ring.style.setProperty("-webkit-transform", t);
+    };
     apply();
 
     const draw = (now: number) => {
@@ -108,6 +113,7 @@ export default function RoundCarousel({
     borderRadius: radiusPx,
     overflow: "hidden",
     backfaceVisibility: "hidden",
+    WebkitBackfaceVisibility: "hidden",
     backgroundSize: "cover",
     backgroundPosition: "center",
   };
@@ -124,6 +130,7 @@ export default function RoundCarousel({
         overflow: "hidden",
         background,
         perspective: `${perspective}px`,
+        WebkitPerspective: `${perspective}px`,
         cursor: drag ? "grab" : "default",
         touchAction: "none",
       }}
@@ -135,7 +142,9 @@ export default function RoundCarousel({
       <div
         style={{
           transformStyle: "preserve-3d",
+          WebkitTransformStyle: "preserve-3d",
           transform: `rotateX(${tilt}deg)`,
+          WebkitTransform: `rotateX(${tilt}deg)`,
         }}
       >
         <div
@@ -145,18 +154,22 @@ export default function RoundCarousel({
             width: imageWidth,
             height: imageHeight,
             transformStyle: "preserve-3d",
+            WebkitTransformStyle: "preserve-3d",
           }}
         >
           {items.map((img, i) => {
             const src = img?.src;
+            const cardTransform = `rotateY(${i * angle}deg) translateZ(${radius}px)`;
             return (
               <div
                 key={i}
                 style={{
                   position: "absolute",
                   inset: 0,
-                  transform: `rotateY(${i * angle}deg) translateZ(${radius}px)`,
+                  transform: cardTransform,
+                  WebkitTransform: cardTransform,
                   transformStyle: "preserve-3d",
+                  WebkitTransformStyle: "preserve-3d",
                 }}
               >
                 <div
@@ -171,6 +184,7 @@ export default function RoundCarousel({
                   style={{
                     ...faceBase,
                     transform: "rotateY(180deg)",
+                    WebkitTransform: "rotateY(180deg)",
                     backgroundColor: src ? "transparent" : "#181818",
                     backgroundImage: src ? `url(${src})` : undefined,
                     filter: `brightness(${innerDim / 10})`,
