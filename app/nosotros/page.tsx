@@ -1,6 +1,7 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
+import TimelineExpand from "@/components/TimelineExpand";
 import ContactForm from "@/components/ContactForm";
 import { CONTACT, SOCIAL } from "@/lib/site-data";
 
@@ -10,21 +11,21 @@ export const metadata: Metadata = {
     "La historia de Tutierra: desde su fundación en Cusco hasta convertirse en referente de desarrollo inmobiliario sostenible en el Valle Sagrado.",
 };
 
-const TIMELINE: { year: string; titulo: string; texto: string }[] = [
-  { year: "2016", titulo: "Nace Tutierra", texto: "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra." },
-  { year: "2016", titulo: "Primer terreno en Chinchero", texto: "Adquirimos nuestro primer predio con vista a la cordillera." },
-  { year: "2017", titulo: "Primeras 10 familias", texto: "Entregamos los primeros lotes saneados a familias cusqueñas." },
-  { year: "2018", titulo: "Saneamiento certificado", texto: "Formalizamos el proceso legal e independización individual de cada lote." },
-  { year: "2018", titulo: "Proyecto Pisac", texto: "Expandimos hacia el corredor turístico del Valle Sagrado." },
-  { year: "2019", titulo: "Oficina en Av. El Sol", texto: "Abrimos nuestra sede central en el corazón de Cusco." },
-  { year: "2020", titulo: "Ventas digitales", texto: "Lanzamos el acompañamiento remoto y la reserva en línea de lotes." },
-  { year: "2021", titulo: "Proyecto Urubamba", texto: "Desarrollamos en el corazón del valle, de clima templado todo el año." },
-  { year: "2022", titulo: "100 lotes vendidos", texto: "Superamos el centenar de lotes entregados con respaldo legal." },
-  { year: "2023", titulo: "Proyecto Maras", texto: "Lotes de gran extensión junto a las icónicas salineras." },
-  { year: "2024", titulo: "Proyecto Ollantaytambo", texto: "Llegamos a la puerta de entrada a Machu Picchu." },
-  { year: "2024", titulo: "Alianza notarial", texto: "Convenio para agilizar la independización y titulación de cada cliente." },
-  { year: "2025", titulo: "Proyecto Calca", texto: "Abrimos una zona en expansión con precios de entrada accesibles." },
-  { year: "2026", titulo: "Nueva etapa", texto: "Iniciamos nuestra expansión con seis proyectos activos en el valle." },
+const TIMELINE: { year: string; titulo: string; texto: string; img: string }[] = [
+  { year: "2016", titulo: "Nace Tutierra", texto: "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra.", img: "/images/nosotros/oficina.jpg" },
+  { year: "2016", titulo: "Primer terreno en Chinchero", texto: "Adquirimos nuestro primer predio con vista a la cordillera.", img: "/images/proyectos/proyecto-chinchero-01.jpg" },
+  { year: "2017", titulo: "Primeras 10 familias", texto: "Entregamos los primeros lotes saneados a familias cusqueñas.", img: "/images/nosotros/equipo.jpg" },
+  { year: "2018", titulo: "Saneamiento certificado", texto: "Formalizamos el proceso legal e independización individual de cada lote.", img: "/images/proyectos/proyecto-chinchero-02.jpg" },
+  { year: "2018", titulo: "Proyecto Pisac", texto: "Expandimos hacia el corredor turístico del Valle Sagrado.", img: "/images/proyectos/proyecto-pisac-01.jpg" },
+  { year: "2019", titulo: "Oficina en Av. El Sol", texto: "Abrimos nuestra sede central en el corazón de Cusco.", img: "/images/proyectos/proyecto-pisac-02.jpg" },
+  { year: "2020", titulo: "Ventas digitales", texto: "Lanzamos el acompañamiento remoto y la reserva en línea de lotes.", img: "/images/proyectos/proyecto-urubamba-02.jpg" },
+  { year: "2021", titulo: "Proyecto Urubamba", texto: "Desarrollamos en el corazón del valle, de clima templado todo el año.", img: "/images/proyectos/proyecto-urubamba-01.jpg" },
+  { year: "2022", titulo: "100 lotes vendidos", texto: "Superamos el centenar de lotes entregados con respaldo legal.", img: "/images/proyectos/proyecto-maras-02.jpg" },
+  { year: "2023", titulo: "Proyecto Maras", texto: "Lotes de gran extensión junto a las icónicas salineras.", img: "/images/proyectos/proyecto-maras-01.jpg" },
+  { year: "2024", titulo: "Proyecto Ollantaytambo", texto: "Llegamos a la puerta de entrada a Machu Picchu.", img: "/images/proyectos/proyecto-ollantaytambo-01.jpg" },
+  { year: "2024", titulo: "Alianza notarial", texto: "Convenio para agilizar la independización y titulación de cada cliente.", img: "/images/proyectos/proyecto-ollantaytambo-02.jpg" },
+  { year: "2025", titulo: "Proyecto Calca", texto: "Abrimos una zona en expansión con precios de entrada accesibles.", img: "/images/proyectos/proyecto-calca-01.jpg" },
+  { year: "2026", titulo: "Nueva etapa", texto: "Iniciamos nuestra expansión con seis proyectos activos en el valle.", img: "/images/proyectos/proyecto-calca-02.jpg" },
 ];
 
 const EQUIPO: { nombre: string; puesto: string }[] = [
@@ -114,22 +115,12 @@ export default function NosotrosPage() {
             </h2>
           </Reveal>
 
-          <ol className="mt-[3.5em] border-l border-brand-gray/15 pl-[1.6em] sm:pl-[2.4em]">
-            {TIMELINE.map((item, i) => (
-              <Reveal key={`${item.year}-${item.titulo}`} delay={Math.min(i * 0.04, 0.3)}>
-                <li className="relative pb-[2.6em] last:pb-0">
-                  <span className="absolute -left-[calc(1.6em+0.42em)] top-[0.35em] h-[0.7em] w-[0.7em] rounded-full bg-tech-green ring-4 ring-background sm:-left-[calc(2.4em+0.42em)]" />
-                  <p className="font-display text-[1.4rem] font-light text-tech-green">{item.year}</p>
-                  <h3 className="mt-[0.1em] font-display text-[1.15rem] font-normal text-brand-gray">
-                    {item.titulo}
-                  </h3>
-                  <p className="mt-[0.4em] max-w-[54ch] text-[0.95rem] leading-[1.6] text-brand-gray/65">
-                    {item.texto}
-                  </p>
-                </li>
-              </Reveal>
-            ))}
-          </ol>
+          <Reveal delay={0.1} className="mt-[3em]">
+            <TimelineExpand items={TIMELINE} />
+          </Reveal>
+          <p className="mt-[1.4em] text-[0.8rem] text-brand-gray/45 lg:block">
+            Pasa el cursor sobre cada hito para descubrirlo.
+          </p>
         </div>
       </section>
 
