@@ -28,15 +28,38 @@ const TIMELINE: { year: string; titulo: string; texto: string; img: string }[] =
   { year: "2026", titulo: "Nueva etapa", texto: "Iniciamos nuestra expansión con seis proyectos activos en el valle.", img: "/images/proyectos/proyecto-calca-02.jpg" },
 ];
 
-const EQUIPO: { nombre: string; puesto: string }[] = [
-  { nombre: "Carlos Mendoza", puesto: "Fundador y Director General" },
-  { nombre: "Lucía Ramírez", puesto: "Gerente Comercial" },
-  { nombre: "Andrés Quispe", puesto: "Jefe de Saneamiento Legal" },
-  { nombre: "Valeria Ttito", puesto: "Arquitecta de Proyectos" },
-  { nombre: "Diego Salas", puesto: "Ingeniero de Obras" },
-  { nombre: "Rosa Huamán", puesto: "Asesora de Inversiones" },
-  { nombre: "Martín Flores", puesto: "Especialista Notarial" },
-  { nombre: "Paola Cárdenas", puesto: "Atención al Cliente" },
+const EQUIPO_GRUPOS: { area: string; personas: { nombre: string; puesto: string }[] }[] = [
+  {
+    area: "Gerencia",
+    personas: [
+      { nombre: "Lucía Ramírez", puesto: "Gerente Comercial" },
+      { nombre: "Sergio Ballón", puesto: "Gerente de Marketing" },
+    ],
+  },
+  {
+    area: "Equipo Comercial",
+    personas: [
+      { nombre: "Rosa Huamán", puesto: "Asesora de Inversiones" },
+      { nombre: "Diego Salas", puesto: "Ejecutivo de Ventas" },
+      { nombre: "Karina Puma", puesto: "Asesora Comercial" },
+    ],
+  },
+  {
+    area: "Equipo de Marketing",
+    personas: [
+      { nombre: "Paola Cárdenas", puesto: "Community Manager" },
+      { nombre: "Bruno Ttito", puesto: "Diseñador Gráfico" },
+      { nombre: "Mía Choque", puesto: "Contenido y Publicidad" },
+    ],
+  },
+  {
+    area: "Equipo Administrativo",
+    personas: [
+      { nombre: "Andrés Quispe", puesto: "Administrador" },
+      { nombre: "Valeria Ríos", puesto: "Contabilidad" },
+      { nombre: "Martín Flores", puesto: "Asistente Administrativo" },
+    ],
+  },
 ];
 
 const CIFRAS: { valor: string; label: string }[] = [
@@ -125,7 +148,7 @@ export default function NosotrosPage() {
       </section>
 
       {/* 3 — Equipo */}
-      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
+      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[10%] lg:py-[6%]">
         <div className="mx-auto w-[90%]">
           <Reveal>
             <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[03] NUESTRO EQUIPO</p>
@@ -133,22 +156,40 @@ export default function NosotrosPage() {
               Personas detrás de cada terreno
             </h2>
             <p className="mt-[1em] max-w-[52ch] text-[1rem] leading-[1.7] text-brand-gray/70">
-              Un equipo multidisciplinario que acompaña a cada familia desde la elección del
+              Once personas en cuatro áreas acompañan a cada familia desde la elección del
               lote hasta la independización final.
             </p>
           </Reveal>
 
-          <div className="mt-[3em] grid grid-cols-2 gap-[1.5em] md:grid-cols-4">
-            {EQUIPO.map((persona, i) => (
-              <Reveal key={persona.nombre} delay={Math.min(i * 0.06, 0.4)}>
-                <div>
-                  <Avatar nombre={persona.nombre} />
-                  <h3 className="mt-[0.9em] font-display text-[1.05rem] font-normal text-brand-gray">
-                    {persona.nombre}
-                  </h3>
-                  <p className="mt-[0.2em] text-[0.85rem] text-brand-gray/55">{persona.puesto}</p>
+          <div className="mt-[3em] flex flex-col gap-[3em]">
+            {EQUIPO_GRUPOS.map((grupo, gi) => (
+              <div key={grupo.area}>
+                <Reveal>
+                  <div className="flex items-center gap-[1em]">
+                    <h3 className="shrink-0 text-[0.8rem] tracking-[0.15em] text-tech-green">
+                      {grupo.area.toUpperCase()}
+                    </h3>
+                    <span className="h-px flex-1 bg-brand-gray/15" />
+                    <span className="shrink-0 text-[0.75rem] text-brand-gray/40">
+                      {String(grupo.personas.length).padStart(2, "0")}
+                    </span>
+                  </div>
+                </Reveal>
+
+                <div className="mt-[1.4em] grid grid-cols-2 gap-[1.5em] sm:grid-cols-3 lg:grid-cols-4">
+                  {grupo.personas.map((persona, i) => (
+                    <Reveal key={persona.nombre} delay={Math.min(i * 0.06 + gi * 0.03, 0.4)}>
+                      <div>
+                        <Avatar nombre={persona.nombre} />
+                        <h4 className="mt-[0.9em] font-display text-[1.05rem] font-normal text-brand-gray">
+                          {persona.nombre}
+                        </h4>
+                        <p className="mt-[0.2em] text-[0.85rem] text-brand-gray/55">{persona.puesto}</p>
+                      </div>
+                    </Reveal>
+                  ))}
                 </div>
-              </Reveal>
+              </div>
             ))}
           </div>
         </div>
