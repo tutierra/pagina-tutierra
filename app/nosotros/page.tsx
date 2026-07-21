@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import Image from "next/image";
 import Reveal from "@/components/Reveal";
 import TimelineExpand from "@/components/TimelineExpand";
+import CountUp from "@/components/CountUp";
 import ContactForm from "@/components/ContactForm";
 import { CONTACT, SOCIAL } from "@/lib/site-data";
 
@@ -79,12 +80,14 @@ function Avatar({ nombre }: { nombre: string }) {
     .join("")
     .toUpperCase();
   return (
-    <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[1.2rem] bg-money-green/30">
-      <svg viewBox="0 0 200 200" fill="none" className="absolute inset-0 h-full w-full text-tech-green/25">
+    <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[1.2rem] bg-money-green/30 ring-1 ring-white/5 transition-[transform,background-color,box-shadow] duration-[400ms] ease-out-strong group-hover:-translate-y-[0.35em] group-hover:bg-money-green/50 group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
+      <svg viewBox="0 0 200 200" fill="none" className="absolute inset-0 h-full w-full text-tech-green/25 transition-[transform,color] duration-500 ease-out group-hover:rotate-[24deg] group-hover:text-tech-green/45">
         <circle cx="100" cy="100" r="88" stroke="currentColor" strokeWidth="2" strokeDasharray="60 22" strokeLinecap="round" />
         <circle cx="100" cy="100" r="66" stroke="currentColor" strokeWidth="1.5" strokeDasharray="40 26" strokeLinecap="round" opacity="0.6" />
       </svg>
-      <span className="font-display text-[clamp(1.6rem,3vw,2.4rem)] font-light text-tech-green">{initials}</span>
+      <span className="font-display text-[clamp(1.6rem,3vw,2.4rem)] font-light text-tech-green transition-transform duration-[400ms] ease-out-strong group-hover:scale-110">
+        {initials}
+      </span>
     </div>
   );
 }
@@ -111,14 +114,14 @@ export default function NosotrosPage() {
           </Reveal>
 
           <Reveal delay={0.12}>
-            <div className="rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10">
+            <div className="group rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10 transition-shadow duration-500 ease-out hover:shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.2rem]">
                 <Image
                   src="/images/testimonios/cliente-01.jpg"
                   alt="Carlos Mendoza, fundador de Tutierra"
                   fill
                   sizes="(max-width: 1024px) 90vw, 40vw"
-                  className="object-cover"
+                  className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
                   priority
                 />
                 <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-ink/40 to-transparent" />
@@ -179,9 +182,9 @@ export default function NosotrosPage() {
                 <div className="mt-[1.4em] grid grid-cols-2 gap-[1.5em] sm:grid-cols-3 lg:grid-cols-4">
                   {grupo.personas.map((persona, i) => (
                     <Reveal key={persona.nombre} delay={Math.min(i * 0.06 + gi * 0.03, 0.4)}>
-                      <div>
+                      <div className="group cursor-default">
                         <Avatar nombre={persona.nombre} />
-                        <h4 className="mt-[0.9em] font-display text-[1.05rem] font-normal text-brand-gray">
+                        <h4 className="mt-[0.9em] font-display text-[1.05rem] font-normal text-brand-gray transition-colors duration-300 ease-out group-hover:text-tech-green">
                           {persona.nombre}
                         </h4>
                         <p className="mt-[0.2em] text-[0.85rem] text-brand-gray/55">{persona.puesto}</p>
@@ -210,9 +213,12 @@ export default function NosotrosPage() {
               <div>
                 <div className="grid grid-cols-2 gap-[1.5em]">
                   {CIFRAS.map((cifra) => (
-                    <div key={cifra.label} className="border-t border-brand-gray/15 pt-[1em]">
-                      <p className="font-display text-[clamp(1.8rem,3.4vw,2.8rem)] font-light text-brand-gray">
-                        {cifra.valor}
+                    <div
+                      key={cifra.label}
+                      className="group border-t border-brand-gray/15 pt-[1em] transition-colors duration-300 ease-out hover:border-tech-green/60"
+                    >
+                      <p className="font-display text-[clamp(1.8rem,3.4vw,2.8rem)] font-light text-brand-gray transition-colors duration-300 ease-out group-hover:text-tech-green">
+                        <CountUp value={cifra.valor} />
                       </p>
                       <p className="mt-[0.2em] text-[0.85rem] leading-[1.4] text-brand-gray/60">
                         {cifra.label}
@@ -228,9 +234,12 @@ export default function NosotrosPage() {
                       href={`https://wa.me/${CONTACT.whatsapp}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="mt-[0.3em] block text-[1.05rem] text-brand-gray transition-colors duration-200 ease-out hover:text-tech-green"
+                      className="group mt-[0.3em] inline-flex items-center gap-[0.4em] text-[1.05rem] text-brand-gray transition-colors duration-200 ease-out hover:text-tech-green"
                     >
                       {CONTACT.phone}
+                      <span className="translate-x-[-0.3em] opacity-0 transition-all duration-200 ease-out-strong group-hover:translate-x-0 group-hover:opacity-100">
+                        →
+                      </span>
                     </a>
                   </div>
                   <div>
@@ -238,10 +247,23 @@ export default function NosotrosPage() {
                     <p className="mt-[0.3em] text-[1.05rem] text-brand-gray">{CONTACT.address}</p>
                     <p className="text-[0.85rem] text-brand-gray/55">{CONTACT.hours}</p>
                   </div>
-                  <div className="flex gap-[1.2em] text-[0.9rem] text-brand-gray/80">
-                    <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tech-green">Instagram</a>
-                    <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tech-green">Facebook</a>
-                    <a href={SOCIAL.tiktok} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tech-green">TikTok</a>
+                  <div className="flex gap-[1.4em] text-[0.9rem] text-brand-gray/80">
+                    {[
+                      { href: SOCIAL.instagram, label: "Instagram" },
+                      { href: SOCIAL.facebook, label: "Facebook" },
+                      { href: SOCIAL.tiktok, label: "TikTok" },
+                    ].map((s) => (
+                      <a
+                        key={s.label}
+                        href={s.href}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="group relative transition-colors duration-200 ease-out hover:text-tech-green"
+                      >
+                        {s.label}
+                        <span className="absolute -bottom-[0.25em] left-0 h-[1.5px] w-0 bg-tech-green transition-[width] duration-300 ease-out-strong group-hover:w-full" />
+                      </a>
+                    ))}
                   </div>
                 </div>
               </div>
