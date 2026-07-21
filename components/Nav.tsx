@@ -4,7 +4,6 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import Logo from "./Logo";
 import { CONTACT } from "@/lib/site-data";
 
 const LINKS = [
@@ -12,6 +11,7 @@ const LINKS = [
   { href: "/nosotros", label: "Nosotros" },
   { href: "/proyectos", label: "Proyectos" },
   { href: "/refiere-y-gana", label: "Refiere y Gana" },
+  { href: "/newsletter", label: "Newsletter" },
   { href: "/contactanos", label: "Contáctanos" },
 ];
 
@@ -32,9 +32,6 @@ export default function Nav() {
     >
       <nav className="relative flex items-center gap-[1.28em] overflow-hidden rounded-b-[1.04em] border border-t-0 border-white/15 bg-white/10 px-[1.28em] py-[0.72em] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35),inset_0_-1px_0_0_rgba(255,255,255,0.05),0_16px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl backdrop-saturate-150 sm:gap-[1.92em] sm:px-[1.6em]">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/10" />
-        <Link href="/" className="shrink-0 text-brand-gray" aria-label="Tutierra — Inicio">
-          <Logo className="text-[0.8rem] sm:text-[0.92rem]" />
-        </Link>
 
         <ul className="hidden items-center gap-[1.6em] md:flex">
           {LINKS.map((link) => {
