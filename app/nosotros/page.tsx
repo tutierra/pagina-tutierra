@@ -1,106 +1,230 @@
 import type { Metadata } from "next";
 import Image from "next/image";
-import Manifesto from "@/components/Manifesto";
-import CtaDoble from "@/components/CtaDoble";
+import Reveal from "@/components/Reveal";
+import ContactForm from "@/components/ContactForm";
+import { CONTACT, SOCIAL } from "@/lib/site-data";
 
 export const metadata: Metadata = {
   title: "Nosotros | Tutierra Grupo Inmobiliario",
-  description: "Conoce la historia, misión, visión y valores de Tutierra Grupo Inmobiliario.",
+  description:
+    "La historia de Tutierra: desde su fundación en Cusco hasta convertirse en referente de desarrollo inmobiliario sostenible en el Valle Sagrado.",
 };
 
-const VALORES = [
-  {
-    titulo: "Sostenibilidad",
-    texto: "Cada proyecto respeta el paisaje andino y minimiza su impacto ambiental.",
-  },
-  {
-    titulo: "Transparencia",
-    texto: "Información legal clara y saneamiento garantizado en cada lote.",
-  },
-  {
-    titulo: "Familia",
-    texto: "Creamos y unimos familias construyendo patrimonio real y duradero.",
-  },
-  {
-    titulo: "Innovación",
-    texto: "Procesos digitales y acompañamiento cercano durante toda la inversión.",
-  },
+const TIMELINE: { year: string; titulo: string; texto: string }[] = [
+  { year: "2016", titulo: "Nace Tutierra", texto: "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra." },
+  { year: "2016", titulo: "Primer terreno en Chinchero", texto: "Adquirimos nuestro primer predio con vista a la cordillera." },
+  { year: "2017", titulo: "Primeras 10 familias", texto: "Entregamos los primeros lotes saneados a familias cusqueñas." },
+  { year: "2018", titulo: "Saneamiento certificado", texto: "Formalizamos el proceso legal e independización individual de cada lote." },
+  { year: "2018", titulo: "Proyecto Pisac", texto: "Expandimos hacia el corredor turístico del Valle Sagrado." },
+  { year: "2019", titulo: "Oficina en Av. El Sol", texto: "Abrimos nuestra sede central en el corazón de Cusco." },
+  { year: "2020", titulo: "Ventas digitales", texto: "Lanzamos el acompañamiento remoto y la reserva en línea de lotes." },
+  { year: "2021", titulo: "Proyecto Urubamba", texto: "Desarrollamos en el corazón del valle, de clima templado todo el año." },
+  { year: "2022", titulo: "100 lotes vendidos", texto: "Superamos el centenar de lotes entregados con respaldo legal." },
+  { year: "2023", titulo: "Proyecto Maras", texto: "Lotes de gran extensión junto a las icónicas salineras." },
+  { year: "2024", titulo: "Proyecto Ollantaytambo", texto: "Llegamos a la puerta de entrada a Machu Picchu." },
+  { year: "2024", titulo: "Alianza notarial", texto: "Convenio para agilizar la independización y titulación de cada cliente." },
+  { year: "2025", titulo: "Proyecto Calca", texto: "Abrimos una zona en expansión con precios de entrada accesibles." },
+  { year: "2026", titulo: "Nueva etapa", texto: "Iniciamos nuestra expansión con seis proyectos activos en el valle." },
 ];
+
+const EQUIPO: { nombre: string; puesto: string }[] = [
+  { nombre: "Carlos Mendoza", puesto: "Fundador y Director General" },
+  { nombre: "Lucía Ramírez", puesto: "Gerente Comercial" },
+  { nombre: "Andrés Quispe", puesto: "Jefe de Saneamiento Legal" },
+  { nombre: "Valeria Ttito", puesto: "Arquitecta de Proyectos" },
+  { nombre: "Diego Salas", puesto: "Ingeniero de Obras" },
+  { nombre: "Rosa Huamán", puesto: "Asesora de Inversiones" },
+  { nombre: "Martín Flores", puesto: "Especialista Notarial" },
+  { nombre: "Paola Cárdenas", puesto: "Atención al Cliente" },
+];
+
+const CIFRAS: { valor: string; label: string }[] = [
+  { valor: "6", label: "Proyectos activos en el Valle Sagrado" },
+  { valor: "+320", label: "Lotes vendidos y saneados" },
+  { valor: "10", label: "Años construyendo confianza" },
+  { valor: "+300", label: "Familias con patrimonio propio" },
+  { valor: "100%", label: "Saneamiento legal garantizado" },
+  { valor: "+45", label: "Hectáreas desarrolladas" },
+];
+
+function Avatar({ nombre }: { nombre: string }) {
+  const initials = nombre
+    .split(" ")
+    .slice(0, 2)
+    .map((w) => w[0])
+    .join("")
+    .toUpperCase();
+  return (
+    <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[1.2rem] bg-money-green/30">
+      <svg viewBox="0 0 200 200" fill="none" className="absolute inset-0 h-full w-full text-tech-green/25">
+        <circle cx="100" cy="100" r="88" stroke="currentColor" strokeWidth="2" strokeDasharray="60 22" strokeLinecap="round" />
+        <circle cx="100" cy="100" r="66" stroke="currentColor" strokeWidth="1.5" strokeDasharray="40 26" strokeLinecap="round" opacity="0.6" />
+      </svg>
+      <span className="font-display text-[clamp(1.6rem,3vw,2.4rem)] font-light text-tech-green">{initials}</span>
+    </div>
+  );
+}
 
 export default function NosotrosPage() {
   return (
     <>
-      <section className="relative flex min-h-dvh w-full items-end overflow-hidden pt-[35%] pb-[6%] md:pt-[12%]">
-        <Image
-          src="/images/nosotros/oficina.jpg"
-          alt="Equipo Tutierra"
-          fill
-          className="object-cover opacity-30"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/40 to-background/10" />
-        <div className="relative mx-auto w-[90%]">
-          <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">NOSOTROS</p>
-          <h1 className="mt-[0.4em] max-w-[18ch] font-display text-[clamp(2.2rem,5vw,4rem)] font-light text-brand-gray">
-            Construimos confianza, un terreno a la vez.
-          </h1>
-          <p className="mt-[1em] max-w-[52ch] text-[1.05rem] leading-[1.7] text-brand-gray/75">
-            Tutierra nació en Cusco con un propósito claro: transformar tierras del Valle
-            Sagrado en oportunidades de inversión seguras, sostenibles y con respaldo legal
-            real para cada familia.
-          </p>
+      {/* 1 — Fundador */}
+      <section className="flex min-h-dvh w-full items-center pt-[30%] pb-[8%] md:pt-[10%]">
+        <div className="mx-auto grid w-[90%] grid-cols-1 items-center gap-[3em] lg:grid-cols-[1.1fr_0.9fr]">
+          <Reveal>
+            <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[01] EL FUNDADOR</p>
+            <h1 className="mt-[0.4em] max-w-[16ch] font-display text-[clamp(2.2rem,5vw,4rem)] font-light leading-[1.02] text-brand-gray">
+              Una visión nacida en el <span className="font-serif italic text-tech-green">Valle Sagrado</span>
+            </h1>
+            <p className="mt-[1.2em] max-w-[50ch] text-[clamp(1rem,1.4vw,1.15rem)] leading-[1.7] text-brand-gray/75">
+              “Crecí viendo cómo muchas familias soñaban con un pedazo de tierra propio, pero
+              se topaban con trámites, informalidad y promesas vacías. Fundé Tutierra para que
+              ese sueño fuera seguro, legal y real. Cada lote que entregamos es una familia que
+              echa raíces.”
+            </p>
+            <p className="mt-[1.4em] font-display text-[1.1rem] text-brand-gray">Carlos Mendoza</p>
+            <p className="text-[0.9rem] text-brand-gray/55">Fundador y Director General</p>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <div className="rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10">
+              <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.2rem]">
+                <Image
+                  src="/images/testimonios/cliente-01.jpg"
+                  alt="Carlos Mendoza, fundador de Tutierra"
+                  fill
+                  sizes="(max-width: 1024px) 90vw, 40vw"
+                  className="object-cover"
+                  priority
+                />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-ink/40 to-transparent" />
+              </div>
+            </div>
+          </Reveal>
         </div>
       </section>
 
-      <Manifesto />
-
+      {/* 2 — Timeline */}
       <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
         <div className="mx-auto w-[90%]">
-          <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[03] VALORES</p>
-          <h2 className="mt-[0.4em] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
-            Lo que nos guía
-          </h2>
+          <Reveal>
+            <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[02] NUESTRA HISTORIA</p>
+            <h2 className="mt-[0.4em] max-w-[20ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
+              De una idea a un referente del valle
+            </h2>
+          </Reveal>
 
-          <div className="mt-[3em] grid grid-cols-1 gap-[2em] sm:grid-cols-2 lg:grid-cols-4">
-            {VALORES.map((valor) => (
-              <div key={valor.titulo} className="border-t border-brand-gray/15 pt-[1.5em]">
-                <h3 className="font-display text-[1.15rem] font-normal text-brand-gray">
-                  {valor.titulo}
-                </h3>
-                <p className="mt-[0.6em] text-[0.9rem] leading-[1.6] text-brand-gray/65">
-                  {valor.texto}
-                </p>
-              </div>
+          <ol className="mt-[3.5em] border-l border-brand-gray/15 pl-[1.6em] sm:pl-[2.4em]">
+            {TIMELINE.map((item, i) => (
+              <Reveal key={`${item.year}-${item.titulo}`} delay={Math.min(i * 0.04, 0.3)}>
+                <li className="relative pb-[2.6em] last:pb-0">
+                  <span className="absolute -left-[calc(1.6em+0.42em)] top-[0.35em] h-[0.7em] w-[0.7em] rounded-full bg-tech-green ring-4 ring-background sm:-left-[calc(2.4em+0.42em)]" />
+                  <p className="font-display text-[1.4rem] font-light text-tech-green">{item.year}</p>
+                  <h3 className="mt-[0.1em] font-display text-[1.15rem] font-normal text-brand-gray">
+                    {item.titulo}
+                  </h3>
+                  <p className="mt-[0.4em] max-w-[54ch] text-[0.95rem] leading-[1.6] text-brand-gray/65">
+                    {item.texto}
+                  </p>
+                </li>
+              </Reveal>
+            ))}
+          </ol>
+        </div>
+      </section>
+
+      {/* 3 — Equipo */}
+      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
+        <div className="mx-auto w-[90%]">
+          <Reveal>
+            <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[03] NUESTRO EQUIPO</p>
+            <h2 className="mt-[0.4em] max-w-[22ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
+              Personas detrás de cada terreno
+            </h2>
+            <p className="mt-[1em] max-w-[52ch] text-[1rem] leading-[1.7] text-brand-gray/70">
+              Un equipo multidisciplinario que acompaña a cada familia desde la elección del
+              lote hasta la independización final.
+            </p>
+          </Reveal>
+
+          <div className="mt-[3em] grid grid-cols-2 gap-[1.5em] md:grid-cols-4">
+            {EQUIPO.map((persona, i) => (
+              <Reveal key={persona.nombre} delay={Math.min(i * 0.06, 0.4)}>
+                <div>
+                  <Avatar nombre={persona.nombre} />
+                  <h3 className="mt-[0.9em] font-display text-[1.05rem] font-normal text-brand-gray">
+                    {persona.nombre}
+                  </h3>
+                  <p className="mt-[0.2em] text-[0.85rem] text-brand-gray/55">{persona.puesto}</p>
+                </div>
+              </Reveal>
             ))}
           </div>
         </div>
       </section>
 
+      {/* 4 — Contacto + cifras */}
       <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
-        <div className="mx-auto grid w-[90%] grid-cols-1 items-center gap-[3em] md:grid-cols-2">
-          <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.2rem]">
-            <Image
-              src="/images/nosotros/equipo.jpg"
-              alt="Equipo Tutierra"
-              fill
-              className="object-cover"
-            />
-          </div>
-          <div>
-            <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[04] EQUIPO</p>
-            <h2 className="mt-[0.4em] font-display text-[clamp(1.8rem,3vw,2.6rem)] font-light text-brand-gray">
-              Personas detrás de cada proyecto
+        <div className="mx-auto w-[90%]">
+          <Reveal>
+            <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[04] CONTÁCTANOS</p>
+            <h2 className="mt-[0.4em] max-w-[22ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
+              Hablemos de tu próxima inversión
             </h2>
-            <p className="mt-[1em] max-w-[46ch] text-[1rem] leading-[1.7] text-brand-gray/75">
-              Un equipo multidisciplinario de asesores legales, ingenieros y especialistas
-              comerciales acompaña a cada cliente desde la elección del lote hasta la
-              independización final.
-            </p>
+          </Reveal>
+
+          <div className="mt-[3em] grid grid-cols-1 gap-[3em] lg:grid-cols-[1fr_1.1fr]">
+            <Reveal>
+              <div>
+                <div className="grid grid-cols-2 gap-[1.5em]">
+                  {CIFRAS.map((cifra) => (
+                    <div key={cifra.label} className="border-t border-brand-gray/15 pt-[1em]">
+                      <p className="font-display text-[clamp(1.8rem,3.4vw,2.8rem)] font-light text-brand-gray">
+                        {cifra.valor}
+                      </p>
+                      <p className="mt-[0.2em] text-[0.85rem] leading-[1.4] text-brand-gray/60">
+                        {cifra.label}
+                      </p>
+                    </div>
+                  ))}
+                </div>
+
+                <div className="mt-[2.5em] flex flex-col gap-[1.4em]">
+                  <div>
+                    <h3 className="text-[0.8rem] tracking-[0.15em] text-tech-green">TELÉFONO / WHATSAPP</h3>
+                    <a
+                      href={`https://wa.me/${CONTACT.whatsapp}`}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className="mt-[0.3em] block text-[1.05rem] text-brand-gray transition-colors duration-200 ease-out hover:text-tech-green"
+                    >
+                      {CONTACT.phone}
+                    </a>
+                  </div>
+                  <div>
+                    <h3 className="text-[0.8rem] tracking-[0.15em] text-tech-green">OFICINA</h3>
+                    <p className="mt-[0.3em] text-[1.05rem] text-brand-gray">{CONTACT.address}</p>
+                    <p className="text-[0.85rem] text-brand-gray/55">{CONTACT.hours}</p>
+                  </div>
+                  <div className="flex gap-[1.2em] text-[0.9rem] text-brand-gray/80">
+                    <a href={SOCIAL.instagram} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tech-green">Instagram</a>
+                    <a href={SOCIAL.facebook} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tech-green">Facebook</a>
+                    <a href={SOCIAL.tiktok} target="_blank" rel="noopener noreferrer" className="transition-colors hover:text-tech-green">TikTok</a>
+                  </div>
+                </div>
+              </div>
+            </Reveal>
+
+            <Reveal delay={0.12}>
+              <div className="rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10">
+                <div className="rounded-[1.2rem] border border-brand-gray/10 p-[6%] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
+                  <ContactForm />
+                </div>
+              </div>
+            </Reveal>
           </div>
         </div>
       </section>
-
-      <CtaDoble />
     </>
   );
 }
