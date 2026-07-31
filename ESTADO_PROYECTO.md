@@ -43,3 +43,40 @@ Stock de Unsplash en `public/images/{proyectos,nosotros,testimonios,referidos,gl
 
 ## Dev server
 `.claude/launch.json` en la raíz del working directory tiene config `pagina-tutierra-dev` (puerto 3000, corre `npm --prefix pagina-tutierra run dev`). Usar `preview_start` con ese nombre, NO crear uno nuevo.
+
+---
+
+## Estado actual (sesión de rediseño — rama `diseno-mejoras-skills`)
+
+**Git:** respawn seguro en rama `main` (commit "Checkpoint: full site build..."). Todo el trabajo nuevo va en rama `diseno-mejoras-skills`. Si algo falla: `git checkout main`. IP LAN actual del celu: cambia según red (usar `ipconfig getifaddr en1`).
+
+**Dependencia agregada:** `framer-motion` (instalado con `--legacy-peer-deps` por el pin de three@0.150).
+
+**Componentes nuevos creados:**
+- `Reveal.tsx` — fade-up al entrar en viewport. IntersectionObserver PROPIO + failsafe 1.2s (NO usar framer whileInView: fallaba con ScrollJacker en móvil y dejaba secciones invisibles).
+- `RoundCarousel.tsx` — carrusel circular 3D (galería Hero). Con prefijos `-webkit-` (transform-style/perspective/backface) para Safari móvil. Modo `dwell` (pausa por carta). `overflow:visible` (no recortar carta frontal). Hover: imagen zoom 5% (`.rc-card:hover .rc-img` en globals.css, solo punteros finos).
+- `ProyectosCoverflow.tsx` + `ProyectoModal.tsx` — coverflow sección 3 con modal de detalle (chips con íconos, monograma radial por proyecto, anim entrada/salida, bloquea scroll de fondo con position:fixed).
+- `TimelineExpand.tsx` — timeline "paneles expansivos" (grayscale→color+crece al hover via flex-grow; móvil = cards verticales).
+- `CountUp.tsx` — contador animado de cifras al entrar en viewport.
+- `NewsletterForm.tsx` + `app/newsletter/page.tsx` — página newsletter (sin backend).
+- `AreaScaledCornerImage.tsx` — imagen esquina escalada por % de área (ya no se usa en Hero, quedó de iteraciones).
+
+**Bugs resueltos importantes (no repetir):**
+3. Shader WebGL (three.js ~745KB) bloqueaba el hilo principal en móvil → congelaba TODA animación. Fix en `gradient-canvas.tsx`: el Canvas WebGL solo monta en desktop con recursos (`useHeavyGfxAllowed`: pointer fino, ≥1024px, cores/mem, no reduced-motion). Móvil/flojos → gradiente CSS de marca. Fallback bg `#05100b` (no negro).
+4. `min-h-screen` → `min-h-dvh` en todo el sitio (barra navegador móvil).
+5. ScrollJacker: permitía scroll nativo dentro de sección con contenido sin ver (antes cortaba contenido).
+
+**Sistema tipográfico:** `html { font-size: clamp(16px, 1.1111vw, 1000px) }` en globals.css — todo escala proporcional arriba de 1440px. Curvas easing custom en `@theme`: `--ease-out-strong`, etc.
+
+**Nav (`Nav.tsx`):** pill glass flotante con efecto liquid-glass. Logo = link a home. Links: Nosotros, Proyectos, Newsletter, Contáctanos + "Refiere y Gana" como pill verde al final. Sin "Home" ni "Agenda una visita". Menú móvil con stagger.
+
+**Página `/nosotros` (reconstruida):** 1) Fundador (foto + cita), 2) Timeline 14 hitos (TimelineExpand), 3) Equipo 11 personas agrupado por área (Gerencia 2 / Comercial 3 / Marketing 3 / Administrativo 3), avatares foto grayscale→color al hover (Avatar acepta `foto`), 4) Contacto: cifras (CountUp) izq + ContactForm der. Footer global.
+
+**Microinteracciones aplicadas** (skill emil): active:scale en todos los CTA, hover en avatares/cifras/foto fundador, links con flecha/subrayado.
+
+**Pendiente:**
+- Nombres y fotos reales del equipo (11) — hoy placeholder (misma foto `cliente-01.jpg` × 11).
+- Foto real del fundador (hoy `cliente-01.jpg`, no coincide con nombre "Carlos Mendoza").
+- Optimización propuesta NO aplicada aún: cargar three.js solo en home (sacar `GradientCanvas` del layout global) → ~745KB menos en el resto de páginas en desktop.
+- Newsletter/ContactForm sin backend real.
+- Merge `diseno-mejoras-skills` → `main` cuando esté aprobado.
