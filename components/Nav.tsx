@@ -4,13 +4,11 @@ import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { motion } from "framer-motion";
-import { CONTACT } from "@/lib/site-data";
+import Logo from "./Logo";
 
 const LINKS = [
-  { href: "/", label: "Home" },
   { href: "/nosotros", label: "Nosotros" },
   { href: "/proyectos", label: "Proyectos" },
-  { href: "/refiere-y-gana", label: "Refiere y Gana" },
   { href: "/newsletter", label: "Newsletter" },
   { href: "/contactanos", label: "Contáctanos" },
 ];
@@ -32,6 +30,9 @@ export default function Nav() {
     >
       <nav className="relative flex items-center gap-[1.28em] overflow-hidden rounded-b-[1.04em] border border-t-0 border-white/15 bg-white/10 px-[1.28em] py-[0.72em] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.35),inset_0_-1px_0_0_rgba(255,255,255,0.05),0_16px_40px_rgba(0,0,0,0.45)] backdrop-blur-xl backdrop-saturate-150 sm:gap-[1.92em] sm:px-[1.6em]">
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-white/10 via-transparent to-black/10" />
+        <Link href="/" className="shrink-0 text-brand-gray" aria-label="Tutierra — Inicio">
+          <Logo className="text-[0.8rem] sm:text-[0.92rem]" />
+        </Link>
 
         <ul className="hidden items-center gap-[1.6em] md:flex">
           {LINKS.map((link) => {
@@ -56,14 +57,12 @@ export default function Nav() {
           })}
         </ul>
 
-        <a
-          href={`https://wa.me/${CONTACT.whatsapp}`}
-          target="_blank"
-          rel="noopener noreferrer"
+        <Link
+          href="/refiere-y-gana"
           className="hidden shrink-0 rounded-full bg-tech-green px-[1.04em] py-[0.44em] text-[0.656rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.96] active:scale-[0.96] md:block"
         >
-          Agenda una visita
-        </a>
+          Refiere y Gana
+        </Link>
 
         <button
           onClick={() => setOpen((v) => !v)}
@@ -119,14 +118,12 @@ export default function Nav() {
             }`}
             style={{ transitionDelay: open ? `${LINKS.length * 45}ms` : "0ms" }}
           >
-            <a
-              href={`https://wa.me/${CONTACT.whatsapp}`}
-              target="_blank"
-              rel="noopener noreferrer"
+            <Link
+              href="/refiere-y-gana"
               className="inline-block rounded-full bg-tech-green px-[1.12em] py-[0.48em] text-[0.72rem] text-brand-ink transition-transform duration-160 ease-out-strong active:scale-[0.96]"
             >
-              Agenda una visita
-            </a>
+              Refiere y Gana
+            </Link>
           </li>
         </ul>
       </div>
