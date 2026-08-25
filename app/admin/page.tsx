@@ -196,15 +196,39 @@ export default function AdminDashboardPage() {
     }
   }
 
+  function slugifyAdmin(text: string): string {
+    return (text || "")
+      .toString()
+      .toLowerCase()
+      .trim()
+      .normalize("NFD")
+      .replace(/[\u0300-\u036f]/g, "")
+      .replace(/[^a-z0-9 -]/g, "")
+      .replace(/\s+/g, "-")
+      .replace(/-+/g, "-")
+      .replace(/^-+|-+$/g, "");
+  }
+
   async function saveProjectsData() {
     setSaveStatus("guardando...");
     try {
+      const sanitizedProjects = (projects || []).map((p) => {
+        const computedSlug = (p.slug && p.slug.trim())
+          ? slugifyAdmin(p.slug)
+          : slugifyAdmin(p.nombre || "proyecto");
+        return {
+          ...p,
+          slug: computedSlug || `proyecto-${Date.now()}`,
+        };
+      });
+
       const res = await fetch("/api/admin/save-projects", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(projects),
+        body: JSON.stringify(sanitizedProjects),
       });
       if (res.ok) {
+        setProjects(sanitizedProjects);
         setSaveStatus("¡Proyectos guardados con éxito!");
         setTimeout(() => setSaveStatus(""), 3000);
       } else {

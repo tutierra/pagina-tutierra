@@ -8,20 +8,55 @@ import InteractiveMasterPlan from "@/components/InteractiveMasterPlan";
 import { getProjectsContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const dynamicParams = true;
 export const revalidate = 0;
 
 type Props = { params: Promise<{ slug: string }> };
 
+export function slugify(text: string): string {
+  return (text || "")
+    .toString()
+    .toLowerCase()
+    .trim()
+    .normalize("NFD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9 -]/g, "")
+    .replace(/\s+/g, "-")
+    .replace(/-+/g, "-")
+    .replace(/^-+|-+$/g, "");
+}
+
+function findMatchingProyecto(projects: any[], targetSlug: string) {
+  const decoded = decodeURIComponent(targetSlug || "").trim().toLowerCase();
+  const targetSlugified = slugify(decoded);
+
+  return projects.find((p: any) => {
+    const pSlug = (p.slug || "").trim().toLowerCase();
+    const pId = (p.id || "").toString().trim().toLowerCase();
+    const pNombreSlug = slugify(p.nombre || p.title || p.name || "");
+
+    return (
+      pSlug === decoded ||
+      pId === decoded ||
+      pNombreSlug === decoded ||
+      pSlug === targetSlugified ||
+      pNombreSlug === targetSlugified ||
+      pSlug === targetSlug ||
+      pId === targetSlug
+    );
+  });
+}
+
 export async function generateStaticParams() {
   const projectsData = await getProjectsContent();
   const projects = projectsData.filter((p) => p.activo !== false && !p.clausurado);
-  return projects.map((p) => ({ slug: p.slug }));
+  return projects.map((p) => ({ slug: p.slug || slugify(p.nombre) }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
   const projects = await getProjectsContent();
-  const proyecto = projects.find((p) => p.slug === slug);
+  const proyecto = findMatchingProyecto(projects, slug);
   if (!proyecto || proyecto.clausurado || proyecto.activo === false) return {};
   return {
     title: `${proyecto.nombre} | Tutierra Grupo Inmobiliario`,
@@ -32,14 +67,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProyectoDetailPage({ params }: Props) {
   const { slug } = await params;
   const projects = await getProjectsContent();
-  const decodedSlug = decodeURIComponent(slug);
-  const proyecto = projects.find((p) => p.slug === slug || p.id === slug || p.slug === decodedSlug || p.id === decodedSlug);
+  const proyecto = findMatchingProyecto(projects, slug);
   
   if (!proyecto || proyecto.clausurado || proyecto.activo === false) {
     notFound();
   }
 
-  const otros = projects.filter((p) => (p.slug !== slug && p.id !== slug) && p.activo !== false && !p.clausurado).slice(0, 3);
+  const pSlug = proyecto.slug || proyecto.id;
+  const otros = projects.filter((p) => (p.slug !== pSlug && p.id !== pSlug) && p.activo !== false && !p.clausurado).slice(0, 3);
   const imagenPlano = proyecto.galeria[2] || proyecto.imagenPrincipal;
 
   const mapQuery = proyecto.mapLink || proyecto.ubicacion;
@@ -128,7 +163,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
                 <div className="flex flex-col gap-3 border-t border-brand-gray/15 pt-6">
                   <p className="text-[0.8rem] text-brand-gray/55 uppercase tracking-wider">Características Destacadas</p>
                   <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
-                    {proyecto.caracteristicas.map((c) => (
+                    {(proyecto.caracteristicas || []).map((c: string) => (
                       <li key={c} className="flex items-start gap-[0.5rem] text-[0.9rem] text-brand-gray/75">
                         <span className="text-tech-green mt-[0.1em]">✓</span>
                         {c}
@@ -185,7 +220,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
           </h2>
           <div className="mt-[2em] grid grid-cols-1 gap-[1.5em] sm:grid-cols-2 lg:grid-cols-3">
             {otros.map((p) => (
-              <ProyectoCard key={p.slug} proyecto={p} />
+              <ProyectoCard key={p.slug || p.id} proyecto={p} />
             ))}
           </div>
         </div>
