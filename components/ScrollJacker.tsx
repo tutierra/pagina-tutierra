@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { usePathname } from "next/navigation";
 
 const COOLDOWN_MS = 900;
 const SECTION_SELECTOR = "main > section, main > div > section, footer";
@@ -8,10 +9,14 @@ const SKIP_TARGETS = "textarea, select, input";
 const EDGE_TOLERANCE = 1;
 
 export default function ScrollJacker() {
+  const pathname = usePathname();
   const locked = useRef(false);
   const touchStartY = useRef(0);
 
+  const shouldDisable = pathname !== "/";
+
   useEffect(() => {
+    if (shouldDisable) return;
     function getSections() {
       return Array.from(document.querySelectorAll<HTMLElement>(SECTION_SELECTOR));
     }

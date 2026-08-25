@@ -1,20 +1,26 @@
 import type { Metadata } from "next";
-import Image from "next/image";
-import Link from "next/link";
 import { notFound } from "next/navigation";
-import { PROYECTOS } from "@/lib/site-data";
 import ProyectoCard from "@/components/ProyectoCard";
+import UnifiedContactFooter from "@/components/UnifiedContactFooter";
+import Reveal from "@/components/Reveal";
+import ProyectoCarousel from "@/components/ProyectoCarousel";
+import InteractiveMasterPlan from "@/components/InteractiveMasterPlan";
+import { getProjectsContent } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 type Props = { params: Promise<{ slug: string }> };
 
 export function generateStaticParams() {
-  return PROYECTOS.map((p) => ({ slug: p.slug }));
+  const projects = getProjectsContent().filter((p) => p.activo !== false && !p.clausurado);
+  return projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const proyecto = PROYECTOS.find((p) => p.slug === slug);
-  if (!proyecto) return {};
+  const projects = getProjectsContent();
+  const proyecto = projects.find((p) => p.slug === slug);
+  if (!proyecto || proyecto.clausurado || proyecto.activo === false) return {};
   return {
     title: `${proyecto.nombre} | Tutierra Grupo Inmobiliario`,
     description: proyecto.resumen,
@@ -23,105 +29,162 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProyectoDetailPage({ params }: Props) {
   const { slug } = await params;
-  const proyecto = PROYECTOS.find((p) => p.slug === slug);
-  if (!proyecto) notFound();
+  const projects = getProjectsContent();
+  const proyecto = projects.find((p) => p.slug === slug);
+  
+  // Si el proyecto no existe, está deshabilitado o está CULMINADO (clausurado), deshabilita la sub-página
+  if (!proyecto || proyecto.clausurado || proyecto.activo === false) {
+    notFound();
+  }
 
-  const otros = PROYECTOS.filter((p) => p.slug !== slug).slice(0, 3);
+  const otros = projects.filter((p) => p.slug !== slug && p.activo !== false && !p.clausurado).slice(0, 3);
+
+  // Usa la tercera imagen de la galería como plano, y de respaldo la imagen principal
+  const imagenPlano = proyecto.galeria[2] || proyecto.imagenPrincipal;
+
+  // Genera la URL dinámica del mapa de Google Maps según la ubicación o un link de mapa personalizado
+  const mapQuery = proyecto.mapLink || proyecto.ubicacion;
+  const mapsEmbedUrl = mapQuery.startsWith("http") 
+    ? mapQuery 
+    : `https://maps.google.com/maps?q=${encodeURIComponent(mapQuery)}&t=&z=13&ie=UTF8&iwloc=&output=embed`;
 
   return (
     <>
-      <section className="relative flex min-h-dvh w-full items-end overflow-hidden pt-[35%] pb-[6%] md:pt-[12%]">
-        <Image
-          src={proyecto.imagenPrincipal}
-          alt={proyecto.nombre}
-          fill
-          className="object-cover opacity-40"
-          priority
-        />
-        <div className="absolute inset-0 bg-gradient-to-t from-background via-background/50 to-background/20" />
-
-        <div className="relative mx-auto w-[90%]">
-          <Link
-            href="/proyectos"
-            className="text-[0.85rem] text-brand-gray/70 transition-colors duration-200 ease-out hover:text-tech-green"
-          >
-            ← Todos los proyectos
-          </Link>
-          <p className="mt-[1em] text-[0.85rem] tracking-[0.2em] text-tech-green">
-            {proyecto.ubicacion.toUpperCase()}
-          </p>
-          <h1 className="mt-[0.3em] max-w-[20ch] font-display text-[clamp(2.2rem,5vw,4rem)] font-light text-brand-gray">
-            {proyecto.nombre}
-          </h1>
-          <p className="mt-[1em] max-w-[52ch] text-[1.05rem] leading-[1.7] text-brand-gray/75">
-            {proyecto.resumen}
-          </p>
-
-          <div className="mt-[2em] flex flex-wrap gap-[3em]">
-            <div>
-              <p className="text-[0.8rem] text-brand-gray/55">Desde</p>
-              <p className="font-display text-[1.4rem] font-light text-brand-gray">
-                {proyecto.precioDesde}
-              </p>
-            </div>
-            <div>
-              <p className="text-[0.8rem] text-brand-gray/55">Área desde</p>
-              <p className="font-display text-[1.4rem] font-light text-brand-gray">
-                {proyecto.areaDesde}
-              </p>
-            </div>
-          </div>
+      {/* HERO SECTION WITH VIDEO */}
+      <section className="relative flex h-dvh w-full items-center justify-center overflow-hidden">
+        {/* Background Video */}
+        <div className="absolute inset-0 z-0 select-none pointer-events-none">
+          <video
+            src={proyecto.videoHero || "/videos/chinchero-bg.mp4"}
+            autoPlay
+            loop
+            muted
+            playsInline
+            className="h-full w-full object-cover opacity-45"
+          />
+          {/* Gradient Overlay */}
+          <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-background/20" />
         </div>
-      </section>
 
-      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
-        <div className="mx-auto grid w-[90%] grid-cols-1 gap-[3em] md:grid-cols-[1.4fr_1fr]">
-          <div>
-            <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.2rem)] font-light text-brand-gray">
-              Sobre el proyecto
-            </h2>
-            <p className="mt-[1em] max-w-[60ch] text-[1rem] leading-[1.75] text-brand-gray/75">
-              {proyecto.descripcion}
+        {/* Project Emblem Logo in the Center */}
+        <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
+          <Reveal>
+            <div className="flex justify-center mb-4">
+              <img
+                src={proyecto.logo || "/emblem-white.png"}
+                alt={proyecto.nombre}
+                className="h-[4.5rem] w-[12rem] object-contain drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+              />
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <span className="text-[0.8rem] tracking-[0.3em] text-tech-green uppercase font-semibold block drop-shadow-[0_1px_5px_rgba(0,0,0,0.5)]">
+              PROYECTO EXCLUSIVO
+            </span>
+          </Reveal>
+
+          <Reveal delay={0.24}>
+            <h1 className="font-display text-[clamp(2.5rem,7vw,5.5rem)] font-light leading-none text-brand-gray tracking-wide mt-2 uppercase drop-shadow-[0_4px_20px_rgba(0,0,0,0.6)]">
+              {proyecto.nombre}
+            </h1>
+          </Reveal>
+
+          <Reveal delay={0.36}>
+            <p className="font-serif italic text-tech-green text-[clamp(1.1rem,2vw,1.4rem)] mt-3 drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]">
+              {proyecto.resumen}
             </p>
-
-            <div className="mt-[3em] grid grid-cols-1 gap-[1.5em] sm:grid-cols-2">
-              {proyecto.galeria.slice(1).map((img, i) => (
-                <div key={img} className="relative aspect-[4/3] overflow-hidden rounded-[1rem]">
-                  <Image
-                    src={img}
-                    alt={`${proyecto.nombre} imagen ${i + 2}`}
-                    fill
-                    className="object-cover"
-                  />
-                </div>
-              ))}
-            </div>
-          </div>
-
-          <aside className="h-fit rounded-[1.2rem] border border-brand-gray/15 p-[8%]">
-            <h3 className="font-display text-[1.2rem] font-normal text-brand-gray">
-              Características
-            </h3>
-            <ul className="mt-[1.2em] flex flex-col gap-[0.8em]">
-              {proyecto.caracteristicas.map((c) => (
-                <li key={c} className="flex items-start gap-[0.6em] text-[0.9rem] text-brand-gray/75">
-                  <span className="mt-[0.15em] text-tech-green">✓</span>
-                  {c}
-                </li>
-              ))}
-            </ul>
-
-            <Link
-              href={`/contactanos?proyecto=${proyecto.slug}`}
-              className="mt-[2em] block rounded-full bg-tech-green px-[1.6em] py-[0.9em] text-center text-[0.9rem] text-brand-ink transition-transform duration-160 ease-out-strong hover:scale-[0.97] active:scale-[0.97]"
-            >
-              Agendar visita a este proyecto
-            </Link>
-          </aside>
+          </Reveal>
         </div>
       </section>
 
-      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
+      {/* GENERAL DATA SECTION (MAP ON THE RIGHT, DATA ON THE LEFT) */}
+      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%] bg-transparent">
+        <div className="mx-auto w-[90%]">
+          <div className="grid grid-cols-1 gap-[3.5rem] lg:grid-cols-[1fr_1.1fr] items-center">
+            {/* Left Side: General Data */}
+            <Reveal>
+              <div className="flex flex-col gap-6">
+                <div>
+                  <p className="text-[0.85rem] tracking-[0.2em] text-tech-green uppercase font-semibold">Datos Generales</p>
+                  <h2 className="mt-[0.4em] max-w-[20ch] font-display text-[clamp(2rem,3.5vw,2.8rem)] font-light text-brand-gray">
+                    Ubicación de alta plusvalía en Cusco
+                  </h2>
+                  <p className="mt-[1em] max-w-[48ch] text-[1rem] leading-[1.7] text-brand-gray/70">
+                    {proyecto.descripcion}
+                  </p>
+                </div>
+
+                <div className="grid grid-cols-2 gap-4 border-t border-brand-gray/15 pt-6">
+                  <div>
+                    <p className="text-[0.8rem] text-brand-gray/55 uppercase tracking-wider">Áreas de los Lotes</p>
+                    <p className="font-display text-[1.4rem] font-light text-tech-green mt-1">
+                      {proyecto.extension}
+                    </p>
+                  </div>
+                  <div>
+                    <p className="text-[0.8rem] text-brand-gray/55 uppercase tracking-wider">Precio Desde</p>
+                    <p className="font-display text-[1.4rem] font-light text-tech-green mt-1">
+                      {proyecto.precioDesde}
+                    </p>
+                  </div>
+                </div>
+
+                <div className="flex flex-col gap-3 border-t border-brand-gray/15 pt-6">
+                  <p className="text-[0.8rem] text-brand-gray/55 uppercase tracking-wider">Características Destacadas</p>
+                  <ul className="grid grid-cols-1 sm:grid-cols-2 gap-x-4 gap-y-2">
+                    {proyecto.caracteristicas.map((c) => (
+                      <li key={c} className="flex items-start gap-[0.5rem] text-[0.9rem] text-brand-gray/75">
+                        <span className="text-tech-green mt-[0.1em]">✓</span>
+                        {c}
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              </div>
+            </Reveal>
+
+            {/* Right Side: Map View */}
+            <Reveal delay={0.15}>
+              <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] border border-brand-gray/10 bg-white/[0.02] p-[0.5rem] ring-1 ring-white/10">
+                <iframe
+                  src={mapsEmbedUrl}
+                  width="100%"
+                  height="100%"
+                  style={{ border: 0, borderRadius: "1.2rem" }}
+                  allowFullScreen
+                  loading="lazy"
+                  referrerPolicy="no-referrer-when-downgrade"
+                />
+              </div>
+            </Reveal>
+          </div>
+        </div>
+      </section>
+
+      {/* HYBRID MASTER PLAN SECTION */}
+      <InteractiveMasterPlan imagenPlano={imagenPlano} amenities={proyecto.masterPlanAmenities} />
+
+      {/* IMAGE CAROUSEL SECTION */}
+      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%] bg-transparent">
+        <div className="mx-auto w-[90%]">
+          <Reveal>
+            <div className="mb-8">
+              <p className="text-[0.85rem] tracking-[0.2em] text-tech-green uppercase font-semibold">Galería de Imágenes</p>
+              <h2 className="mt-[0.4em] font-display text-[clamp(2rem,3.5vw,2.8rem)] font-light text-brand-gray">
+                Vistas del Proyecto
+              </h2>
+            </div>
+          </Reveal>
+
+          <Reveal delay={0.12}>
+            <ProyectoCarousel imagenes={proyecto.galeria} />
+          </Reveal>
+        </div>
+      </section>
+
+      {/* OTHER PROJECTS & FOOTER */}
+      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%] bg-transparent">
         <div className="mx-auto w-[90%]">
           <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.2rem)] font-light text-brand-gray">
             Otros proyectos
@@ -133,6 +196,8 @@ export default async function ProyectoDetailPage({ params }: Props) {
           </div>
         </div>
       </section>
+
+      <UnifiedContactFooter />
     </>
   );
 }

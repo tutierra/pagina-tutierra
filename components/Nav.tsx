@@ -9,7 +9,8 @@ import Logo from "./Logo";
 const LINKS = [
   { href: "/nosotros", label: "Nosotros" },
   { href: "/proyectos", label: "Proyectos" },
-  { href: "/newsletter", label: "Newsletter" },
+  { href: "/testimonios", label: "Testimonios" },
+  { href: "/blog", label: "Blog" },
   { href: "/contactanos", label: "Contáctanos" },
 ];
 

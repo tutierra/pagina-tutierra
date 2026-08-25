@@ -20,12 +20,16 @@ const ATRACTIVOS = [
   },
 ];
 
-export default function AtractivosValle() {
+interface AtractivosValleProps {
+  bgImage?: string;
+}
+
+export default function AtractivosValle({ bgImage }: AtractivosValleProps) {
   return (
     <section className="relative flex min-h-dvh flex-col justify-center overflow-hidden border-t border-brand-gray/10 py-[8%]">
       <div className="absolute inset-0">
         <Image
-          src="/images/global/valle-sagrado-bg.jpg"
+          src={bgImage || "/images/global/valle-sagrado-bg.jpg"}
           alt="Valle Sagrado, Cusco"
           fill
           className="object-cover opacity-25"

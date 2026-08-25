@@ -1,0 +1,38 @@
+[
+  {
+    "nombre": "Sandra Fuentes",
+    "proyecto": "Propietaria en Tutierra Urubamba",
+    "texto": "El proceso fue transparente de principio a fin. Hoy tenemos un terreno saneado y con proyección real de crecimiento en el Valle Sagrado.",
+    "imagen": "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&auto=format&fit=crop&q=80"
+  },
+  {
+    "nombre": "Carlos Valdivia",
+    "proyecto": "Propietario en Tutierra Chinchero",
+    "texto": "Comprar desde Lima fue sumamente sencillo. El acompañamiento legal y las firmas notariales virtuales me dieron toda la tranquilidad que necesitaba.",
+    "imagen": "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=900&auto=format&fit=crop&q=80"
+  },
+  {
+    "nombre": "Mariana Ochoa",
+    "proyecto": "Propietaria en Tutierra Pisac",
+    "texto": "Buscábamos un espacio de paz para construir nuestra casa de campo. Pisac superó nuestras expectativas y el proceso de independización fue súper rápido.",
+    "imagen": "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=900&auto=format&fit=crop&q=80"
+  },
+  {
+    "nombre": "Jorge Luis Rojas",
+    "proyecto": "Propietario en Tutierra Maras",
+    "texto": "La vista a la cordillera es impresionante. Es la mejor inversión patrimonial y de plusvalía que he realizado para el futuro de mis hijos.",
+    "imagen": "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=900&auto=format&fit=crop&q=80"
+  },
+  {
+    "nombre": "Patricia y Alberto",
+    "proyecto": "Propietarios en Tutierra Ollantaytambo",
+    "texto": "Ollantaytambo tiene un encanto único. La entrega del proyecto con agua y luz domiciliaria facilitó todo nuestro inicio de obra para la casa de campo.",
+    "imagen": "https://images.unsplash.com/photo-1522075469751-3a6694fb2f61?w=900&auto=format&fit=crop&q=80"
+  },
+  {
+    "nombre": "Fernando Beltrán",
+    "proyecto": "Propietario en Tutierra Calca",
+    "texto": "Calca es el lugar ideal para desconectarse. Un lote seguro, completamente saneado legalmente, en una zona tranquila y a un precio súper competitivo.",
+    "imagen": "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=900&auto=format&fit=crop&q=80"
+  }
+]

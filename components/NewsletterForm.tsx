@@ -8,9 +8,23 @@ export default function NewsletterForm() {
   const [email, setEmail] = useState("");
   const [status, setStatus] = useState<"idle" | "ok">("idle");
 
-  function handleSubmit(e: React.FormEvent) {
+  async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     if (!email) return;
+
+    try {
+      await fetch("/api/send-lead", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          email,
+          origen: "Suscripción a Newsletter",
+        }),
+      });
+    } catch (err) {
+      console.error(err);
+    }
+
     setStatus("ok");
   }
 

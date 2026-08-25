@@ -54,3 +54,8 @@ body {
     transform: scale(1.05);
   }
 }
+
+/* Ocultar footer global en la página de testimonios para poder renderizarlo unificado */
+main:has(#testimonios-page-root) + footer {
+  display: none !important;
+}

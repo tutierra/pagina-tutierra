@@ -118,6 +118,11 @@ function Card({
           style={{ width: "100%", height: "100%", objectFit: "cover", display: "block", pointerEvents: "none", userSelect: "none" }}
         />
         <div className="pointer-events-none absolute inset-0 bg-black/35" />
+        {proyecto.clausurado && (
+          <div className="absolute top-4 left-4 bg-red-600 text-white text-[0.7rem] font-bold uppercase tracking-wider px-3 py-1 rounded-full z-20">
+            Vendido
+          </div>
+        )}
         <div className="pointer-events-none absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/10 to-transparent" />
         <motion.div
           className="absolute inset-x-0 bottom-0 z-10 p-[6%]"
@@ -135,7 +140,11 @@ function Card({
             {proyecto.nombre}
           </h3>
           <p className="mt-[0.6em] text-[0.85em] text-brand-gray/70">
-            Desde {proyecto.precioDesde} · {proyecto.areaDesde}
+            {proyecto.clausurado ? (
+              <span className="font-semibold text-red-500 tracking-wide">100% VENDIDO</span>
+            ) : (
+              `Desde ${proyecto.precioDesde} · ${proyecto.areaDesde}`
+            )}
           </p>
           <button
             type="button"

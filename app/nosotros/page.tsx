@@ -4,7 +4,11 @@ import Reveal from "@/components/Reveal";
 import TimelineExpand from "@/components/TimelineExpand";
 import CountUp from "@/components/CountUp";
 import ContactForm from "@/components/ContactForm";
+import Footer from "@/components/Footer";
 import { CONTACT, SOCIAL } from "@/lib/site-data";
+import { getSiteContent } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Nosotros | Tutierra Grupo Inmobiliario",
@@ -110,6 +114,14 @@ function Avatar({ nombre, foto }: { nombre: string; foto?: string }) {
 }
 
 export default function NosotrosPage() {
+  const content = getSiteContent();
+  const founder = content.founder;
+  const nosotros = (content.nosotros || {}) as any;
+
+  const timeline = (nosotros.timeline || TIMELINE) as typeof TIMELINE;
+  const equipoGrupos = (nosotros.equipo || EQUIPO_GRUPOS) as typeof EQUIPO_GRUPOS;
+  const cifras = (nosotros.cifras || CIFRAS) as typeof CIFRAS;
+
   return (
     <>
       {/* 1 — Fundador */}
@@ -117,25 +129,20 @@ export default function NosotrosPage() {
         <div className="mx-auto grid w-[90%] grid-cols-1 items-center gap-[3em] lg:grid-cols-[1.1fr_0.9fr]">
           <Reveal>
             <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[01] EL FUNDADOR</p>
-            <h1 className="mt-[0.4em] max-w-[16ch] font-display text-[clamp(2.2rem,5vw,4rem)] font-light leading-[1.02] text-brand-gray">
-              Una visión nacida en el <span className="font-serif italic text-tech-green">Valle Sagrado</span>
-            </h1>
+            <h1 className="mt-[0.4em] max-w-[16ch] font-display text-[clamp(2.2rem,5vw,4rem)] font-light leading-[1.02] text-brand-gray" dangerouslySetInnerHTML={{ __html: founder.title }} />
             <p className="mt-[1.2em] max-w-[50ch] text-[clamp(1rem,1.4vw,1.15rem)] leading-[1.7] text-brand-gray/75">
-              “Crecí viendo cómo muchas familias soñaban con un pedazo de tierra propio, pero
-              se topaban con trámites, informalidad y promesas vacías. Fundé Tutierra para que
-              ese sueño fuera seguro, legal y real. Cada lote que entregamos es una familia que
-              echa raíces.”
+              {founder.text}
             </p>
-            <p className="mt-[1.4em] font-display text-[1.1rem] text-brand-gray">Carlos Mendoza</p>
-            <p className="text-[0.9rem] text-brand-gray/55">Fundador y Director General</p>
+            <p className="mt-[1.4em] font-display text-[1.1rem] text-brand-gray">{founder.name}</p>
+            <p className="text-[0.9rem] text-brand-gray/55">{founder.role}</p>
           </Reveal>
 
           <Reveal delay={0.12}>
             <div className="group rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10 transition-shadow duration-500 ease-out hover:shadow-[0_24px_60px_rgba(0,0,0,0.45)]">
               <div className="relative aspect-[4/5] w-full overflow-hidden rounded-[1.2rem]">
                 <Image
-                  src="/images/testimonios/cliente-01.jpg"
-                  alt="Carlos Mendoza, fundador de Tutierra"
+                  src={founder.img}
+                  alt={`${founder.name}, fundador de Tutierra`}
                   fill
                   sizes="(max-width: 1024px) 90vw, 40vw"
                   className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
@@ -159,7 +166,7 @@ export default function NosotrosPage() {
           </Reveal>
 
           <Reveal delay={0.1} className="mt-[3em]">
-            <TimelineExpand items={TIMELINE} />
+            <TimelineExpand items={timeline} />
           </Reveal>
           <p className="mt-[1.4em] text-[0.8rem] text-brand-gray/45 lg:block">
             Pasa el cursor sobre cada hito para descubrirlo.
@@ -182,7 +189,7 @@ export default function NosotrosPage() {
           </Reveal>
 
           <div className="mt-[3em] flex flex-col gap-[3em]">
-            {EQUIPO_GRUPOS.map((grupo, gi) => (
+            {equipoGrupos.map((grupo, gi) => (
               <div key={grupo.area}>
                 <Reveal>
                   <div className="flex items-center gap-[1em]">
@@ -216,8 +223,8 @@ export default function NosotrosPage() {
       </section>
 
       {/* 4 — Contacto + cifras */}
-      <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%]">
-        <div className="mx-auto w-[90%]">
+      <section className="flex min-h-dvh lg:h-dvh lg:min-h-0 flex-col justify-between border-t border-brand-gray/10 pt-[5vh] lg:pt-[4vh] pb-0">
+        <div className="mx-auto w-[90%] flex-1 flex flex-col justify-center py-[2%]">
           <Reveal>
             <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[04] CONTÁCTANOS</p>
             <h2 className="mt-[0.4em] max-w-[22ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
@@ -229,7 +236,7 @@ export default function NosotrosPage() {
             <Reveal>
               <div>
                 <div className="grid grid-cols-2 gap-[1.5em]">
-                  {CIFRAS.map((cifra) => (
+                  {cifras.map((cifra) => (
                     <div
                       key={cifra.label}
                       className="group border-t border-brand-gray/15 pt-[1em] transition-colors duration-300 ease-out hover:border-tech-green/60"
@@ -295,6 +302,7 @@ export default function NosotrosPage() {
             </Reveal>
           </div>
         </div>
+        <Footer isUnified />
       </section>
     </>
   );

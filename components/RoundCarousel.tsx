@@ -1,9 +1,14 @@
 "use client";
 
 import { useEffect, useRef } from "react";
+import { motion } from "framer-motion";
 
 interface RoundCarouselImage {
   src: string;
+  title?: string;
+  subtitle?: string;
+  price?: string;
+  badge?: string;
 }
 
 interface RoundCarouselProps {
@@ -26,22 +31,29 @@ interface RoundCarouselProps {
 
 export default function RoundCarousel({
   images,
-  imageWidth = 220,
-  imageHeight = 220,
+  imageWidth = 13.75,
+  imageHeight = 13.75,
   spacing = 3,
   speed = 7,
   direction = "right",
   drag = true,
   sensitivity = 5,
   tilt = -7,
-  perspective = 3000,
-  cornerRadius = 22,
+  perspective = 187.5,
+  cornerRadius = 1.375,
   innerDim = 3.5,
   background = "transparent",
   dwell = 0,
   style = {},
 }: RoundCarouselProps) {
-  const items = images;
+  let items = images || [];
+  if (items.length === 1) {
+    items = [items[0], items[0], items[0], items[0]];
+  } else if (items.length === 2) {
+    items = [items[0], items[1], items[0], items[1]];
+  } else if (items.length === 3) {
+    items = [items[0], items[1], items[2], items[0], items[1], items[2]];
+  }
   const count = items.length;
 
   const ringRef = useRef<HTMLDivElement>(null);
@@ -65,7 +77,7 @@ export default function RoundCarousel({
     const ring = ringRef.current;
     if (!ring) return;
     const apply = () => {
-      const t = `translateZ(${-radius}px) rotateY(${rotYRef.current}deg)`;
+      const t = `translateZ(${-radius}rem) rotateY(${rotYRef.current}deg)`;
       ring.style.transform = t;
       // Safari móvil a veces solo respeta la propiedad -webkit- en cadenas
       // 3D anidadas (preserve-3d + perspective); se fija en paralelo.
@@ -138,19 +150,12 @@ export default function RoundCarousel({
   const faceBase: React.CSSProperties = {
     position: "absolute",
     inset: 0,
-    borderRadius: radiusPx,
+    borderRadius: `${radiusPx}rem`,
     overflow: "hidden",
     backfaceVisibility: "hidden",
     WebkitBackfaceVisibility: "hidden",
   };
-  const imgLayer = (src?: string, extra?: React.CSSProperties): React.CSSProperties => ({
-    position: "absolute",
-    inset: 0,
-    backgroundSize: "cover",
-    backgroundPosition: "center",
-    backgroundImage: src ? `url(${src})` : undefined,
-    ...extra,
-  });
+
 
   return (
     <div
@@ -165,8 +170,8 @@ export default function RoundCarousel({
         // perspectiva) se recortaba contra el borde del contenedor.
         overflow: "visible",
         background,
-        perspective: `${perspective}px`,
-        WebkitPerspective: `${perspective}px`,
+        perspective: `${perspective}rem`,
+        WebkitPerspective: `${perspective}rem`,
         cursor: drag ? "grab" : "default",
         // pan-y: deja pasar el scroll vertical de la página en móvil; el drag
         // horizontal del carrusel sigue funcionando.
@@ -189,15 +194,15 @@ export default function RoundCarousel({
           ref={ringRef}
           style={{
             position: "relative",
-            width: imageWidth,
-            height: imageHeight,
+            width: `${imageWidth}rem`,
+            height: `${imageHeight}rem`,
             transformStyle: "preserve-3d",
             WebkitTransformStyle: "preserve-3d",
           }}
         >
           {items.map((img, i) => {
             const src = img?.src;
-            const cardTransform = `rotateY(${i * angle}deg) translateZ(${radius}px)`;
+            const cardTransform = `rotateY(${i * angle}deg) translateZ(${radius}rem)`;
             return (
               <div
                 key={i}
@@ -211,25 +216,51 @@ export default function RoundCarousel({
                   WebkitTransformStyle: "preserve-3d",
                 }}
               >
-                <div
-                  style={{
-                    ...faceBase,
-                    backgroundColor: src ? "transparent" : "#222",
-                    boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                <motion.div
+                  initial={{ opacity: 0, scale: 0.85, y: 15 }}
+                  animate={{ opacity: 1, scale: 1, y: 0 }}
+                  transition={{
+                    duration: 0.9,
+                    delay: 0.3 + i * 0.08,
+                    ease: [0.16, 1, 0.3, 1],
                   }}
+                  style={{ width: "100%", height: "100%", transformStyle: "preserve-3d" }}
                 >
-                  <div className="rc-img" style={imgLayer(src)} />
-                </div>
-                <div
-                  style={{
-                    ...faceBase,
-                    transform: "rotateY(180deg)",
-                    WebkitTransform: "rotateY(180deg)",
-                    backgroundColor: src ? "transparent" : "#181818",
-                  }}
-                >
-                  <div className="rc-img" style={imgLayer(src, { filter: `brightness(${innerDim / 10})` })} />
-                </div>
+                  <div
+                    style={{
+                      ...faceBase,
+                      backgroundColor: src ? "transparent" : "#222",
+                      boxShadow: "0 10px 30px rgba(0,0,0,0.35)",
+                    }}
+                  >
+                    {src && (
+                      <img
+                        src={src}
+                        alt=""
+                        draggable={false}
+                        className="w-full h-full object-cover select-none pointer-events-none"
+                      />
+                    )}
+                  </div>
+                  <div
+                    style={{
+                      ...faceBase,
+                      transform: "rotateY(180deg)",
+                      WebkitTransform: "rotateY(180deg)",
+                      backgroundColor: src ? "transparent" : "#181818",
+                    }}
+                  >
+                    {src && (
+                      <img
+                        src={src}
+                        alt=""
+                        draggable={false}
+                        className="w-full h-full object-cover select-none pointer-events-none"
+                        style={{ filter: `brightness(${innerDim / 10})` }}
+                      />
+                    )}
+                  </div>
+                </motion.div>
               </div>
             );
           })}

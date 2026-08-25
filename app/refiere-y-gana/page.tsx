@@ -1,10 +1,14 @@
 import type { Metadata } from "next";
 import Image from "next/image";
 import { CONTACT } from "@/lib/site-data";
+import UnifiedContactFooter from "@/components/UnifiedContactFooter";
+import { getSiteContent } from "@/lib/db";
+
+export const dynamic = "force-dynamic";
 
 export const metadata: Metadata = {
   title: "Refiere y Gana | Tutierra Grupo Inmobiliario",
-  description: "Recomienda Tutierra a tus contactos y gana una comisión por cada venta cerrada.",
+  description: "Recomienda Tutierra a tus contactos and gana una comisión por cada venta cerrada.",
 };
 
 const PASOS = [
@@ -31,6 +35,9 @@ const PASOS = [
 ];
 
 export default function RefiereYGanaPage() {
+  const content = getSiteContent();
+  const refiereGanaImg = content.general?.refiereGanaImg || "/images/referidos/handshake.jpg";
+
   const whatsappMsg = encodeURIComponent(
     "Hola, quiero participar del programa Refiere y Gana de Tutierra."
   );
@@ -39,7 +46,7 @@ export default function RefiereYGanaPage() {
     <>
       <section className="relative flex min-h-dvh w-full items-end overflow-hidden pt-[35%] pb-[6%] md:pt-[12%]">
         <Image
-          src="/images/referidos/handshake.jpg"
+          src={refiereGanaImg}
           alt="Refiere y Gana Tutierra"
           fill
           className="object-cover opacity-30"
@@ -111,6 +118,7 @@ export default function RefiereYGanaPage() {
           </a>
         </div>
       </section>
+      <UnifiedContactFooter />
     </>
   );
 }

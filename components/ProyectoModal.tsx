@@ -45,32 +45,44 @@ function Icon({ name, className }: { name: string; className?: string }) {
   }
 }
 
-function ProjectMonogram({ ubicacion }: { ubicacion: string }) {
-  const initials = ubicacion
+function ProjectMonogram({ logo, nombre }: { logo?: string; nombre: string }) {
+  if (logo) {
+    return (
+      <div className="relative flex h-[3em] w-[4.5rem] shrink-0 items-center justify-end">
+        <img
+          src={logo}
+          alt={nombre}
+          className="max-h-full max-w-full object-contain filter brightness-0 invert"
+        />
+      </div>
+    );
+  }
+
+  const initials = nombre
+    .replace("Tutierra ", "")
     .split(/[,\s]+/)[0]
     .slice(0, 2)
     .toUpperCase();
   return (
-    // Monograma provisional por proyecto: hereda el lenguaje radial del logo
-    // Tutierra (anillos concéntricos segmentados) hasta tener logos reales.
     <div
-      className="relative flex h-[2.8em] w-[2.8em] shrink-0 items-center justify-center rounded-full bg-tech-green/15"
-      title={`Logo provisional — ${ubicacion}`}
+      className="relative flex h-[2.8em] w-[2.8em] shrink-0 items-center justify-center rounded-full bg-white/10"
+      title={nombre}
     >
-      <svg viewBox="0 0 48 48" fill="none" className="absolute inset-0 h-full w-full text-tech-green/50">
+      <svg viewBox="0 0 48 48" fill="none" className="absolute inset-0 h-full w-full text-white/40">
         <circle cx="24" cy="24" r="22" stroke="currentColor" strokeWidth="1.5" strokeDasharray="26 9" strokeLinecap="round" />
         <circle cx="24" cy="24" r="17.5" stroke="currentColor" strokeWidth="1" strokeDasharray="17 11" strokeLinecap="round" opacity="0.6" />
       </svg>
-      <span className="font-display text-[0.9em] text-tech-green">{initials}</span>
+      <span className="font-display text-[0.9em] text-white">{initials}</span>
     </div>
   );
 }
 
-function Chip({ label }: { label: string }) {
+function Chip({ item }: { item: string | { label: string; icon: string } }) {
+  const norm = typeof item === "string" ? { label: item, icon: iconFor(item) } : item;
   return (
     <div className="flex items-center gap-[0.4em] rounded-full border border-brand-gray/15 px-[0.7em] py-[0.35em] text-[0.75em] text-brand-gray/85">
-      <Icon name={iconFor(label)} className="shrink-0 text-tech-green" />
-      {label}
+      <Icon name={norm.icon || "check"} className="shrink-0 text-tech-green" />
+      {norm.label}
     </div>
   );
 }
@@ -186,7 +198,7 @@ export default function ProyectoModal({
                 <p className="text-[0.78em] tracking-[0.15em] text-tech-green">{displayProyecto.ubicacion}</p>
                 <h3 className="mt-[0.15em] font-display text-[1.4em] font-light text-brand-gray">{displayProyecto.nombre}</h3>
               </div>
-              <ProjectMonogram ubicacion={displayProyecto.ubicacion} />
+              <ProjectMonogram logo={displayProyecto.logo} nombre={displayProyecto.nombre} />
             </div>
 
             <div className="mt-[0.7em] grid grid-cols-2 gap-[1em] text-[0.8em]">
@@ -208,18 +220,20 @@ export default function ProyectoModal({
             <div className="mt-[0.7em]">
               <p className="text-[0.75em] text-brand-gray/50">Beneficios</p>
               <div className="mt-[0.35em] flex flex-wrap gap-[0.35em]">
-                {displayProyecto.beneficiosCortos.map((item) => (
-                  <Chip key={item} label={item} />
-                ))}
+                {displayProyecto.beneficiosCortos.map((item, idx) => {
+                  const key = typeof item === "string" ? item : (item.label || idx.toString());
+                  return <Chip key={key} item={item} />;
+                })}
               </div>
             </div>
 
             <div className="mt-[0.6em]">
               <p className="text-[0.75em] text-brand-gray/50">Áreas comunes</p>
               <div className="mt-[0.35em] flex flex-wrap gap-[0.35em]">
-                {displayProyecto.areasComunes.map((item) => (
-                  <Chip key={item} label={item} />
-                ))}
+                {displayProyecto.areasComunes.map((item, idx) => {
+                  const key = typeof item === "string" ? item : (item.label || idx.toString());
+                  return <Chip key={key} item={item} />;
+                })}
               </div>
             </div>
           </div>

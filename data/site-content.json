@@ -1,0 +1,233 @@
+{
+  "hero": {
+    "title": "Creamos y unimos familias.",
+    "description": "Desarrollamos proyectos inmobiliarios sostenibles en el Valle Sagrado, ofreciendo terrenos con saneamiento urbano e independización garantizada.",
+    "images": [
+      "/uploads/1787578490519-portada.webp",
+      "/uploads/1787578495201-fiestas_patrias_tutierra.webp",
+      "/uploads/1787578857193-fiestas_patrias_tutierra.webp",
+      "/uploads/1787578864397-portada.webp",
+      "/uploads/1787578867716-portada.webp",
+      "/uploads/1787578871796-portada.webp"
+    ]
+  },
+  "manifesto": {
+    "misionTitle": "Misión",
+    "misionText": "Desarrollar proyectos inmobiliarios sostenibles en ubicaciones estratégicas, ofreciendo terrenos con saneamiento urbano e independización garantizada.",
+    "misionItalic": "Brindando oportunidades de inversión seguras y rentables, integrando la naturaleza y el respeto por el entorno.",
+    "visionTitle": "Visión",
+    "visionText": "Ser el grupo inmobiliario de referencia en Cusco, liderando el desarrollo de comunidades planificadas y sostenibles con absoluta seguridad legal.",
+    "visionItalic": "Inspirando un estilo de vida consciente y creando valor patrimonial intergeneracional para nuestros clientes.",
+    "image": "/images/global/manifesto-equipo.png"
+  },
+  "founder": {
+    "title": "Una visión nacida en el Valle Sagrado",
+    "text": "“Crecí viendo cómo muchas familias soñaban con un pedazo de tierra propio, pero se topaban con trámites, informalidad y promesas vacías. Fundé Tutierra para que ese sueño fuera seguro, legal y real. Cada lote que entregamos es una familia que echa raíces.”",
+    "name": "Carlos Mendoza",
+    "role": "Fundador y Director General",
+    "img": "/images/testimonios/cliente-01.jpg"
+  },
+  "general": {
+    "valleBgImage": "/images/global/valle-sagrado-bg.jpg",
+    "refiereGanaImg": "/images/referidos/handshake.jpg",
+    "testimoniosTitle": "Familias que ya construyen su patrimonio con nosotros",
+    "testimoniosDescription": "Conoce las historias y experiencias reales de quienes han invertido en terrenos con saneamiento urbano e independización garantizada en el Valle Sagrado de Cusco.",
+    "testimoniosHeroImages": [
+      "https://images.unsplash.com/photo-1544005313-94ddf0286df2?w=900&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1539571696357-5a69c17a67c6?w=900&auto=format&fit=crop&q=80",
+      "https://images.unsplash.com/photo-1580489944761-15a19d654956?w=900&auto=format&fit=crop&q=80"
+    ],
+    "proyectosConcluidos": []
+  },
+  "nosotros": {
+    "timeline": [
+      {
+        "year": "2016",
+        "titulo": "Nace Tutierra",
+        "texto": "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra.",
+        "img": "/images/nosotros/oficina.jpg"
+      },
+      {
+        "year": "2016",
+        "titulo": "Primer terreno en Chinchero",
+        "texto": "Adquirimos nuestro primer predio con vista a la cordillera.",
+        "img": "/images/proyectos/proyecto-chinchero-01.jpg"
+      },
+      {
+        "year": "2017",
+        "titulo": "Primeras 10 familias",
+        "texto": "Entregamos los primeros lotes saneados a familias cusqueñas.",
+        "img": "/images/nosotros/equipo.jpg"
+      },
+      {
+        "year": "2018",
+        "titulo": "Saneamiento certificado",
+        "texto": "Formalizamos el proceso legal e independización individual de cada lote.",
+        "img": "/images/proyectos/proyecto-chinchero-02.jpg"
+      },
+      {
+        "year": "2018",
+        "titulo": "Proyecto Pisac",
+        "texto": "Expandimos hacia el corredor turístico del Valle Sagrado.",
+        "img": "/images/proyectos/proyecto-pisac-01.jpg"
+      },
+      {
+        "year": "2019",
+        "titulo": "Oficina en Av. El Sol",
+        "texto": "Abrimos nuestra sede central en el corazón de Cusco.",
+        "img": "/images/proyectos/proyecto-pisac-02.jpg"
+      },
+      {
+        "year": "2020",
+        "titulo": "Ventas digitales",
+        "texto": "Lanzamos el acompañamiento remoto y la reserva en línea de lotes.",
+        "img": "/images/proyectos/proyecto-urubamba-02.jpg"
+      },
+      {
+        "year": "2021",
+        "titulo": "Proyecto Urubamba",
+        "texto": "Desarrollamos en el corazón del valle, de clima templado todo el año.",
+        "img": "/images/proyectos/proyecto-urubamba-01.jpg"
+      },
+      {
+        "year": "2022",
+        "titulo": "100 lotes vendidos",
+        "texto": "Superamos el centenar de lotes entregados con respaldo legal.",
+        "img": "/images/proyectos/proyecto-maras-02.jpg"
+      },
+      {
+        "year": "2023",
+        "titulo": "Proyecto Maras",
+        "texto": "Lotes de gran extensión junto a las icónicas salineras.",
+        "img": "/images/proyectos/proyecto-maras-01.jpg"
+      },
+      {
+        "year": "2024",
+        "titulo": "Proyecto Ollantaytambo",
+        "texto": "Llegamos a la puerta de entrada a Machu Picchu.",
+        "img": "/images/proyectos/proyecto-ollantaytambo-01.jpg"
+      },
+      {
+        "year": "2024",
+        "titulo": "Alianza notarial",
+        "texto": "Convenio para agilizar la independización y titulación de cada cliente.",
+        "img": "/images/proyectos/proyecto-ollantaytambo-02.jpg"
+      },
+      {
+        "year": "2025",
+        "titulo": "Proyecto Calca",
+        "texto": "Abrimos una zona en expansión con precios de entrada accesibles.",
+        "img": "/images/proyectos/proyecto-calca-01.jpg"
+      },
+      {
+        "year": "2026",
+        "titulo": "Nueva etapa",
+        "texto": "Iniciamos nuestra expansión con seis proyectos activos en el valle.",
+        "img": "/images/proyectos/proyecto-calca-02.jpg"
+      }
+    ],
+    "cifras": [
+      {
+        "valor": "6",
+        "label": "Proyectos activos en el Valle Sagrado"
+      },
+      {
+        "valor": "+320",
+        "label": "Lotes vendidos y saneados"
+      },
+      {
+        "valor": "10",
+        "label": "Años construyendo confianza"
+      },
+      {
+        "valor": "+300",
+        "label": "Familias con patrimonio propio"
+      },
+      {
+        "valor": "100%",
+        "label": "Saneamiento legal garantizado"
+      },
+      {
+        "valor": "+45",
+        "label": "Hectáreas desarrolladas"
+      }
+    ],
+    "equipo": [
+      {
+        "area": "Gerencia",
+        "personas": [
+          {
+            "nombre": "Lucía Ramírez",
+            "puesto": "Gerente Comercial",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Sergio Ballón",
+            "puesto": "Gerente de Marketing",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          }
+        ]
+      },
+      {
+        "area": "Equipo Comercial",
+        "personas": [
+          {
+            "nombre": "Rosa Huamán",
+            "puesto": "Asesora de Inversiones",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Diego Salas",
+            "puesto": "Ejecutivo de Ventas",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Karina Puma",
+            "puesto": "Asesora Comercial",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          }
+        ]
+      },
+      {
+        "area": "Equipo de Marketing",
+        "personas": [
+          {
+            "nombre": "Paola Cárdenas",
+            "puesto": "Community Manager",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Bruno Ttito",
+            "puesto": "Diseñador Gráfico",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Mía Choque",
+            "puesto": "Contenido y Publicidad",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          }
+        ]
+      },
+      {
+        "area": "Equipo Administrativo",
+        "personas": [
+          {
+            "nombre": "Andrés Quispe",
+            "puesto": "Administrador",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Valeria Ríos",
+            "puesto": "Contabilidad",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          },
+          {
+            "nombre": "Martín Flores",
+            "puesto": "Asistente Administrativo",
+            "foto": "/images/testimonios/cliente-01.jpg"
+          }
+        ]
+      }
+    ]
+  }
+}
