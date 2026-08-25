@@ -70,7 +70,7 @@ export function normalizeProyecto(p: any): Proyecto {
   const caracteristicas = Array.isArray(p.caracteristicas) ? p.caracteristicas : (Array.isArray(p.features) ? p.features : []);
   const imagenPrincipal = p.imagenPrincipal || p.image || p.coverImage || "/images/proyectos/proyecto-chinchero-01.jpg";
   const galeria = Array.isArray(p.galeria) ? p.galeria : (Array.isArray(p.gallery) ? p.gallery : (Array.isArray(p.images) ? p.images : [imagenPrincipal]));
-  const logo = p.logo || "/emblem-white.png";
+  const logo = p.logoUrl || p.logo || "/emblem-white.png";
   const lotesDisponiblesPct = typeof p.lotesDisponiblesPct === "number" ? p.lotesDisponiblesPct : 100;
   const masterPlanAmenities = Array.isArray(p.masterPlanAmenities) ? p.masterPlanAmenities : [];
   const areasComunes = Array.isArray(p.areasComunes) ? p.areasComunes : [];

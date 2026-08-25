@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 
 export default function ProyectosExpand({ items }: { items: any[] }) {
   const safeItems = (items || []).filter(Boolean);
@@ -17,8 +16,7 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
           const precioDesde = proyecto.precioDesde || proyecto.price || proyecto.initialPrice || "";
           const areaDesde = proyecto.extension || proyecto.areaDesde || proyecto.area || "";
           const imagenPrincipal = proyecto.imagenPrincipal || proyecto.image || proyecto.coverImage || "/images/proyectos/proyecto-chinchero-01.jpg";
-          const logo = proyecto.logo || proyecto.logoUrl || "/emblem-white.png";
-          const shortName = nombre.replace("Tutierra ", "");
+          const logoSrc = proyecto.logoUrl || proyecto.logo;
 
           return (
             <Link
@@ -38,24 +36,18 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
               {/* Gradiente oscuro superpuesto para elevadísimo contraste (aparece en hover) */}
               <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100" />
 
-              {/* Logo Oficial del Proyecto (Tarjeta colapsada/inactiva, centrado vertical y horizontalmente) */}
-              <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-90 pointer-events-none flex flex-col items-center justify-center p-4">
-                {logo ? (
-                  <Image
-                    src={logo}
-                    alt={nombre}
-                    width={140}
-                    height={80}
-                    unoptimized
-                    loading="lazy"
-                    className="max-h-20 max-w-[140px] object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] filter brightness-0 invert"
+              {/* Renderizado del Logotipo / Fallback en Tarjetas Inactivas */}
+              <div className="absolute inset-0 flex items-center justify-center p-6 z-10 pointer-events-none group-hover:opacity-0 transition-opacity duration-300">
+                {logoSrc ? (
+                  <img 
+                    src={logoSrc} 
+                    alt={nombre} 
+                    className="max-h-16 max-w-[80%] object-contain filter drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] brightness-100"
                   />
                 ) : (
-                  <div className="border-y border-white/70 px-[0.6em] py-[0.2em]">
-                    <p className="font-display text-[1.2rem] font-light leading-none text-white tracking-[0.12em] uppercase drop-shadow-md">
-                      {shortName}
-                    </p>
-                  </div>
+                  <span className="text-white font-semibold tracking-wider text-sm md:text-base uppercase text-center drop-shadow-md border-y border-white/70 px-4 py-1.5 whitespace-nowrap">
+                    {nombre}
+                  </span>
                 )}
               </div>
 
