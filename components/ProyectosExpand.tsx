@@ -1,7 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import type { Proyecto } from "@/lib/site-data";
 
 export default function ProyectosExpand({ items }: { items: any[] }) {
   const safeItems = (items || []).filter(Boolean);
@@ -17,6 +16,7 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
           const precioDesde = proyecto.precioDesde || proyecto.price || proyecto.initialPrice || "";
           const areaDesde = proyecto.extension || proyecto.areaDesde || proyecto.area || "";
           const imagenPrincipal = proyecto.imagenPrincipal || proyecto.image || proyecto.coverImage || "/images/proyectos/proyecto-chinchero-01.jpg";
+          const logo = proyecto.logo || proyecto.logoUrl || "/emblem-white.png";
           const shortName = nombre.replace("Tutierra ", "");
 
           return (
@@ -25,39 +25,51 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
               href={`/proyectos/${slug}`}
               className="group relative h-full min-w-0 flex-1 cursor-pointer overflow-hidden transition-[flex-grow] duration-500 ease-out-strong hover:grow-[5]"
             >
-              {/* Imagen de fondo */}
+              {/* Imagen de fondo (Escala de grises inactiva, Saturación 80% al hacer hover) */}
               <div
-                className="absolute inset-0 bg-cover bg-center grayscale transition-[filter] duration-500 ease-out group-hover:grayscale-0"
+                className="absolute inset-0 bg-cover bg-center grayscale transition-[filter,transform] duration-500 ease-out group-hover:grayscale-0 group-hover:saturate-[0.8] group-hover:scale-105"
                 style={{ backgroundImage: `url(${imagenPrincipal})` }}
               />
+              
               {/* Tinte de marca (se desvanece en hover) */}
               <div className="absolute inset-0 bg-money-green/55 transition-opacity duration-500 ease-out group-hover:opacity-0" />
-              {/* Gradiente inferior para legibilidad (aparece en hover) */}
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/30 to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100" />
+              
+              {/* Gradiente oscuro superpuesto para elevadísimo contraste (aparece en hover) */}
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/50 to-transparent opacity-0 transition-opacity duration-500 ease-out group-hover:opacity-100" />
 
-              {/* Nombre Corto (siempre visible, centrado) */}
-              <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 border-y border-brand-gray/70 px-[0.4em] py-[0.15em] transition-opacity duration-300 ease-out group-hover:opacity-0 whitespace-nowrap">
-                <p className="font-display text-[1.2rem] font-light leading-none text-brand-gray tracking-[0.12em] uppercase">
-                  {shortName}
-                </p>
+              {/* Logo Oficial del Proyecto (Tarjeta colapsada/inactiva, centrado vertical y horizontalmente) */}
+              <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-90 pointer-events-none flex flex-col items-center justify-center p-4">
+                {logo ? (
+                  <img
+                    src={logo}
+                    alt={nombre}
+                    className="max-h-20 max-w-[140px] object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] filter brightness-0 invert"
+                  />
+                ) : (
+                  <div className="border-y border-white/70 px-[0.6em] py-[0.2em]">
+                    <p className="font-display text-[1.2rem] font-light leading-none text-white tracking-[0.12em] uppercase drop-shadow-md">
+                      {shortName}
+                    </p>
+                  </div>
+                )}
               </div>
 
-              {/* Contenido (aparece en hover) */}
-              <div className="absolute inset-x-0 bottom-0 z-10 translate-y-4 p-[1.6em] text-center opacity-0 transition-all duration-500 ease-out-strong group-hover:translate-y-0 group-hover:opacity-100 group-hover:delay-150">
-                <p className="font-display text-[0.8rem] font-light text-tech-green tracking-[0.1em] uppercase">
+              {/* Contenido (Tarjeta activa/desplegada - Tipografía Blanca y Alto Contraste) */}
+              <div className="absolute inset-x-0 bottom-0 z-10 translate-y-4 p-[1.8em] text-center opacity-0 transition-all duration-500 ease-out-strong group-hover:translate-y-0 group-hover:opacity-100 group-hover:delay-150">
+                <p className="font-display text-[0.8rem] font-medium text-white/90 tracking-[0.15em] uppercase drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                   {ubicacion}
                 </p>
-                <h3 className="mt-[0.2em] font-display text-[clamp(1.2rem,1.5vw,1.8rem)] font-light text-brand-gray">
+                <h3 className="mt-[0.2em] font-display text-[clamp(1.3rem,1.7vw,2rem)] font-normal text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                   {nombre}
                 </h3>
-                <p className="mx-auto mt-[0.5em] max-w-[34ch] text-[0.85rem] leading-[1.5] text-brand-gray/85">
+                <p className="mx-auto mt-[0.5em] max-w-[34ch] text-[0.9rem] leading-[1.5] text-white font-normal drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)]">
                   {proyecto.clausurado ? (
-                    <span className="font-semibold text-red-500 tracking-wide">100% VENDIDO</span>
+                    <span className="font-bold text-red-400 tracking-wide drop-shadow-md">100% VENDIDO</span>
                   ) : (
                     precioDesde ? `Desde ${precioDesde} · ${areaDesde}` : areaDesde
                   )}
                 </p>
-                <span className="mt-[0.8em] inline-block text-[0.8rem] text-tech-green font-medium transition-transform duration-200 group-hover:translate-x-1">
+                <span className="mt-[0.9em] inline-block text-[0.85rem] text-white font-semibold underline underline-offset-4 decoration-white/60 hover:decoration-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.8)] transition-all">
                   Descubre el proyecto →
                 </span>
               </div>
@@ -66,7 +78,7 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
         })}
       </div>
 
-      {/* Móvil: cards verticales con imagen */}
+      {/* Móvil: cards verticales con alto contraste y texto blanco */}
       <div className="flex flex-col gap-[1.2em] lg:hidden">
         {safeItems.map((proyecto, i) => {
           const slug = proyecto.slug || proyecto.id || "";
@@ -83,30 +95,30 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
               className="relative h-[clamp(220px,45vh,320px)] overflow-hidden rounded-[1.1rem] block group"
             >
               <div
-                className="absolute inset-0 bg-cover bg-center transition-transform duration-500 ease-out group-hover:scale-[1.03]"
+                className="absolute inset-0 bg-cover bg-center saturate-[0.85] transition-transform duration-500 ease-out group-hover:scale-[1.03]"
                 style={{ backgroundImage: `url(${imagenPrincipal})` }}
               />
-              <div className="absolute inset-0 bg-gradient-to-t from-brand-ink via-brand-ink/40 to-brand-ink/10" />
+              <div className="absolute inset-0 bg-gradient-to-t from-black/85 via-black/40 to-black/20" />
               {proyecto.clausurado && (
-                <div className="absolute top-4 right-4 bg-red-600 text-white text-[0.7rem] font-bold uppercase tracking-wider px-3 py-1 rounded-full z-10">
+                <div className="absolute top-4 right-4 bg-red-600 text-white text-[0.7rem] font-bold uppercase tracking-wider px-3 py-1 rounded-full z-10 shadow-lg">
                   Vendido
                 </div>
               )}
               <div className="absolute inset-x-0 bottom-0 p-[1.4em]">
-                <p className="font-display text-[0.8rem] font-light text-tech-green tracking-[0.1em] uppercase">
+                <p className="font-display text-[0.8rem] font-medium text-white/90 tracking-[0.15em] uppercase drop-shadow-md">
                   {ubicacion}
                 </p>
-                <h3 className="mt-[0.1em] font-display text-[1.3rem] font-light text-brand-gray">
+                <h3 className="mt-[0.1em] font-display text-[1.4rem] font-normal text-white drop-shadow-md">
                   {nombre}
                 </h3>
-                <p className="mt-[0.4em] max-w-[46ch] text-[0.85rem] leading-[1.5] text-brand-gray/75">
+                <p className="mt-[0.4em] max-w-[46ch] text-[0.9rem] leading-[1.5] text-white/90 drop-shadow-md">
                   {proyecto.clausurado ? (
-                    <span className="font-semibold text-red-500 tracking-wide">100% VENDIDO</span>
+                    <span className="font-bold text-red-400 tracking-wide">100% VENDIDO</span>
                   ) : (
                     precioDesde ? `Desde ${precioDesde} · ${areaDesde}` : areaDesde
                   )}
                 </p>
-                <span className="mt-[0.6em] inline-block text-[0.75rem] text-tech-green font-medium">
+                <span className="mt-[0.6em] inline-block text-[0.8rem] text-white font-semibold underline underline-offset-4 drop-shadow-md">
                   Descubre el proyecto →
                 </span>
               </div>

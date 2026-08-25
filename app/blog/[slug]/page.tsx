@@ -10,6 +10,46 @@ import { getPostsContent } from "@/lib/db";
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
+export function formatBlogContent(content: string): string {
+  if (!content) return "";
+  const trimmed = content.trim();
+
+  if (/<(p|h[1-6]|div|ul|ol|blockquote)[^>]*>/i.test(trimmed)) {
+    return trimmed;
+  }
+
+  return trimmed
+    .split(/\n\n+/)
+    .map((paragraph) => {
+      let p = paragraph.trim();
+      if (!p) return "";
+
+      if (p.startsWith("### ")) {
+        return `<h3>${p.replace(/^###\s+/, "")}</h3>`;
+      }
+      if (p.startsWith("## ")) {
+        return `<h3>${p.replace(/^##\s+/, "")}</h3>`;
+      }
+      if (p.startsWith("# ")) {
+        return `<h3>${p.replace(/^#\s+/, "")}</h3>`;
+      }
+
+      if (p.startsWith("- ") || p.startsWith("* ")) {
+        const items = p.split(/\n/).map((li) => `<li>${li.replace(/^[-*]\s+/, "")}</li>`).join("");
+        return `<ul>${items}</ul>`;
+      }
+
+      p = p.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
+      p = p.replace(/__(.*?)__/g, "<strong>$1</strong>");
+      p = p.replace(/\*(.*?)\*/g, "<em>$1</em>");
+      p = p.replace(/_(.*?)_/g, "<em>$1</em>");
+      p = p.replace(/\n/g, "<br/>");
+
+      return `<p>${p}</p>`;
+    })
+    .join("");
+}
+
 type Props = { params: Promise<{ slug: string }> };
 
 export async function generateStaticParams() {
@@ -73,7 +113,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
             />
           </div>
 
-          {/* Article Body */}
+          {/* Article Body con procesamiento automático de texto plano y Markdown */}
           <div
             className="mt-[3em] text-[1.1rem] leading-[1.8] text-brand-gray/80 
               [&>h3]:text-[1.4rem] [&>h3]:font-display [&>h3]:font-normal [&>h3]:text-brand-gray [&>h3]:mt-[1.8em] [&>h3]:mb-[0.6em]
@@ -81,7 +121,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
               [&>ul]:list-disc [&>ul]:pl-5 [&>ul]:mt-[1em] [&>ul]:mb-[1em]
               [&>li]:mt-[0.5em]
               [&>strong]:text-brand-gray [&>strong]:font-semibold"
-            dangerouslySetInnerHTML={{ __html: post.contenido }}
+            dangerouslySetInnerHTML={{ __html: formatBlogContent(post.contenido) }}
           />
 
           {/* Divider */}

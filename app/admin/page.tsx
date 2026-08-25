@@ -2427,16 +2427,22 @@ export default function AdminDashboardPage() {
                 </div>
 
                 <div>
-                  <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Contenido (Código HTML)</label>
+                  <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">
+                    Contenido del Artículo (Texto plano con saltos de línea, Markdown o HTML)
+                  </label>
+                  <p className="text-[0.75rem] text-brand-gray/50 mb-2">
+                    Tip: Puedes escribir párrafos separados con 2 Enter, o usar Markdown (### Subtítulo, **negrita**, - lista). No es necesario escribir etiquetas &lt;p&gt;.
+                  </p>
                   <textarea
-                    rows={12}
+                    rows={14}
                     value={currentPost.contenido}
+                    placeholder="Escribe tu artículo aquí... Usa saltos de línea para párrafos o ### para subtítulos."
                     onChange={(e) => {
                       const list = [...posts];
                       list[selectedPostIndex].contenido = e.target.value;
                       setPosts(list);
                     }}
-                    className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green font-mono text-[0.85rem] leading-[1.5]"
+                    className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green leading-[1.6]"
                   />
                 </div>
               </div>
