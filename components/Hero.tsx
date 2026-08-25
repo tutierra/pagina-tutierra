@@ -4,15 +4,25 @@ import Link from "next/link";
 import { motion } from "framer-motion";
 import RoundCarousel from "./RoundCarousel";
 import Logo from "./Logo";
+
 interface HeroProps {
-  content: { title: string; description: string; images?: string[] };
-  projects: any[];
+  content?: { title?: string; description?: string; images?: string[] };
+  projects?: any[];
 }
 
 export default function Hero({ content, projects }: HeroProps) {
-  const CAROUSEL_IMAGES = content.images && content.images.length > 0
-    ? content.images.map((img) => ({ src: img }))
-    : projects.map((p) => ({ src: p.imagenPrincipal }));
+  const safeContent = content || {};
+  const safeProjects = (projects || []).filter(Boolean);
+
+  const CAROUSEL_IMAGES = safeContent.images && safeContent.images.length > 0
+    ? safeContent.images.map((img) => ({ src: img }))
+    : safeProjects.map((p) => ({ src: p?.imagenPrincipal || "" })).filter((img) => Boolean(img.src));
+
+  const defaultImages = [
+    { src: "/images/proyectos/proyecto-chinchero-01.jpg" },
+  ];
+
+  const finalImages = CAROUSEL_IMAGES.length > 0 ? CAROUSEL_IMAGES : defaultImages;
 
   return (
     <section className="relative flex min-h-dvh w-full flex-col justify-end overflow-hidden pb-[5.6%] pt-[24.5%] md:pt-[9.8%]">
@@ -31,7 +41,7 @@ export default function Hero({ content, projects }: HeroProps) {
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.9, delay: 0.15, ease: [0.16, 1, 0.3, 1] }}
             className="font-display font-light leading-[0.95] text-brand-gray text-[clamp(1.4875rem,4.165vw,3.8675rem)]"
-            dangerouslySetInnerHTML={{ __html: content.title }}
+            dangerouslySetInnerHTML={{ __html: safeContent?.title || "Creamos y unimos familias." }}
           />
 
           <motion.p
@@ -40,7 +50,7 @@ export default function Hero({ content, projects }: HeroProps) {
             transition={{ duration: 0.9, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
             className="mt-[0.952em] max-w-[46ch] text-[clamp(0.595rem,0.952vw,0.74375rem)] leading-[1.6] text-brand-gray/75"
           >
-            {content.description}
+            {safeContent?.description || "Desarrollamos proyectos inmobiliarios sostenibles en el Valle Sagrado, ofreciendo terrenos con saneamiento urbano e independización garantizada."}
           </motion.p>
 
           <motion.div
@@ -68,7 +78,7 @@ export default function Hero({ content, projects }: HeroProps) {
           <div className="pointer-events-none absolute inset-[-15%] rounded-full bg-tech-green/10 blur-3xl" />
           <div className="relative h-full w-full">
             <RoundCarousel
-              images={CAROUSEL_IMAGES}
+              images={finalImages}
               imageWidth={16.5}
               imageHeight={29.2}
               cornerRadius={2.2}

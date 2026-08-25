@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import ScrollJacker from "@/components/ScrollJacker";
 import FloatingPills from "@/components/FloatingPills";
 import CookieConsent from "@/components/CookieConsent";
+import { ErrorBoundary } from "@/components/ErrorBoundary";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -51,7 +52,11 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
         <GradientCanvas />
         <ScrollJacker />
         <Nav />
-        <main className="flex-1">{children}</main>
+        <main className="flex-1">
+          <ErrorBoundary>
+            {children}
+          </ErrorBoundary>
+        </main>
         <FloatingPills />
         <CookieConsent />
       </body>
