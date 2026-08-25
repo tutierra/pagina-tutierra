@@ -4,21 +4,25 @@ import { CONTACT, SOCIAL } from "@/lib/site-data";
 
 interface FooterProps {
   contactData?: any;
+  footerData?: any;
+  company_info?: any;
 }
 
-export default function Footer({ contactData }: FooterProps) {
+export default function Footer({ contactData, footerData, company_info }: FooterProps) {
+  const data = footerData || company_info || contactData || {};
+
   const contact = {
-    phone: contactData?.phone || CONTACT.phone,
-    whatsapp: contactData?.whatsapp || CONTACT.whatsapp,
-    email: contactData?.email || CONTACT.email,
-    address: contactData?.address || CONTACT.address,
-    hours: contactData?.hours || CONTACT.hours,
-    domain: contactData?.domain || CONTACT.domain,
-    instagram: contactData?.instagram || SOCIAL.instagram,
-    facebook: contactData?.facebook || SOCIAL.facebook,
-    tiktok: contactData?.tiktok || SOCIAL.tiktok,
-    youtube: contactData?.youtube || "",
-    linkedin: contactData?.linkedin || "",
+    phone: data?.phone || data?.telefono || data?.phone_number || CONTACT.phone,
+    whatsapp: data?.whatsapp || data?.ws || data?.wa || CONTACT.whatsapp,
+    email: data?.email || data?.correo || data?.mail || CONTACT.email,
+    address: data?.address || data?.direccion || data?.location || CONTACT.address,
+    hours: data?.schedule || data?.hours || data?.horario || data?.horarios || CONTACT.hours,
+    domain: data?.domain || data?.dominio || CONTACT.domain,
+    instagram: data?.instagram || SOCIAL.instagram,
+    facebook: data?.facebook || SOCIAL.facebook,
+    tiktok: data?.tiktok || SOCIAL.tiktok,
+    youtube: data?.youtube || "",
+    linkedin: data?.linkedin || "",
   };
 
   return (

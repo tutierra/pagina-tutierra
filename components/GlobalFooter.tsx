@@ -4,16 +4,29 @@ import { usePathname } from "next/navigation";
 import { useEffect, useState } from "react";
 import Footer from "./Footer";
 
-export default function GlobalFooter() {
+interface GlobalFooterProps {
+  initialContactData?: any;
+}
+
+export default function GlobalFooter({ initialContactData }: GlobalFooterProps) {
   const pathname = usePathname();
-  const [contactData, setContactData] = useState<any>(null);
+  const [contactData, setContactData] = useState<any>(initialContactData || null);
 
   useEffect(() => {
     fetch("/api/admin/get-data")
       .then((res) => res.json())
-      .then((data) => {
-        if (data?.content?.contact) {
-          setContactData(data.content.contact);
+      .then((resData) => {
+        const content = resData?.content || {};
+        const extracted =
+          content.contact ||
+          content.footer ||
+          content.company_info ||
+          content.general?.contact ||
+          content.general?.footer ||
+          null;
+
+        if (extracted) {
+          setContactData(extracted);
         }
       })
       .catch(() => {});
@@ -23,5 +36,7 @@ export default function GlobalFooter() {
     return null;
   }
 
-  return <Footer contactData={contactData} />;
+  const activeData = contactData || initialContactData;
+
+  return <Footer contactData={activeData} footerData={activeData} company_info={activeData} />;
 }

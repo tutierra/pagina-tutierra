@@ -8,6 +8,7 @@ import FloatingPills from "@/components/FloatingPills";
 import CookieConsent from "@/components/CookieConsent";
 import GlobalFooter from "@/components/GlobalFooter";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
+import { getSiteContent } from "@/lib/db";
 import "./globals.css";
 
 export const metadata: Metadata = {
@@ -16,11 +17,19 @@ export const metadata: Metadata = {
     "Desarrollamos proyectos inmobiliarios sostenibles en el Valle Sagrado, Cusco. Creamos y unimos familias.",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const siteContent = await getSiteContent();
+  const contactData =
+    siteContent?.contact ||
+    siteContent?.footer ||
+    siteContent?.company_info ||
+    siteContent?.general?.contact ||
+    siteContent?.general?.footer ||
+    null;
   return (
     <html
       lang="es"
@@ -62,7 +71,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {children}
           </ErrorBoundary>
         </main>
-        <GlobalFooter />
+        <GlobalFooter initialContactData={contactData} />
         <FloatingPills />
         <CookieConsent />
       </body>

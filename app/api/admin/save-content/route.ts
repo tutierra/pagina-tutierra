@@ -13,12 +13,29 @@ export async function POST(request: Request) {
 
   try {
     const data = await request.json();
-    saveSiteContent(data);
 
-    // Revalida de inmediato el caché de todas las páginas públicas al guardar desde el CMS
+    // Sincroniza contactData en todas las claves comunes (contact, footer, company_info)
+    const contactData = data.contact || data.footer || data.company_info || {};
+    const fullPayload = {
+      ...data,
+      contact: contactData,
+      footer: contactData,
+      company_info: contactData,
+    };
+
+    await saveSiteContent(fullPayload);
+
+    // Revalida de inmediato la ruta raíz con 'layout' y todas las páginas públicas
     revalidatePath("/", "layout");
     revalidatePath("/", "page");
     revalidatePath("/proyectos", "page");
+    revalidatePath("/proyectos/[slug]", "page");
+    revalidatePath("/nosotros", "page");
+    revalidatePath("/blog", "page");
+    revalidatePath("/blog/[slug]", "page");
+    revalidatePath("/testimonios", "page");
+    revalidatePath("/refiere-y-gana", "page");
+    revalidatePath("/contactanos", "page");
     revalidatePath("/admin", "page");
 
     return NextResponse.json({ success: true });
