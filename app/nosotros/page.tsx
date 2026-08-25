@@ -302,7 +302,6 @@ export default async function NosotrosPage() {
             </Reveal>
           </div>
         </div>
-        <Footer isUnified />
       </section>
     </>
   );

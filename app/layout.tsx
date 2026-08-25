@@ -6,6 +6,7 @@ import Nav from "@/components/Nav";
 import ScrollJacker from "@/components/ScrollJacker";
 import FloatingPills from "@/components/FloatingPills";
 import CookieConsent from "@/components/CookieConsent";
+import GlobalFooter from "@/components/GlobalFooter";
 import { ErrorBoundary } from "@/components/ErrorBoundary";
 import "./globals.css";
 
@@ -61,6 +62,7 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             {children}
           </ErrorBoundary>
         </main>
+        <GlobalFooter />
         <FloatingPills />
         <CookieConsent />
       </body>

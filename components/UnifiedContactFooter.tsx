@@ -36,7 +36,6 @@ export default function UnifiedContactFooter({
           </Reveal>
         </div>
       </div>
-      <Footer isUnified contactData={contactData} />
     </section>
   );
 }

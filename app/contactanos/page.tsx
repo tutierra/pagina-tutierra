@@ -74,7 +74,6 @@ export default async function ContactanosPage({ searchParams }: Props) {
           </div>
         </div>
       </section>
-      <Footer />
     </>
   );
 }
