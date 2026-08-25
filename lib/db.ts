@@ -46,27 +46,18 @@ const DEFAULT_CONTENT = {
   general: {
     valleBgImage: "/images/global/valle-sagrado-bg.jpg",
     refiereGanaImg: "/images/referidos/handshake.jpg",
+    testimoniosHeroImages: [],
+    testimoniosTitle: "Familias que ya construyen su patrimonio con nosotros",
+    testimoniosDescription: "Conoce las historias y experiencias reales de quienes han invertido en terrenos con saneamiento urbano e independización garantizada en el Valle Sagrado de Cusco.",
     proyectosConcluidos: []
   },
   nosotros: {
-    timeline: [
-      { year: "2016", titulo: "Nace Tutierra", texto: "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra.", img: "/images/nosotros/oficina.jpg" }
-    ],
-    cifras: [
-      { valor: "6", label: "Proyectos activos en el Valle Sagrado" }
-    ],
-    equipo: [
-      {
-        area: "Gerencia",
-        personas: [
-          { nombre: "Lucía Ramírez", puesto: "Gerente Comercial", foto: "/images/testimonios/cliente-01.jpg" }
-        ]
-      }
-    ]
+    timeline: [],
+    cifras: [],
+    equipo: []
   }
 };
 
-// Función auxiliar para combinar profundamente objetos y garantizar fallbacks
 function mergeDeep(target: any, source: any) {
   if (!source) return target;
   if (!target) return source;
@@ -96,13 +87,25 @@ export async function getSiteContent() {
 
   if (supabase) {
     try {
-      const { data, error } = await supabase
+      // 1. Consultar Supabase buscando id = 'main_content' (tabla site_content)
+      const { data: mainData, error: mainErr } = await supabase
         .from("site_content")
         .select("data")
-        .eq("id", "general_content")
+        .eq("id", "main_content")
         .single();
-      if (!error && data?.data) {
-        rawContent = data.data;
+
+      if (!mainErr && mainData?.data) {
+        rawContent = mainData.data;
+      } else {
+        // Fallback a 'general_content'
+        const { data: genData, error: genErr } = await supabase
+          .from("site_content")
+          .select("data")
+          .eq("id", "general_content")
+          .single();
+        if (!genErr && genData?.data) {
+          rawContent = genData.data;
+        }
       }
     } catch (e) {
       console.error("Error fetching site_content from Supabase DB:", e);
@@ -123,7 +126,6 @@ export async function getSiteContent() {
     } catch (e) {}
   }
 
-  // Garantiza siempre un objeto estructurado válido combinando con DEFAULT_CONTENT
   return mergeDeep(DEFAULT_CONTENT, rawContent || {});
 }
 
@@ -135,10 +137,19 @@ export async function saveSiteContent(data: any) {
 
   if (supabase) {
     try {
-      const { error } = await supabase
-        .from("site_content")
-        .upsert({ id: "general_content", data: data, updated_at: new Date().toISOString() });
-      if (error) console.error("Error al guardar site_content en Supabase DB:", error);
+      // Upsert a Supabase a id = 'main_content' y 'general_content'
+      await Promise.all([
+        supabase.from("site_content").upsert({
+          id: "main_content",
+          data: data,
+          updated_at: new Date().toISOString(),
+        }),
+        supabase.from("site_content").upsert({
+          id: "general_content",
+          data: data,
+          updated_at: new Date().toISOString(),
+        }),
+      ]);
     } catch (err) {
       console.error("Supabase site_content upsert error:", err);
     }
