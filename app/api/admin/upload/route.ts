@@ -22,21 +22,32 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    const uploadDir = path.join(process.cwd(), "public", "uploads");
-    if (!fs.existsSync(uploadDir)) {
-      fs.mkdirSync(uploadDir, { recursive: true });
+    // Intentar guardar en disco local (desarrollo local)
+    try {
+      const uploadDir = path.join(process.cwd(), "public", "uploads");
+      if (!fs.existsSync(uploadDir)) {
+        fs.mkdirSync(uploadDir, { recursive: true });
+      }
+
+      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const uniqueName = `${Date.now()}-${safeName}`;
+      const filePath = path.join(uploadDir, uniqueName);
+
+      fs.writeFileSync(filePath, buffer);
+
+      const publicPath = `/uploads/${uniqueName}`;
+      return NextResponse.json({ success: true, url: publicPath });
+    } catch (fsError) {
+      // En entorno Vercel (disco de solo lectura), convierte la imagen a Data URL seguro para producción
+      console.warn("Entorno Serverless en Vercel detectado. Guardando imagen como Data URL...");
+      const base64 = buffer.toString("base64");
+      const mimeType = file.type || "image/png";
+      const dataUrl = `data:${mimeType};base64,${base64}`;
+
+      return NextResponse.json({ success: true, url: dataUrl });
     }
-
-    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-    const uniqueName = `${Date.now()}-${safeName}`;
-    const filePath = path.join(uploadDir, uniqueName);
-
-    fs.writeFileSync(filePath, buffer);
-
-    const publicPath = `/uploads/${uniqueName}`;
-    return NextResponse.json({ success: true, url: publicPath });
   } catch (error) {
     console.error("Upload error:", error);
-    return NextResponse.json({ error: "Error al subir la imagen" }, { status: 500 });
+    return NextResponse.json({ error: "Error al procesar la imagen" }, { status: 500 });
   }
 }
