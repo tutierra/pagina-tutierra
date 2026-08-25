@@ -16,15 +16,33 @@ export default async function ProyectosPage() {
   const projectsData = await getProjectsContent();
   const allDbProjects = projectsData.filter((p) => p.activo !== false);
 
+  const isCompletedProject = (p: any) => {
+    const status = (p.status || p.estado || "").toString().toLowerCase().trim();
+    return (
+      status === "finalizado" ||
+      status === "culminado" ||
+      status === "entregado" ||
+      status === "vendido" ||
+      status === "completed" ||
+      p.isCompleted === true ||
+      p.finalizado === true ||
+      p.clausurado === true ||
+      p.lotesDisponiblesPct === 0
+    );
+  };
+
   // 1. Proyectos Activos (En Venta)
-  const proyectosEnVenta = allDbProjects.filter(
-    (p) => !p.clausurado && (p.lotesDisponiblesPct ?? 100) > 0
-  );
+  const proyectosEnVenta = allDbProjects.filter((p) => !isCompletedProject(p));
 
   // 2. Proyectos Concluidos
   const dbConcluidos = allDbProjects
-    .filter((p) => p.clausurado === true || p.lotesDisponiblesPct === 0)
-    .map((p) => ({ id: p.slug, nombre: p.nombre, ubicacion: p.ubicacion, logo: p.logo }));
+    .filter(isCompletedProject)
+    .map((p) => ({
+      id: p.slug || p.id,
+      nombre: p.nombre || p.title,
+      ubicacion: p.ubicacion || p.location,
+      logo: p.logo || "/emblem-white.png",
+    }));
 
   const siteContent = await getSiteContent();
   const manualConcluidos = siteContent.general?.proyectosConcluidos || [];

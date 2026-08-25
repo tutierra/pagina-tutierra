@@ -76,6 +76,19 @@ export function normalizeProyecto(p: any): Proyecto {
   const areasComunes = Array.isArray(p.areasComunes) ? p.areasComunes : [];
   const beneficiosCortos = Array.isArray(p.beneficiosCortos) ? p.beneficiosCortos : [];
 
+  const statusStr = (p.status || p.estado || "").toString().toLowerCase().trim();
+  const isCompleted = (
+    statusStr === "finalizado" ||
+    statusStr === "culminado" ||
+    statusStr === "entregado" ||
+    statusStr === "vendido" ||
+    statusStr === "completed" ||
+    p.isCompleted === true ||
+    p.finalizado === true ||
+    p.clausurado === true ||
+    lotesDisponiblesPct === 0
+  );
+
   return {
     ...p,
     slug,
@@ -93,8 +106,12 @@ export function normalizeProyecto(p: any): Proyecto {
     masterPlanAmenities,
     areasComunes,
     beneficiosCortos,
+    status: isCompleted ? "finalizado" : (p.status || "en_venta"),
+    estado: isCompleted ? "finalizado" : (p.estado || "en_venta"),
+    finalizado: isCompleted,
+    isCompleted: isCompleted,
     activo: p.activo !== false,
-    clausurado: Boolean(p.clausurado),
+    clausurado: isCompleted,
   };
 }
 
@@ -198,7 +215,6 @@ export async function getProjectsContent(): Promise<Proyecto[]> {
 
   if (supabase) {
     try {
-      // 1. Probar id = 'main_content' -> ver si tiene campo .projects
       const { data: mainData, error: mainErr } = await supabase
         .from("site_content")
         .select("data")
@@ -208,7 +224,6 @@ export async function getProjectsContent(): Promise<Proyecto[]> {
       if (!mainErr && mainData?.data?.projects && Array.isArray(mainData.data.projects) && mainData.data.projects.length > 0) {
         rawProjects = mainData.data.projects;
       } else {
-        // 2. Probar id = 'projects_content'
         const { data: projData, error: projErr } = await supabase
           .from("site_content")
           .select("data")
@@ -252,14 +267,14 @@ export async function saveProjectsContent(data: any) {
 
   if (supabase) {
     try {
-      // 1. Upsert a id = 'projects_content'
+      const normalizedData = (data || []).map(normalizeProyecto);
+
       await supabase.from("site_content").upsert({
         id: "projects_content",
-        data: data,
+        data: normalizedData,
         updated_at: new Date().toISOString(),
       });
 
-      // 2. Actualizar también dentro de main_content.projects
       const { data: mainData } = await supabase
         .from("site_content")
         .select("data")
@@ -267,7 +282,7 @@ export async function saveProjectsContent(data: any) {
         .single();
 
       const currentMain = mainData?.data || {};
-      const updatedMain = { ...currentMain, projects: data };
+      const updatedMain = { ...currentMain, projects: normalizedData };
 
       await supabase.from("site_content").upsert({
         id: "main_content",

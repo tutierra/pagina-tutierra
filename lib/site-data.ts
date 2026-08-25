@@ -36,6 +36,12 @@ export type Proyecto = {
   mapLink?: string;
   activo?: boolean;
   clausurado?: boolean;
+  title?: string;
+  location?: string;
+  status?: string;
+  estado?: string;
+  finalizado?: boolean;
+  isCompleted?: boolean;
 };
 
 export const PROYECTOS: Proyecto[] = [

@@ -1982,13 +1982,18 @@ export default function AdminDashboardPage() {
                     checked={!!currentProj.clausurado}
                     onChange={(e) => {
                       const list = [...projects];
-                      list[selectedProjIndex].clausurado = e.target.checked;
+                      const val = e.target.checked;
+                      list[selectedProjIndex].clausurado = val;
+                      (list[selectedProjIndex] as any).status = val ? "finalizado" : "en_venta";
+                      (list[selectedProjIndex] as any).estado = val ? "finalizado" : "en_venta";
+                      (list[selectedProjIndex] as any).finalizado = val;
+                      (list[selectedProjIndex] as any).isCompleted = val;
                       setProjects(list);
                     }}
                     className="h-5 w-5 rounded border-brand-gray/10 bg-white/[0.02] text-tech-green focus:ring-0 cursor-pointer"
                   />
                   <label htmlFor={`closed-${currentProj.slug}`} className="text-[0.9rem] text-brand-gray/80 font-semibold cursor-pointer">
-                    Clausurado (Marcar como 100% Vendido)
+                    Proyecto Concluido / Finalizado (100% Vendido)
                   </label>
                 </div>
               </div>
