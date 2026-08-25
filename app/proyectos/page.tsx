@@ -12,20 +12,21 @@ export const metadata: Metadata = {
   description: "Descubre los proyectos inmobiliarios de Tutierra en el Valle Sagrado, Cusco.",
 };
 
-export default function ProyectosPage() {
-  const allDbProjects = getProjectsContent().filter((p) => p.activo !== false);
+export default async function ProyectosPage() {
+  const projectsData = await getProjectsContent();
+  const allDbProjects = projectsData.filter((p) => p.activo !== false);
 
   // 1. Proyectos Activos (En Venta)
   const proyectosEnVenta = allDbProjects.filter(
     (p) => !p.clausurado && (p.lotesDisponiblesPct ?? 100) > 0
   );
 
-  // 2. Proyectos Concluidos (Marcar en CMS de Proyectos O Añadir en la lista de Concluidos)
+  // 2. Proyectos Concluidos
   const dbConcluidos = allDbProjects
     .filter((p) => p.clausurado === true || p.lotesDisponiblesPct === 0)
     .map((p) => ({ id: p.slug, nombre: p.nombre, ubicacion: p.ubicacion, logo: p.logo }));
 
-  const siteContent = getSiteContent();
+  const siteContent = await getSiteContent();
   const manualConcluidos = siteContent.general?.proyectosConcluidos || [];
 
   const proyectosConcluidos = [...dbConcluidos, ...manualConcluidos];
@@ -65,7 +66,7 @@ export default function ProyectosPage() {
         </div>
       </section>
 
-      {/* Sección Proyectos Concluidos (Estática, No Interactiva, Solo Logos) */}
+      {/* Sección Proyectos Concluidos */}
       {proyectosConcluidos.length > 0 && (
         <section className="w-full pb-[10%] pt-[4%] border-t border-brand-gray/10">
           <div className="mx-auto w-[90%]">
@@ -88,9 +89,7 @@ export default function ProyectosPage() {
             <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6">
               {proyectosConcluidos.map((proyecto: any, idx: number) => (
                 <Reveal key={proyecto.id || idx} delay={idx * 0.1}>
-                  {/* Tarjeta estática no interactiva */}
                   <div className="relative flex flex-col items-center justify-between rounded-[1.5rem] border border-brand-gray/15 bg-white/[0.02] p-8 text-center min-h-[200px] select-none">
-                    {/* Header: Ubicación + Badge Concluido */}
                     <div className="flex w-full justify-between items-center mb-6">
                       <span className="text-[0.75rem] uppercase tracking-wider text-brand-gray/50 font-medium truncate max-w-[60%]">
                         {proyecto.ubicacion}
@@ -101,7 +100,6 @@ export default function ProyectosPage() {
                       </span>
                     </div>
 
-                    {/* Centro: Solo el Logo del Proyecto Concluido */}
                     <div className="my-auto flex h-[4.5rem] w-full items-center justify-center py-2">
                       {proyecto.logo ? (
                         <img

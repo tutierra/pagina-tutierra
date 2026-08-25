@@ -3,6 +3,9 @@ import { CONTACT, SOCIAL } from "@/lib/site-data";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
 
+export const dynamic = "force-dynamic";
+export const revalidate = 0;
+
 export const metadata: Metadata = {
   title: "Contáctanos | Tutierra Grupo Inmobiliario",
   description: "Agenda una visita o escríbenos directamente a Tutierra Grupo Inmobiliario.",

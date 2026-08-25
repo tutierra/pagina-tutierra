@@ -8,17 +8,19 @@ import InteractiveMasterPlan from "@/components/InteractiveMasterPlan";
 import { getProjectsContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  const projects = getProjectsContent().filter((p) => p.activo !== false && !p.clausurado);
+export async function generateStaticParams() {
+  const projectsData = await getProjectsContent();
+  const projects = projectsData.filter((p) => p.activo !== false && !p.clausurado);
   return projects.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const projects = getProjectsContent();
+  const projects = await getProjectsContent();
   const proyecto = projects.find((p) => p.slug === slug);
   if (!proyecto || proyecto.clausurado || proyecto.activo === false) return {};
   return {
@@ -29,20 +31,16 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function ProyectoDetailPage({ params }: Props) {
   const { slug } = await params;
-  const projects = getProjectsContent();
+  const projects = await getProjectsContent();
   const proyecto = projects.find((p) => p.slug === slug);
   
-  // Si el proyecto no existe, está deshabilitado o está CULMINADO (clausurado), deshabilita la sub-página
   if (!proyecto || proyecto.clausurado || proyecto.activo === false) {
     notFound();
   }
 
   const otros = projects.filter((p) => p.slug !== slug && p.activo !== false && !p.clausurado).slice(0, 3);
-
-  // Usa la tercera imagen de la galería como plano, y de respaldo la imagen principal
   const imagenPlano = proyecto.galeria[2] || proyecto.imagenPrincipal;
 
-  // Genera la URL dinámica del mapa de Google Maps según la ubicación o un link de mapa personalizado
   const mapQuery = proyecto.mapLink || proyecto.ubicacion;
   const mapsEmbedUrl = mapQuery.startsWith("http") 
     ? mapQuery 
@@ -52,7 +50,6 @@ export default async function ProyectoDetailPage({ params }: Props) {
     <>
       {/* HERO SECTION WITH VIDEO */}
       <section className="relative flex h-dvh w-full items-center justify-center overflow-hidden">
-        {/* Background Video */}
         <div className="absolute inset-0 z-0 select-none pointer-events-none">
           <video
             src={proyecto.videoHero || "/videos/chinchero-bg.mp4"}
@@ -62,11 +59,9 @@ export default async function ProyectoDetailPage({ params }: Props) {
             playsInline
             className="h-full w-full object-cover opacity-45"
           />
-          {/* Gradient Overlay */}
           <div className="absolute inset-0 bg-gradient-to-t from-background via-background/45 to-background/20" />
         </div>
 
-        {/* Project Emblem Logo in the Center */}
         <div className="relative z-10 flex flex-col items-center justify-center text-center px-4">
           <Reveal>
             <div className="flex justify-center mb-4">
@@ -98,11 +93,10 @@ export default async function ProyectoDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* GENERAL DATA SECTION (MAP ON THE RIGHT, DATA ON THE LEFT) */}
+      {/* GENERAL DATA SECTION */}
       <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%] bg-transparent">
         <div className="mx-auto w-[90%]">
           <div className="grid grid-cols-1 gap-[3.5rem] lg:grid-cols-[1fr_1.1fr] items-center">
-            {/* Left Side: General Data */}
             <Reveal>
               <div className="flex flex-col gap-6">
                 <div>
@@ -144,7 +138,6 @@ export default async function ProyectoDetailPage({ params }: Props) {
               </div>
             </Reveal>
 
-            {/* Right Side: Map View */}
             <Reveal delay={0.15}>
               <div className="relative aspect-[4/3] w-full overflow-hidden rounded-[1.5rem] border border-brand-gray/10 bg-white/[0.02] p-[0.5rem] ring-1 ring-white/10">
                 <iframe
@@ -162,10 +155,10 @@ export default async function ProyectoDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* HYBRID MASTER PLAN SECTION */}
+      {/* MASTER PLAN */}
       <InteractiveMasterPlan imagenPlano={imagenPlano} amenities={proyecto.masterPlanAmenities} />
 
-      {/* IMAGE CAROUSEL SECTION */}
+      {/* GALLERY */}
       <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%] bg-transparent">
         <div className="mx-auto w-[90%]">
           <Reveal>
@@ -183,7 +176,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
         </div>
       </section>
 
-      {/* OTHER PROJECTS & FOOTER */}
+      {/* OTHER PROJECTS */}
       <section className="flex min-h-dvh flex-col justify-center border-t border-brand-gray/10 py-[8%] bg-transparent">
         <div className="mx-auto w-[90%]">
           <h2 className="font-display text-[clamp(1.6rem,2.6vw,2.2rem)] font-light text-brand-gray">

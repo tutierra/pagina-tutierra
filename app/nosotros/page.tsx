@@ -34,8 +34,6 @@ const TIMELINE: { year: string; titulo: string; texto: string; img: string }[] =
   { year: "2026", titulo: "Nueva etapa", texto: "Iniciamos nuestra expansión con seis proyectos activos en el valle.", img: "/images/proyectos/proyecto-calca-02.jpg" },
 ];
 
-// foto: placeholder por ahora (misma imagen). Reemplazar por la foto real de
-// cada integrante — el efecto blanco y negro -> color ya queda listo.
 const FOTO_PLACEHOLDER = "/images/testimonios/cliente-01.jpg";
 
 const EQUIPO_GRUPOS: { area: string; personas: { nombre: string; puesto: string; foto: string }[] }[] = [
@@ -91,11 +89,11 @@ function Avatar({ nombre, foto }: { nombre: string; foto?: string }) {
   return (
     <div className="relative flex aspect-square w-full items-center justify-center overflow-hidden rounded-[1.2rem] bg-money-green/30 ring-1 ring-white/5 transition-[transform,box-shadow] duration-[400ms] ease-out-strong group-hover:-translate-y-[0.35em] group-hover:shadow-[0_16px_40px_rgba(0,0,0,0.4)]">
       {foto ? (
-        // Foto en blanco y negro que pasa a color al pasar el cursor.
         <Image
           src={foto}
           alt={nombre}
           fill
+          unoptimized
           sizes="(max-width: 768px) 45vw, 22vw"
           className="object-cover grayscale transition-[filter,transform] duration-500 ease-out group-hover:grayscale-0 group-hover:scale-[1.04]"
         />
@@ -114,8 +112,8 @@ function Avatar({ nombre, foto }: { nombre: string; foto?: string }) {
   );
 }
 
-export default function NosotrosPage() {
-  const content = getSiteContent();
+export default async function NosotrosPage() {
+  const content = await getSiteContent();
   const founder = content.founder;
   const nosotros = (content.nosotros || {}) as any;
 

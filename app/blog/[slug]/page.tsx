@@ -8,17 +8,18 @@ import UnifiedContactFooter from "@/components/UnifiedContactFooter";
 import { getPostsContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 type Props = { params: Promise<{ slug: string }> };
 
-export function generateStaticParams() {
-  const posts = getPostsContent();
+export async function generateStaticParams() {
+  const posts = await getPostsContent();
   return posts.map((p) => ({ slug: p.slug }));
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
   const { slug } = await params;
-  const posts = getPostsContent();
+  const posts = await getPostsContent();
   const post = posts.find((p) => p.slug === slug);
   if (!post) return {};
   return {
@@ -29,7 +30,7 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 
 export default async function BlogPostDetailPage({ params }: Props) {
   const { slug } = await params;
-  const posts = getPostsContent();
+  const posts = await getPostsContent();
   const post = posts.find((p) => p.slug === slug);
   if (!post) notFound();
 
@@ -66,6 +67,7 @@ export default async function BlogPostDetailPage({ params }: Props) {
               src={post.imagen}
               alt={post.titulo}
               fill
+              unoptimized
               className="object-cover"
               priority
             />

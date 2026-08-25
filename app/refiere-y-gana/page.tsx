@@ -5,6 +5,7 @@ import UnifiedContactFooter from "@/components/UnifiedContactFooter";
 import { getSiteContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Refiere y Gana | Tutierra Grupo Inmobiliario",
@@ -34,8 +35,8 @@ const PASOS = [
   },
 ];
 
-export default function RefiereYGanaPage() {
-  const content = getSiteContent();
+export default async function RefiereYGanaPage() {
+  const content = await getSiteContent();
   const refiereGanaImg = content.general?.refiereGanaImg || "/images/referidos/handshake.jpg";
 
   const whatsappMsg = encodeURIComponent(
@@ -49,6 +50,7 @@ export default function RefiereYGanaPage() {
           src={refiereGanaImg}
           alt="Refiere y Gana Tutierra"
           fill
+          unoptimized
           className="object-cover opacity-30"
           priority
         />

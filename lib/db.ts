@@ -3,14 +3,13 @@ import path from "path";
 import { PROYECTOS, POSTS, Proyecto, Post } from "./site-data";
 import { createClient } from "@supabase/supabase-js";
 
-// Inicializa cliente de Supabase si existen las variables de entorno
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
 const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
-const supabase = (supabaseUrl && supabaseAnonKey)
+
+export const supabase = (supabaseUrl && supabaseAnonKey)
   ? createClient(supabaseUrl, supabaseAnonKey)
   : null;
 
-// En Vercel Serverless se utiliza /tmp para persistencia en memoria local
 const DATA_DIR = process.env.VERCEL
   ? "/tmp"
   : path.join(process.cwd(), "data");
@@ -70,12 +69,25 @@ function ensureDir() {
     if (!fs.existsSync(DATA_DIR)) {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
-  } catch (e) {
-    console.warn("Could not create DATA_DIR");
-  }
+  } catch (e) {}
 }
 
-export function getSiteContent() {
+export async function getSiteContent() {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("data")
+        .eq("id", "general_content")
+        .single();
+      if (!error && data?.data) {
+        return data.data;
+      }
+    } catch (e) {
+      console.error("Error fetching site_content from Supabase DB:", e);
+    }
+  }
+
   ensureDir();
   try {
     if (fs.existsSync(CONTENT_FILE)) {
@@ -85,36 +97,44 @@ export function getSiteContent() {
     if (fs.existsSync(orig)) {
       return JSON.parse(fs.readFileSync(orig, "utf-8"));
     }
-  } catch (e) {
-    console.error("Error reading site-content.json:", e);
-  }
+  } catch (e) {}
   return DEFAULT_CONTENT;
 }
 
-export function saveSiteContent(data: any) {
+export async function saveSiteContent(data: any) {
   ensureDir();
   try {
     fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (e) {
-    console.error("Error saving site content:", e);
-  }
+  } catch (e) {}
 
-  // Guardado asíncrono a Supabase Database si el cliente está conectado
   if (supabase) {
-    (async () => {
-      try {
-        const { error } = await supabase
-          .from("site_content")
-          .upsert({ id: "general_content", data: data, updated_at: new Date().toISOString() });
-        if (error) console.error("Error al guardar site_content en Supabase DB:", error);
-      } catch (err) {
-        console.error("Supabase upsert error:", err);
-      }
-    })();
+    try {
+      const { error } = await supabase
+        .from("site_content")
+        .upsert({ id: "general_content", data: data, updated_at: new Date().toISOString() });
+      if (error) console.error("Error al guardar site_content en Supabase DB:", error);
+    } catch (err) {
+      console.error("Supabase site_content upsert error:", err);
+    }
   }
 }
 
-export function getProjectsContent(): Proyecto[] {
+export async function getProjectsContent(): Promise<Proyecto[]> {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("data")
+        .eq("id", "projects_content")
+        .single();
+      if (!error && data?.data) {
+        return data.data;
+      }
+    } catch (e) {
+      console.error("Error fetching projects_content from Supabase DB:", e);
+    }
+  }
+
   ensureDir();
   try {
     if (fs.existsSync(PROJECTS_FILE)) {
@@ -124,35 +144,44 @@ export function getProjectsContent(): Proyecto[] {
     if (fs.existsSync(orig)) {
       return JSON.parse(fs.readFileSync(orig, "utf-8"));
     }
-  } catch (e) {
-    console.error("Error reading projects-content.json:", e);
-  }
+  } catch (e) {}
   return PROYECTOS;
 }
 
-export function saveProjectsContent(data: any) {
+export async function saveProjectsContent(data: any) {
   ensureDir();
   try {
     fs.writeFileSync(PROJECTS_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (e) {
-    console.error("Error saving projects content:", e);
-  }
+  } catch (e) {}
 
   if (supabase) {
-    (async () => {
-      try {
-        const { error } = await supabase
-          .from("site_content")
-          .upsert({ id: "projects_content", data: data, updated_at: new Date().toISOString() });
-        if (error) console.error("Error al guardar projects_content en Supabase DB:", error);
-      } catch (err) {
-        console.error("Supabase projects upsert error:", err);
-      }
-    })();
+    try {
+      const { error } = await supabase
+        .from("site_content")
+        .upsert({ id: "projects_content", data: data, updated_at: new Date().toISOString() });
+      if (error) console.error("Error al guardar projects_content en Supabase DB:", error);
+    } catch (err) {
+      console.error("Supabase projects upsert error:", err);
+    }
   }
 }
 
-export function getPostsContent(): Post[] {
+export async function getPostsContent(): Promise<Post[]> {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("data")
+        .eq("id", "posts_content")
+        .single();
+      if (!error && data?.data) {
+        return data.data;
+      }
+    } catch (e) {
+      console.error("Error fetching posts_content from Supabase DB:", e);
+    }
+  }
+
   ensureDir();
   try {
     if (fs.existsSync(POSTS_FILE)) {
@@ -162,31 +191,25 @@ export function getPostsContent(): Post[] {
     if (fs.existsSync(orig)) {
       return JSON.parse(fs.readFileSync(orig, "utf-8"));
     }
-  } catch (e) {
-    console.error("Error reading posts-content.json:", e);
-  }
+  } catch (e) {}
   return POSTS;
 }
 
-export function savePostsContent(data: any) {
+export async function savePostsContent(data: any) {
   ensureDir();
   try {
     fs.writeFileSync(POSTS_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (e) {
-    console.error("Error saving posts content:", e);
-  }
+  } catch (e) {}
 
   if (supabase) {
-    (async () => {
-      try {
-        const { error } = await supabase
-          .from("site_content")
-          .upsert({ id: "posts_content", data: data, updated_at: new Date().toISOString() });
-        if (error) console.error("Error al guardar posts_content en Supabase DB:", error);
-      } catch (err) {
-        console.error("Supabase posts upsert error:", err);
-      }
-    })();
+    try {
+      const { error } = await supabase
+        .from("site_content")
+        .upsert({ id: "posts_content", data: data, updated_at: new Date().toISOString() });
+      if (error) console.error("Error al guardar posts_content en Supabase DB:", error);
+    } catch (err) {
+      console.error("Supabase posts upsert error:", err);
+    }
   }
 }
 
@@ -197,7 +220,22 @@ export interface Testimonio {
   imagen: string;
 }
 
-export function getTestimoniosContent(): Testimonio[] {
+export async function getTestimoniosContent(): Promise<Testimonio[]> {
+  if (supabase) {
+    try {
+      const { data, error } = await supabase
+        .from("site_content")
+        .select("data")
+        .eq("id", "testimonios_content")
+        .single();
+      if (!error && data?.data) {
+        return data.data;
+      }
+    } catch (e) {
+      console.error("Error fetching testimonios_content from Supabase DB:", e);
+    }
+  }
+
   ensureDir();
   try {
     if (fs.existsSync(TESTIMONIOS_FILE)) {
@@ -207,30 +245,24 @@ export function getTestimoniosContent(): Testimonio[] {
     if (fs.existsSync(orig)) {
       return JSON.parse(fs.readFileSync(orig, "utf-8"));
     }
-  } catch (e) {
-    console.error("Error reading testimonios-content.json:", e);
-  }
+  } catch (e) {}
   return [];
 }
 
-export function saveTestimoniosContent(data: Testimonio[]) {
+export async function saveTestimoniosContent(data: Testimonio[]) {
   ensureDir();
   try {
     fs.writeFileSync(TESTIMONIOS_FILE, JSON.stringify(data, null, 2), "utf-8");
-  } catch (e) {
-    console.error("Error saving testimonios content:", e);
-  }
+  } catch (e) {}
 
   if (supabase) {
-    (async () => {
-      try {
-        const { error } = await supabase
-          .from("site_content")
-          .upsert({ id: "testimonios_content", data: data, updated_at: new Date().toISOString() });
-        if (error) console.error("Error al guardar testimonios_content en Supabase DB:", error);
-      } catch (err) {
-        console.error("Supabase testimonios upsert error:", err);
-      }
-    })();
+    try {
+      const { error } = await supabase
+        .from("site_content")
+        .upsert({ id: "testimonios_content", data: data, updated_at: new Date().toISOString() });
+      if (error) console.error("Error al guardar testimonios_content en Supabase DB:", error);
+    } catch (err) {
+      console.error("Supabase testimonios upsert error:", err);
+    }
   }
 }

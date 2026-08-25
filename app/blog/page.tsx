@@ -14,8 +14,8 @@ export const metadata: Metadata = {
     "Descubre artículos informativos, guías de compra de terrenos y consejos sobre construcción sostenible en el Valle Sagrado de Cusco.",
 };
 
-export default function BlogPage() {
-  const posts = getPostsContent();
+export default async function BlogPage() {
+  const posts = await getPostsContent();
 
   return (
     <>
@@ -58,6 +58,7 @@ export default function BlogPage() {
                       src={post.imagen}
                       alt={post.titulo}
                       fill
+                      unoptimized
                       className="object-cover transition-transform duration-500 ease-out group-hover:scale-105"
                     />
                   </Link>

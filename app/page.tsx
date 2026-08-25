@@ -9,11 +9,11 @@ import { getSiteContent, getProjectsContent, getTestimoniosContent } from "@/lib
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
 
-export default function Home() {
-  const content = getSiteContent();
-  // Solo incluye proyectos activos y que NO estén culminados/clausurados
-  const projects = getProjectsContent().filter((p) => p.activo !== false && !p.clausurado);
-  const testimonies = getTestimoniosContent();
+export default async function Home() {
+  const content = await getSiteContent();
+  const allProjects = await getProjectsContent();
+  const projects = allProjects.filter((p) => p.activo !== false && !p.clausurado);
+  const testimonies = await getTestimoniosContent();
 
   return (
     <>

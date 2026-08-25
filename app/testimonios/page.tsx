@@ -14,9 +14,9 @@ export const metadata: Metadata = {
     "Descubre las opiniones y experiencias de las familias que ya invirtieron en terrenos saneados de Tutierra en Cusco y el Valle Sagrado.",
 };
 
-export default function TestimoniosPage() {
-  const testimonios = getTestimoniosContent();
-  const siteContent = getSiteContent();
+export default async function TestimoniosPage() {
+  const testimonios = await getTestimoniosContent();
+  const siteContent = await getSiteContent();
   const heroImages = siteContent.general?.testimoniosHeroImages && siteContent.general.testimoniosHeroImages.length > 0
     ? siteContent.general.testimoniosHeroImages
     : testimonios.map((t) => t.imagen);
@@ -40,10 +40,8 @@ export default function TestimoniosPage() {
 
   return (
     <div id="testimonios-page-root">
-      {/* Hero Section: Centered Title & Tagline */}
+      {/* Hero Section */}
       <section className="relative overflow-hidden flex min-h-dvh w-full flex-col justify-center items-center text-center pt-[35%] pb-[8%] md:pt-[15%] md:pb-[4%]">
-        
-        {/* Image Gallery background (using the custom CMS images) */}
         <div className="absolute inset-0 pointer-events-none z-0">
           <ImageGallery images={heroImages} />
         </div>
