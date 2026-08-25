@@ -9,6 +9,7 @@ import { CONTACT, SOCIAL } from "@/lib/site-data";
 import { getSiteContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Nosotros | Tutierra Grupo Inmobiliario",

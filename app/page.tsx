@@ -7,6 +7,7 @@ import UnifiedContactFooter from "@/components/UnifiedContactFooter";
 import { getSiteContent, getProjectsContent, getTestimoniosContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export default function Home() {
   const content = getSiteContent();

@@ -6,6 +6,7 @@ import UnifiedContactFooter from "@/components/UnifiedContactFooter";
 import { getTestimoniosContent, getSiteContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Testimonios | Tutierra Grupo Inmobiliario",

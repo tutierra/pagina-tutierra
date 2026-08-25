@@ -5,6 +5,7 @@ import UnifiedContactFooter from "@/components/UnifiedContactFooter";
 import { getProjectsContent, getSiteContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
+export const revalidate = 0;
 
 export const metadata: Metadata = {
   title: "Proyectos | Tutierra Grupo Inmobiliario",

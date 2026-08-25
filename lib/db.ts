@@ -1,8 +1,16 @@
 import fs from "fs";
 import path from "path";
 import { PROYECTOS, POSTS, Proyecto, Post } from "./site-data";
+import { createClient } from "@supabase/supabase-js";
 
-// En Vercel (servidor Serverless), se utiliza el directorio /tmp para escritura permisiva
+// Inicializa cliente de Supabase si existen las variables de entorno
+const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+const supabase = (supabaseUrl && supabaseAnonKey)
+  ? createClient(supabaseUrl, supabaseAnonKey)
+  : null;
+
+// En Vercel Serverless se utiliza /tmp para persistencia en memoria local
 const DATA_DIR = process.env.VERCEL
   ? "/tmp"
   : path.join(process.cwd(), "data");
@@ -63,7 +71,7 @@ function ensureDir() {
       fs.mkdirSync(DATA_DIR, { recursive: true });
     }
   } catch (e) {
-    console.warn("Could not create DATA_DIR, using fallback memory");
+    console.warn("Could not create DATA_DIR");
   }
 }
 
@@ -90,6 +98,20 @@ export function saveSiteContent(data: any) {
   } catch (e) {
     console.error("Error saving site content:", e);
   }
+
+  // Guardado asíncrono a Supabase Database si el cliente está conectado
+  if (supabase) {
+    (async () => {
+      try {
+        const { error } = await supabase
+          .from("site_content")
+          .upsert({ id: "general_content", data: data, updated_at: new Date().toISOString() });
+        if (error) console.error("Error al guardar site_content en Supabase DB:", error);
+      } catch (err) {
+        console.error("Supabase upsert error:", err);
+      }
+    })();
+  }
 }
 
 export function getProjectsContent(): Proyecto[] {
@@ -115,6 +137,19 @@ export function saveProjectsContent(data: any) {
   } catch (e) {
     console.error("Error saving projects content:", e);
   }
+
+  if (supabase) {
+    (async () => {
+      try {
+        const { error } = await supabase
+          .from("site_content")
+          .upsert({ id: "projects_content", data: data, updated_at: new Date().toISOString() });
+        if (error) console.error("Error al guardar projects_content en Supabase DB:", error);
+      } catch (err) {
+        console.error("Supabase projects upsert error:", err);
+      }
+    })();
+  }
 }
 
 export function getPostsContent(): Post[] {
@@ -139,6 +174,19 @@ export function savePostsContent(data: any) {
     fs.writeFileSync(POSTS_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (e) {
     console.error("Error saving posts content:", e);
+  }
+
+  if (supabase) {
+    (async () => {
+      try {
+        const { error } = await supabase
+          .from("site_content")
+          .upsert({ id: "posts_content", data: data, updated_at: new Date().toISOString() });
+        if (error) console.error("Error al guardar posts_content en Supabase DB:", error);
+      } catch (err) {
+        console.error("Supabase posts upsert error:", err);
+      }
+    })();
   }
 }
 
@@ -171,5 +219,18 @@ export function saveTestimoniosContent(data: Testimonio[]) {
     fs.writeFileSync(TESTIMONIOS_FILE, JSON.stringify(data, null, 2), "utf-8");
   } catch (e) {
     console.error("Error saving testimonios content:", e);
+  }
+
+  if (supabase) {
+    (async () => {
+      try {
+        const { error } = await supabase
+          .from("site_content")
+          .upsert({ id: "testimonios_content", data: data, updated_at: new Date().toISOString() });
+        if (error) console.error("Error al guardar testimonios_content en Supabase DB:", error);
+      } catch (err) {
+        console.error("Supabase testimonios upsert error:", err);
+      }
+    })();
   }
 }
