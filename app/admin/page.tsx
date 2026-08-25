@@ -361,9 +361,12 @@ export default function AdminDashboardPage() {
                 <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Título del Hero</label>
                 <input
                   type="text"
-                  value={content.hero.title}
+                  value={content?.hero?.title ?? ""}
                   onChange={(e) =>
-                    setContent({ ...content, hero: { ...content.hero, title: e.target.value } })
+                    setContent((prev) => ({
+                      ...(prev || DEFAULT_SITE_CONTENT),
+                      hero: { ...((prev || DEFAULT_SITE_CONTENT).hero || {}), title: e.target.value },
+                    }))
                   }
                   className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                 />
@@ -372,9 +375,12 @@ export default function AdminDashboardPage() {
                 <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Descripción del Hero</label>
                 <textarea
                   rows={3}
-                  value={content.hero.description}
+                  value={content?.hero?.description ?? ""}
                   onChange={(e) =>
-                    setContent({ ...content, hero: { ...content.hero, description: e.target.value } })
+                    setContent((prev) => ({
+                      ...(prev || DEFAULT_SITE_CONTENT),
+                      hero: { ...((prev || DEFAULT_SITE_CONTENT).hero || {}), description: e.target.value },
+                    }))
                   }
                   className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                 />
@@ -388,15 +394,18 @@ export default function AdminDashboardPage() {
                 
                 {/* Thumbnails Grid */}
                 <div className="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-5 gap-4 mb-2">
-                  {(content.hero.images || []).map((img, idx) => (
+                  {(content?.hero?.images || []).map((img, idx) => (
                     <div key={idx} className="relative aspect-[9/16] overflow-hidden rounded-[0.8rem] border border-brand-gray/10 group bg-black/25">
                       <img src={img} alt="Hero carrusel" className="h-full w-full object-cover" />
                       <button
                         type="button"
                         onClick={() => {
-                          const updated = { ...content };
-                          updated.hero.images = (updated.hero.images || []).filter((_, i) => i !== idx);
-                          setContent(updated);
+                          setContent((prev) => {
+                            const cur = prev || DEFAULT_SITE_CONTENT;
+                            const curHero = cur.hero || { title: "", description: "", images: [] };
+                            const updatedImages = (curHero.images || []).filter((_, i) => i !== idx);
+                            return { ...cur, hero: { ...curHero, images: updatedImages } };
+                          });
                         }}
                         className="absolute top-2 right-2 bg-red-600/80 text-white rounded-full h-6 w-6 flex items-center justify-center text-[0.7rem] opacity-0 group-hover:opacity-100 transition-opacity hover:bg-red-700 font-bold"
                         title="Eliminar de la galería"
@@ -508,37 +517,39 @@ export default function AdminDashboardPage() {
                 <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Texto Destacado Itálico Visión</label>
                 <textarea
                   rows={2}
-                  value={content.manifesto.visionItalic || ""}
+                  value={content?.manifesto?.visionItalic ?? ""}
                   onChange={(e) =>
-                    setContent({
-                      ...content,
-                      manifesto: { ...content.manifesto, visionItalic: e.target.value },
-                    })
+                    setContent((prev) => ({
+                      ...(prev || DEFAULT_SITE_CONTENT),
+                      manifesto: { ...((prev || DEFAULT_SITE_CONTENT).manifesto || {}), visionItalic: e.target.value },
+                    }))
                   }
                   className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                 />
               </div>
-              {/* Dynamic Manifesto Image Upload */}
+              {/* Manifesto Image Upload */}
               <div className="flex flex-col gap-2">
-                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Imagen de Sección Manifiesto</label>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Imagen de Sección Misión y Visión</label>
                 <div className="flex items-center gap-4 flex-wrap">
-                  {content.manifesto.image && (
-                    <div className="relative h-20 w-32 overflow-hidden rounded-[0.8rem] border border-brand-gray/10 bg-black/25">
+                  {content?.manifesto?.image && (
+                    <div className="relative h-20 w-20 overflow-hidden rounded-[0.8rem] border border-brand-gray/10 bg-black/25">
                       <img src={content.manifesto.image} alt="Manifiesto" className="h-full w-full object-cover" />
                     </div>
                   )}
                   <div className="flex-1 min-w-[200px] flex gap-2">
                     <input
                       type="text"
-                      value={content.manifesto.image || ""}
+                      value={content?.manifesto?.image ?? ""}
                       onChange={(e) =>
-                        setContent({ ...content, manifesto: { ...content.manifesto, image: e.target.value } })
+                        setContent((prev) => ({
+                          ...(prev || DEFAULT_SITE_CONTENT),
+                          manifesto: { ...((prev || DEFAULT_SITE_CONTENT).manifesto || {}), image: e.target.value },
+                        }))
                       }
                       className="flex-1 rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
-                      placeholder="/images/global/manifesto-equipo.png"
                     />
                     <div className="relative overflow-hidden rounded-[0.6rem] bg-tech-green text-brand-ink font-semibold px-5 py-3 text-[0.85rem] cursor-pointer hover:scale-[0.97] active:scale-[0.97] transition-transform flex items-center justify-center shrink-0">
-                      <span>Subir Foto</span>
+                      <span>Subir Imagen</span>
                       <input
                         type="file"
                         accept="image/*"
@@ -547,7 +558,10 @@ export default function AdminDashboardPage() {
                           if (e.target.files && e.target.files[0]) {
                             const url = await uploadFileDirectly(e.target.files[0]);
                             if (url) {
-                              setContent({ ...content, manifesto: { ...content.manifesto, image: url } });
+                              setContent((prev) => ({
+                                ...(prev || DEFAULT_SITE_CONTENT),
+                                manifesto: { ...((prev || DEFAULT_SITE_CONTENT).manifesto || {}), image: url },
+                              }));
                             }
                           }
                         }}
@@ -566,12 +580,12 @@ export default function AdminDashboardPage() {
                 <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Título Fundador</label>
                 <input
                   type="text"
-                  value={content.founder.title}
+                  value={content?.founder?.title ?? ""}
                   onChange={(e) =>
-                    setContent({
-                      ...content,
-                      founder: { ...content.founder, title: e.target.value },
-                    })
+                    setContent((prev) => ({
+                      ...(prev || DEFAULT_SITE_CONTENT),
+                      founder: { ...((prev || DEFAULT_SITE_CONTENT).founder || {}), title: e.target.value },
+                    }))
                   }
                   className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                 />
@@ -580,12 +594,12 @@ export default function AdminDashboardPage() {
                 <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Cita/Frase del Fundador</label>
                 <textarea
                   rows={3}
-                  value={content.founder.text}
+                  value={content?.founder?.text ?? ""}
                   onChange={(e) =>
-                    setContent({
-                      ...content,
-                      founder: { ...content.founder, text: e.target.value },
-                    })
+                    setContent((prev) => ({
+                      ...(prev || DEFAULT_SITE_CONTENT),
+                      founder: { ...((prev || DEFAULT_SITE_CONTENT).founder || {}), text: e.target.value },
+                    }))
                   }
                   className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                 />
@@ -595,12 +609,12 @@ export default function AdminDashboardPage() {
                   <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Nombre</label>
                   <input
                     type="text"
-                    value={content.founder.name}
+                    value={content?.founder?.name ?? ""}
                     onChange={(e) =>
-                      setContent({
-                        ...content,
-                        founder: { ...content.founder, name: e.target.value },
-                      })
+                      setContent((prev) => ({
+                        ...(prev || DEFAULT_SITE_CONTENT),
+                        founder: { ...((prev || DEFAULT_SITE_CONTENT).founder || {}), name: e.target.value },
+                      }))
                     }
                     className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                   />
@@ -609,12 +623,12 @@ export default function AdminDashboardPage() {
                   <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Puesto</label>
                   <input
                     type="text"
-                    value={content.founder.role}
+                    value={content?.founder?.role ?? ""}
                     onChange={(e) =>
-                      setContent({
-                        ...content,
-                        founder: { ...content.founder, role: e.target.value },
-                      })
+                      setContent((prev) => ({
+                        ...(prev || DEFAULT_SITE_CONTENT),
+                        founder: { ...((prev || DEFAULT_SITE_CONTENT).founder || {}), role: e.target.value },
+                      }))
                     }
                     className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                   />
@@ -625,7 +639,7 @@ export default function AdminDashboardPage() {
               <div className="flex flex-col gap-2">
                 <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Imagen del Fundador</label>
                 <div className="flex items-center gap-4 flex-wrap">
-                  {content.founder.img && (
+                  {content?.founder?.img && (
                     <div className="relative h-20 w-20 overflow-hidden rounded-[0.8rem] border border-brand-gray/10 bg-black/25">
                       <img src={content.founder.img} alt="Fundador" className="h-full w-full object-cover" />
                     </div>
@@ -633,9 +647,12 @@ export default function AdminDashboardPage() {
                   <div className="flex-1 min-w-[200px] flex gap-2">
                     <input
                       type="text"
-                      value={content.founder.img}
+                      value={content?.founder?.img ?? ""}
                       onChange={(e) =>
-                        setContent({ ...content, founder: { ...content.founder, img: e.target.value } })
+                        setContent((prev) => ({
+                          ...(prev || DEFAULT_SITE_CONTENT),
+                          founder: { ...((prev || DEFAULT_SITE_CONTENT).founder || {}), img: e.target.value },
+                        }))
                       }
                       className="flex-1 rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
                     />
@@ -649,7 +666,10 @@ export default function AdminDashboardPage() {
                           if (e.target.files && e.target.files[0]) {
                             const url = await uploadFileDirectly(e.target.files[0]);
                             if (url) {
-                              setContent({ ...content, founder: { ...content.founder, img: url } });
+                              setContent((prev) => ({
+                                ...(prev || DEFAULT_SITE_CONTENT),
+                                founder: { ...((prev || DEFAULT_SITE_CONTENT).founder || {}), img: url },
+                              }));
                             }
                           }
                         }}
