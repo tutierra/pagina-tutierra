@@ -22,7 +22,15 @@ export async function POST(request: Request) {
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // Intentar guardar en disco local (desarrollo local)
+    // En Vercel o servidores Serverless, convertimos la imagen directamente a Data URL para evitar restricciones de disco
+    if (process.env.VERCEL) {
+      const base64 = buffer.toString("base64");
+      const mimeType = file.type || "image/png";
+      const dataUrl = `data:${mimeType};base64,${base64}`;
+      return NextResponse.json({ success: true, url: dataUrl });
+    }
+
+    // Entorno local: guardar en la carpeta /public/uploads
     try {
       const uploadDir = path.join(process.cwd(), "public", "uploads");
       if (!fs.existsSync(uploadDir)) {
@@ -38,12 +46,10 @@ export async function POST(request: Request) {
       const publicPath = `/uploads/${uniqueName}`;
       return NextResponse.json({ success: true, url: publicPath });
     } catch (fsError) {
-      // En entorno Vercel (disco de solo lectura), convierte la imagen a Data URL seguro para producción
-      console.warn("Entorno Serverless en Vercel detectado. Guardando imagen como Data URL...");
+      // Fallback a Data URL si el disco es de solo lectura
       const base64 = buffer.toString("base64");
       const mimeType = file.type || "image/png";
       const dataUrl = `data:${mimeType};base64,${base64}`;
-
       return NextResponse.json({ success: true, url: dataUrl });
     }
   } catch (error) {

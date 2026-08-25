@@ -2,7 +2,13 @@ import fs from "fs";
 import path from "path";
 import { PROYECTOS, POSTS, Proyecto, Post } from "./site-data";
 
-const DATA_DIR = path.join(process.cwd(), "data");
+// En Vercel (servidor Serverless), se utiliza el directorio /tmp para escritura permisiva
+const DATA_DIR = process.env.VERCEL
+  ? "/tmp"
+  : path.join(process.cwd(), "data");
+
+const ORIGINAL_DATA_DIR = path.join(process.cwd(), "data");
+
 const CONTENT_FILE = path.join(DATA_DIR, "site-content.json");
 const PROJECTS_FILE = path.join(DATA_DIR, "projects-content.json");
 const POSTS_FILE = path.join(DATA_DIR, "posts-content.json");
@@ -30,7 +36,8 @@ const DEFAULT_CONTENT = {
   },
   general: {
     valleBgImage: "/images/global/valle-sagrado-bg.jpg",
-    refiereGanaImg: "/images/referidos/handshake.jpg"
+    refiereGanaImg: "/images/referidos/handshake.jpg",
+    proyectosConcluidos: []
   },
   nosotros: {
     timeline: [
@@ -51,8 +58,12 @@ const DEFAULT_CONTENT = {
 };
 
 function ensureDir() {
-  if (!fs.existsSync(DATA_DIR)) {
-    fs.mkdirSync(DATA_DIR, { recursive: true });
+  try {
+    if (!fs.existsSync(DATA_DIR)) {
+      fs.mkdirSync(DATA_DIR, { recursive: true });
+    }
+  } catch (e) {
+    console.warn("Could not create DATA_DIR, using fallback memory");
   }
 }
 
@@ -62,6 +73,10 @@ export function getSiteContent() {
     if (fs.existsSync(CONTENT_FILE)) {
       return JSON.parse(fs.readFileSync(CONTENT_FILE, "utf-8"));
     }
+    const orig = path.join(ORIGINAL_DATA_DIR, "site-content.json");
+    if (fs.existsSync(orig)) {
+      return JSON.parse(fs.readFileSync(orig, "utf-8"));
+    }
   } catch (e) {
     console.error("Error reading site-content.json:", e);
   }
@@ -70,7 +85,11 @@ export function getSiteContent() {
 
 export function saveSiteContent(data: any) {
   ensureDir();
-  fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(CONTENT_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Error saving site content:", e);
+  }
 }
 
 export function getProjectsContent(): Proyecto[] {
@@ -78,6 +97,10 @@ export function getProjectsContent(): Proyecto[] {
   try {
     if (fs.existsSync(PROJECTS_FILE)) {
       return JSON.parse(fs.readFileSync(PROJECTS_FILE, "utf-8"));
+    }
+    const orig = path.join(ORIGINAL_DATA_DIR, "projects-content.json");
+    if (fs.existsSync(orig)) {
+      return JSON.parse(fs.readFileSync(orig, "utf-8"));
     }
   } catch (e) {
     console.error("Error reading projects-content.json:", e);
@@ -87,7 +110,11 @@ export function getProjectsContent(): Proyecto[] {
 
 export function saveProjectsContent(data: any) {
   ensureDir();
-  fs.writeFileSync(PROJECTS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(PROJECTS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Error saving projects content:", e);
+  }
 }
 
 export function getPostsContent(): Post[] {
@@ -95,6 +122,10 @@ export function getPostsContent(): Post[] {
   try {
     if (fs.existsSync(POSTS_FILE)) {
       return JSON.parse(fs.readFileSync(POSTS_FILE, "utf-8"));
+    }
+    const orig = path.join(ORIGINAL_DATA_DIR, "posts-content.json");
+    if (fs.existsSync(orig)) {
+      return JSON.parse(fs.readFileSync(orig, "utf-8"));
     }
   } catch (e) {
     console.error("Error reading posts-content.json:", e);
@@ -104,7 +135,11 @@ export function getPostsContent(): Post[] {
 
 export function savePostsContent(data: any) {
   ensureDir();
-  fs.writeFileSync(POSTS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(POSTS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Error saving posts content:", e);
+  }
 }
 
 export interface Testimonio {
@@ -120,6 +155,10 @@ export function getTestimoniosContent(): Testimonio[] {
     if (fs.existsSync(TESTIMONIOS_FILE)) {
       return JSON.parse(fs.readFileSync(TESTIMONIOS_FILE, "utf-8"));
     }
+    const orig = path.join(ORIGINAL_DATA_DIR, "testimonios-content.json");
+    if (fs.existsSync(orig)) {
+      return JSON.parse(fs.readFileSync(orig, "utf-8"));
+    }
   } catch (e) {
     console.error("Error reading testimonios-content.json:", e);
   }
@@ -128,5 +167,9 @@ export function getTestimoniosContent(): Testimonio[] {
 
 export function saveTestimoniosContent(data: Testimonio[]) {
   ensureDir();
-  fs.writeFileSync(TESTIMONIOS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  try {
+    fs.writeFileSync(TESTIMONIOS_FILE, JSON.stringify(data, null, 2), "utf-8");
+  } catch (e) {
+    console.error("Error saving testimonios content:", e);
+  }
 }
