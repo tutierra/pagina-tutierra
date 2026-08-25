@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { savePostsContent } from "@/lib/db";
 
 export async function POST(request: Request) {
@@ -13,8 +14,14 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     savePostsContent(data);
+
+    revalidatePath("/", "layout");
+    revalidatePath("/blog", "page");
+    revalidatePath("/admin", "page");
+
     return NextResponse.json({ success: true });
   } catch (error) {
-    return NextResponse.json({ error: "Error al guardar los posts del blog" }, { status: 500 });
+    console.error("Error al guardar las publicaciones:", error);
+    return NextResponse.json({ error: "Error al guardar las publicaciones" }, { status: 500 });
   }
 }

@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { saveTestimoniosContent } from "@/lib/db";
 
 export async function POST(request: Request) {
@@ -13,8 +14,14 @@ export async function POST(request: Request) {
   try {
     const data = await request.json();
     saveTestimoniosContent(data);
+
+    revalidatePath("/", "layout");
+    revalidatePath("/testimonios", "page");
+    revalidatePath("/admin", "page");
+
     return NextResponse.json({ success: true });
   } catch (error) {
+    console.error("Error al guardar los testimonios:", error);
     return NextResponse.json({ error: "Error al guardar los testimonios" }, { status: 500 });
   }
 }
