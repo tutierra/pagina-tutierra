@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import Image from "next/image";
 
 export default function ProyectosExpand({ items }: { items: any[] }) {
   const safeItems = (items || []).filter(Boolean);
@@ -40,9 +41,13 @@ export default function ProyectosExpand({ items }: { items: any[] }) {
               {/* Logo Oficial del Proyecto (Tarjeta colapsada/inactiva, centrado vertical y horizontalmente) */}
               <div className="absolute left-1/2 top-1/2 z-10 -translate-x-1/2 -translate-y-1/2 transition-all duration-300 ease-out group-hover:opacity-0 group-hover:scale-90 pointer-events-none flex flex-col items-center justify-center p-4">
                 {logo ? (
-                  <img
+                  <Image
                     src={logo}
                     alt={nombre}
+                    width={140}
+                    height={80}
+                    unoptimized
+                    loading="lazy"
                     className="max-h-20 max-w-[140px] object-contain drop-shadow-[0_4px_12px_rgba(0,0,0,0.85)] filter brightness-0 invert"
                   />
                 ) : (

@@ -26,6 +26,10 @@ export default function RootLayout({
       className={`${grotesk.variable} ${groteskDisplay.variable} ${breeSerif.variable} h-full antialiased`}
     >
       <head>
+        {/* Preconexión de red para Supabase Storage */}
+        <link rel="preconnect" href="https://qqygqderrewsjvoeoqww.supabase.co" />
+        <link rel="dns-prefetch" href="https://qqygqderrewsjvoeoqww.supabase.co" />
+
         {/* Google Tag Manager */}
         <Script
           id="gtm-script"
