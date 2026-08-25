@@ -145,6 +145,7 @@ export default function NosotrosPage() {
                   src={founder.img}
                   alt={`${founder.name}, fundador de Tutierra`}
                   fill
+                  unoptimized
                   sizes="(max-width: 1024px) 90vw, 40vw"
                   className="object-cover transition-transform duration-[900ms] ease-out group-hover:scale-[1.05]"
                   priority
