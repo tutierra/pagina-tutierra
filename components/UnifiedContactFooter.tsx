@@ -2,7 +2,13 @@ import Reveal from "./Reveal";
 import ContactForm from "./ContactForm";
 import Footer from "./Footer";
 
-export default function UnifiedContactFooter() {
+export default function UnifiedContactFooter({
+  proyectoPreseleccionado,
+  projects,
+}: {
+  proyectoPreseleccionado?: string;
+  projects?: any[];
+}) {
   return (
     <section className="flex min-h-dvh lg:h-dvh lg:min-h-0 flex-col justify-between border-t border-brand-gray/10 pt-[5vh] lg:pt-[4vh] pb-0 bg-transparent">
       <div className="mx-auto w-[90%] flex-1 flex items-center py-[2%]">
@@ -22,7 +28,7 @@ export default function UnifiedContactFooter() {
           <Reveal delay={0.12}>
             <div className="rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10">
               <div className="rounded-[1.2rem] border border-brand-gray/10 p-[6%] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
-                <ContactForm />
+                <ContactForm proyectoPreseleccionado={proyectoPreseleccionado} projects={projects} />
               </div>
             </div>
           </Reveal>

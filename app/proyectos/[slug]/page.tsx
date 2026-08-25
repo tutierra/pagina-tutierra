@@ -226,7 +226,7 @@ export default async function ProyectoDetailPage({ params }: Props) {
         </div>
       </section>
 
-      <UnifiedContactFooter />
+      <UnifiedContactFooter proyectoPreseleccionado={proyecto.slug || proyecto.nombre} projects={projects} />
     </>
   );
 }

@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { CONTACT, SOCIAL } from "@/lib/site-data";
 import ContactForm from "@/components/ContactForm";
 import Footer from "@/components/Footer";
+import { getProjectsContent } from "@/lib/db";
 
 export const dynamic = "force-dynamic";
 export const revalidate = 0;
@@ -15,6 +16,7 @@ type Props = { searchParams: Promise<{ proyecto?: string }> };
 
 export default async function ContactanosPage({ searchParams }: Props) {
   const { proyecto } = await searchParams;
+  const projects = await getProjectsContent();
 
   return (
     <>
@@ -67,7 +69,7 @@ export default async function ContactanosPage({ searchParams }: Props) {
             </div>
 
             <div className="rounded-[1.2rem] border border-brand-gray/15 p-[6%]">
-              <ContactForm proyectoPreseleccionado={proyecto} />
+              <ContactForm proyectoPreseleccionado={proyecto} projects={projects} />
             </div>
           </div>
         </div>

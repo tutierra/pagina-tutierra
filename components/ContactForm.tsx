@@ -4,11 +4,30 @@ import { useState } from "react";
 import { PROYECTOS } from "@/lib/site-data";
 import { motion, AnimatePresence } from "framer-motion";
 
-export default function ContactForm({ proyectoPreseleccionado }: { proyectoPreseleccionado?: string }) {
+export default function ContactForm({
+  proyectoPreseleccionado,
+  projects,
+}: {
+  proyectoPreseleccionado?: string;
+  projects?: any[];
+}) {
+  const availableProjects = (projects && projects.length > 0 ? projects : PROYECTOS).filter(
+    (p: any) => !p.clausurado && p.status !== "culminado" && p.status !== "finalizado"
+  );
+
   const [nombre, setNombre] = useState("");
   const [telefono, setTelefono] = useState("");
   const [email, setEmail] = useState("");
-  const [proyecto, setProyecto] = useState(proyectoPreseleccionado ?? "");
+  const [proyecto, setProyecto] = useState(() => {
+    if (!proyectoPreseleccionado) return "";
+    const match = availableProjects.find(
+      (p: any) =>
+        p.slug === proyectoPreseleccionado ||
+        p.id?.toString() === proyectoPreseleccionado ||
+        p.nombre?.toLowerCase() === proyectoPreseleccionado.toLowerCase()
+    );
+    return match ? (match.slug || match.id) : proyectoPreseleccionado;
+  });
   const [mensaje, setMensaje] = useState("");
   const [showPopup, setShowPopup] = useState(false);
   const [cargando, setCargando] = useState(false);
@@ -17,8 +36,8 @@ export default function ContactForm({ proyectoPreseleccionado }: { proyectoPrese
     e.preventDefault();
     setCargando(true);
 
-    const proyectoLabel =
-      PROYECTOS.find((p) => p.slug === proyecto)?.nombre ?? "No especificado";
+    const match = availableProjects.find((p: any) => (p.slug || p.id) === proyecto);
+    const proyectoLabel = match ? (match.nombre || match.title || match.name) : (proyecto || "No especificado");
 
     try {
       await fetch("/api/send-lead", {
@@ -86,16 +105,22 @@ export default function ContactForm({ proyectoPreseleccionado }: { proyectoPrese
         <label className="flex flex-col gap-[0.5em] text-[0.85rem] text-brand-gray/80 uppercase font-semibold">
           Proyecto de interés
           <select
+            name="project_interest"
             value={proyecto}
             onChange={(e) => setProyecto(e.target.value)}
             className="rounded-[0.6rem] border border-brand-gray/20 bg-brand-ink px-[1em] py-[0.8em] text-[0.95rem] text-white outline-none transition-colors duration-200 ease-out focus:border-tech-green cursor-pointer"
           >
             <option value="">Aún no estoy seguro</option>
-            {PROYECTOS.map((p) => (
-              <option key={p.slug} value={p.slug}>
-                {p.nombre}
-              </option>
-            ))}
+            {availableProjects.map((p: any) => {
+              const valName = p.nombre || p.title || p.name;
+              const valKey = p.id || p.slug || valName;
+              const valOption = p.slug || p.id || valName;
+              return (
+                <option key={valKey} value={valOption}>
+                  {valName}
+                </option>
+              );
+            })}
           </select>
         </label>
 
