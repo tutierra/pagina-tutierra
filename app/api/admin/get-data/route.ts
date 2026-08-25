@@ -10,10 +10,17 @@ export async function GET() {
     return NextResponse.json({ error: "No autorizado" }, { status: 401 });
   }
 
+  const [content, projects, posts, testimonios] = await Promise.all([
+    getSiteContent(),
+    getProjectsContent(),
+    getPostsContent(),
+    getTestimoniosContent(),
+  ]);
+
   return NextResponse.json({
-    content: getSiteContent(),
-    projects: getProjectsContent(),
-    posts: getPostsContent(),
-    testimonios: getTestimoniosContent(),
+    content,
+    projects,
+    posts,
+    testimonios,
   });
 }

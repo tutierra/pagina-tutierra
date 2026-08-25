@@ -55,12 +55,64 @@ interface Testimonio {
   imagen: string;
 }
 
+const DEFAULT_SITE_CONTENT: SiteContent = {
+  hero: {
+    title: "Creamos y unimos familias.",
+    description: "Desarrollamos proyectos inmobiliarios sostenibles en el Valle Sagrado, ofreciendo terrenos con saneamiento urbano e independización garantizada.",
+    images: ["/images/proyectos/proyecto-chinchero-01.jpg"]
+  },
+  manifesto: {
+    misionTitle: "Misión",
+    misionText: "Desarrollar proyectos inmobiliarios sostenibles en ubicaciones estratégicas, ofreciendo terrenos con saneamiento urbano e independización garantizada.",
+    misionItalic: "Brindando oportunidades de inversión seguras y rentables, integrando la naturaleza y el respeto por el entorno.",
+    visionTitle: "Visión",
+    visionText: "Ser el grupo inmobiliario de referencia en Cusco, liderando el desarrollo de comunidades planificadas y sostenibles con absoluta seguridad legal.",
+    visionItalic: "Inspirando un estilo de vida consciente y creando valor patrimonial intergeneracional para nuestros clientes.",
+    image: "/images/global/manifesto-equipo.png"
+  },
+  founder: {
+    title: "Una visión nacida en el Valle Sagrado",
+    text: "“Crecí viendo cómo muchas familias soñaban con un pedazo de tierra propio, pero se topaban con trámites, informalidad y promesas vacías. Fundé Tutierra para que ese sueño fuera seguro, legal y real. Cada lote que entregamos es una familia que echa raíces.”",
+    name: "Carlos Mendoza",
+    role: "Fundador y Director General",
+    img: "/images/testimonios/cliente-01.jpg"
+  },
+  general: {
+    valleBgImage: "/images/global/valle-sagrado-bg.jpg",
+    refiereGanaImg: "/images/referidos/handshake.jpg",
+    testimoniosHeroImages: [],
+    testimoniosTitle: "Familias que ya construyen su patrimonio con nosotros",
+    testimoniosDescription: "Conoce las historias y experiencias reales de quienes han invertido en terrenos con saneamiento urbano e independización garantizada en el Valle Sagrado de Cusco.",
+    proyectosConcluidos: []
+  },
+  nosotros: {
+    timeline: [],
+    cifras: [],
+    equipo: []
+  }
+};
+
+function safeMergeContent(defaultObj: SiteContent, incomingObj: any): SiteContent {
+  if (!incomingObj) return defaultObj;
+  return {
+    hero: { ...defaultObj.hero, ...(incomingObj.hero || {}) },
+    manifesto: { ...defaultObj.manifesto, ...(incomingObj.manifesto || {}) },
+    founder: { ...defaultObj.founder, ...(incomingObj.founder || {}) },
+    general: { ...defaultObj.general, ...(incomingObj.general || {}) },
+    nosotros: {
+      timeline: incomingObj.nosotros?.timeline || defaultObj.nosotros?.timeline || [],
+      cifras: incomingObj.nosotros?.cifras || defaultObj.nosotros?.cifras || [],
+      equipo: incomingObj.nosotros?.equipo || defaultObj.nosotros?.equipo || [],
+    },
+  };
+}
+
 export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
   const [activeTab, setActiveTab] = useState<"general" | "nosotros" | "proyectos" | "blog" | "testimonios" | "imagenes">("general");
 
-  // Data States
-  const [content, setContent] = useState<SiteContent | null>(null);
+  // Data States (Inicializado siempre con datos por defecto para que NUNCA sea nulo)
+  const [content, setContent] = useState<SiteContent>(DEFAULT_SITE_CONTENT);
   const [projects, setProjects] = useState<Project[]>([]);
   const [posts, setPosts] = useState<BlogPost[]>([]);
   const [testimonios, setTestimonios] = useState<Testimonio[]>([]);
@@ -93,10 +145,10 @@ export default function AdminDashboardPage() {
         return;
       }
       const data = await res.json();
-      setContent(data.content);
-      setProjects(data.projects);
-      setPosts(data.posts);
-      setTestimonios(data.testimonios || []);
+      setContent(safeMergeContent(DEFAULT_SITE_CONTENT, data.content));
+      setProjects(Array.isArray(data.projects) ? data.projects : []);
+      setPosts(Array.isArray(data.posts) ? data.posts : []);
+      setTestimonios(Array.isArray(data.testimonios) ? data.testimonios : []);
     } catch (err) {
       console.error("Error fetching admin data", err);
     } finally {
