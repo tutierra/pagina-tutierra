@@ -32,13 +32,14 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
 export default async function ProyectoDetailPage({ params }: Props) {
   const { slug } = await params;
   const projects = await getProjectsContent();
-  const proyecto = projects.find((p) => p.slug === slug);
+  const decodedSlug = decodeURIComponent(slug);
+  const proyecto = projects.find((p) => p.slug === slug || p.id === slug || p.slug === decodedSlug || p.id === decodedSlug);
   
   if (!proyecto || proyecto.clausurado || proyecto.activo === false) {
     notFound();
   }
 
-  const otros = projects.filter((p) => p.slug !== slug && p.activo !== false && !p.clausurado).slice(0, 3);
+  const otros = projects.filter((p) => (p.slug !== slug && p.id !== slug) && p.activo !== false && !p.clausurado).slice(0, 3);
   const imagenPlano = proyecto.galeria[2] || proyecto.imagenPrincipal;
 
   const mapQuery = proyecto.mapLink || proyecto.ubicacion;

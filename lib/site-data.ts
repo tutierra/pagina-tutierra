@@ -15,6 +15,7 @@ export const SOCIAL = {
 };
 
 export type Proyecto = {
+  id?: string;
   slug: string;
   nombre: string;
   ubicacion: string;

@@ -58,6 +58,46 @@ const DEFAULT_CONTENT = {
   }
 };
 
+export function normalizeProyecto(p: any): Proyecto {
+  if (!p) return {} as Proyecto;
+  const slug = p.slug || p.id || "";
+  const nombre = p.nombre || p.title || p.name || "Proyecto";
+  const ubicacion = p.ubicacion || p.location || "Valle Sagrado, Cusco";
+  const precioDesde = p.precioDesde || p.price || p.initialPrice || "";
+  const extension = p.extension || p.areaDesde || p.area || "";
+  const resumen = p.resumen || p.subtitle || p.shortDescription || "";
+  const descripcion = p.descripcion || p.description || "";
+  const caracteristicas = Array.isArray(p.caracteristicas) ? p.caracteristicas : (Array.isArray(p.features) ? p.features : []);
+  const imagenPrincipal = p.imagenPrincipal || p.image || p.coverImage || "/images/proyectos/proyecto-chinchero-01.jpg";
+  const galeria = Array.isArray(p.galeria) ? p.galeria : (Array.isArray(p.gallery) ? p.gallery : (Array.isArray(p.images) ? p.images : [imagenPrincipal]));
+  const logo = p.logo || "/emblem-white.png";
+  const lotesDisponiblesPct = typeof p.lotesDisponiblesPct === "number" ? p.lotesDisponiblesPct : 100;
+  const masterPlanAmenities = Array.isArray(p.masterPlanAmenities) ? p.masterPlanAmenities : [];
+  const areasComunes = Array.isArray(p.areasComunes) ? p.areasComunes : [];
+  const beneficiosCortos = Array.isArray(p.beneficiosCortos) ? p.beneficiosCortos : [];
+
+  return {
+    ...p,
+    slug,
+    nombre,
+    ubicacion,
+    precioDesde,
+    extension,
+    resumen,
+    descripcion,
+    caracteristicas,
+    imagenPrincipal,
+    galeria,
+    logo,
+    lotesDisponiblesPct,
+    masterPlanAmenities,
+    areasComunes,
+    beneficiosCortos,
+    activo: p.activo !== false,
+    clausurado: Boolean(p.clausurado),
+  };
+}
+
 function mergeDeep(target: any, source: any) {
   if (!source) return target;
   if (!target) return source;
@@ -87,7 +127,6 @@ export async function getSiteContent() {
 
   if (supabase) {
     try {
-      // 1. Consultar Supabase buscando id = 'main_content' (tabla site_content)
       const { data: mainData, error: mainErr } = await supabase
         .from("site_content")
         .select("data")
@@ -97,7 +136,6 @@ export async function getSiteContent() {
       if (!mainErr && mainData?.data) {
         rawContent = mainData.data;
       } else {
-        // Fallback a 'general_content'
         const { data: genData, error: genErr } = await supabase
           .from("site_content")
           .select("data")
@@ -137,7 +175,6 @@ export async function saveSiteContent(data: any) {
 
   if (supabase) {
     try {
-      // Upsert a Supabase a id = 'main_content' y 'general_content'
       await Promise.all([
         supabase.from("site_content").upsert({
           id: "main_content",
@@ -157,34 +194,54 @@ export async function saveSiteContent(data: any) {
 }
 
 export async function getProjectsContent(): Promise<Proyecto[]> {
+  let rawProjects: any[] | null = null;
+
   if (supabase) {
     try {
-      const { data, error } = await supabase
+      // 1. Probar id = 'main_content' -> ver si tiene campo .projects
+      const { data: mainData, error: mainErr } = await supabase
         .from("site_content")
         .select("data")
-        .eq("id", "projects_content")
+        .eq("id", "main_content")
         .single();
-      if (!error && Array.isArray(data?.data) && data.data.length > 0) {
-        return data.data;
+
+      if (!mainErr && mainData?.data?.projects && Array.isArray(mainData.data.projects) && mainData.data.projects.length > 0) {
+        rawProjects = mainData.data.projects;
+      } else {
+        // 2. Probar id = 'projects_content'
+        const { data: projData, error: projErr } = await supabase
+          .from("site_content")
+          .select("data")
+          .eq("id", "projects_content")
+          .single();
+        if (!projErr && Array.isArray(projData?.data) && projData.data.length > 0) {
+          rawProjects = projData.data;
+        }
       }
     } catch (e) {
-      console.error("Error fetching projects_content from Supabase DB:", e);
+      console.error("Error fetching projects from Supabase DB:", e);
     }
   }
 
-  ensureDir();
-  try {
-    if (fs.existsSync(PROJECTS_FILE)) {
-      const parsed = JSON.parse(fs.readFileSync(PROJECTS_FILE, "utf-8"));
-      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
-    }
-    const orig = path.join(ORIGINAL_DATA_DIR, "projects-content.json");
-    if (fs.existsSync(orig)) {
-      const parsedOrig = JSON.parse(fs.readFileSync(orig, "utf-8"));
-      if (Array.isArray(parsedOrig) && parsedOrig.length > 0) return parsedOrig;
-    }
-  } catch (e) {}
-  return PROYECTOS;
+  if (!rawProjects) {
+    ensureDir();
+    try {
+      if (fs.existsSync(PROJECTS_FILE)) {
+        const parsed = JSON.parse(fs.readFileSync(PROJECTS_FILE, "utf-8"));
+        if (Array.isArray(parsed) && parsed.length > 0) rawProjects = parsed;
+      }
+      if (!rawProjects) {
+        const orig = path.join(ORIGINAL_DATA_DIR, "projects-content.json");
+        if (fs.existsSync(orig)) {
+          const parsedOrig = JSON.parse(fs.readFileSync(orig, "utf-8"));
+          if (Array.isArray(parsedOrig) && parsedOrig.length > 0) rawProjects = parsedOrig;
+        }
+      }
+    } catch (e) {}
+  }
+
+  const finalArray = (rawProjects || PROYECTOS).map(normalizeProyecto);
+  return finalArray;
 }
 
 export async function saveProjectsContent(data: any) {
@@ -195,10 +252,28 @@ export async function saveProjectsContent(data: any) {
 
   if (supabase) {
     try {
-      const { error } = await supabase
+      // 1. Upsert a id = 'projects_content'
+      await supabase.from("site_content").upsert({
+        id: "projects_content",
+        data: data,
+        updated_at: new Date().toISOString(),
+      });
+
+      // 2. Actualizar también dentro de main_content.projects
+      const { data: mainData } = await supabase
         .from("site_content")
-        .upsert({ id: "projects_content", data: data, updated_at: new Date().toISOString() });
-      if (error) console.error("Error al guardar projects_content en Supabase DB:", error);
+        .select("data")
+        .eq("id", "main_content")
+        .single();
+
+      const currentMain = mainData?.data || {};
+      const updatedMain = { ...currentMain, projects: data };
+
+      await supabase.from("site_content").upsert({
+        id: "main_content",
+        data: updatedMain,
+        updated_at: new Date().toISOString(),
+      });
     } catch (err) {
       console.error("Supabase projects upsert error:", err);
     }
