@@ -8,7 +8,7 @@ export async function POST(request: Request) {
   try {
     const { username, password } = await request.json();
 
-    if (username === ADMIN_USER && password === ADMIN_PASSWORD) {
+    if ((username === ADMIN_USER || username === "admin") && password === ADMIN_PASSWORD) {
       const cookieStore = await cookies();
       cookieStore.set("admin_token", "tutierra-session-valid-token", {
         httpOnly: true,
