@@ -5,9 +5,11 @@ import Footer from "./Footer";
 export default function UnifiedContactFooter({
   proyectoPreseleccionado,
   projects,
+  contactData,
 }: {
   proyectoPreseleccionado?: string;
   projects?: any[];
+  contactData?: any;
 }) {
   return (
     <section className="flex min-h-dvh lg:h-dvh lg:min-h-0 flex-col justify-between border-t border-brand-gray/10 pt-[5vh] lg:pt-[4vh] pb-0 bg-transparent">
@@ -34,7 +36,7 @@ export default function UnifiedContactFooter({
           </Reveal>
         </div>
       </div>
-      <Footer isUnified />
+      <Footer isUnified contactData={contactData} />
     </section>
   );
 }

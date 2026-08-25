@@ -22,7 +22,7 @@ export default async function Home() {
       <Manifesto content={content.manifesto} />
       <AtractivosValle bgImage={content.general?.valleBgImage} />
       <Testimonios testimonies={testimonies} />
-      <UnifiedContactFooter projects={allProjects} />
+      <UnifiedContactFooter projects={allProjects} contactData={content.contact} />
     </>
   );
 }

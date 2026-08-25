@@ -7,6 +7,19 @@ interface SiteContent {
   manifesto: { misionTitle: string; misionText: string; misionItalic: string; visionTitle: string; visionText: string; visionItalic: string; image?: string };
   founder: { title: string; text: string; name: string; role: string; img: string };
   general?: { valleBgImage?: string; refiereGanaImg?: string; testimoniosHeroImages?: string[]; testimoniosTitle?: string; testimoniosDescription?: string; proyectosConcluidos?: { id: string; nombre: string; ubicacion: string; logo: string }[] };
+  contact?: {
+    phone?: string;
+    whatsapp?: string;
+    email?: string;
+    address?: string;
+    hours?: string;
+    domain?: string;
+    instagram?: string;
+    facebook?: string;
+    tiktok?: string;
+    youtube?: string;
+    linkedin?: string;
+  };
   nosotros?: {
     timeline: { year: string; titulo: string; texto: string; img: string }[];
     cifras: { valor: string; label: string }[];
@@ -89,6 +102,19 @@ const DEFAULT_SITE_CONTENT: SiteContent = {
     testimoniosDescription: "Conoce las historias y experiencias reales de quienes han invertido en terrenos con saneamiento urbano e independización garantizada en el Valle Sagrado de Cusco.",
     proyectosConcluidos: []
   },
+  contact: {
+    phone: "+51 925 561 830",
+    whatsapp: "51925561830",
+    email: "tutierrab@gmail.com",
+    address: "Av. El Sol 123, Cusco, Perú",
+    hours: "Lun - Sáb: 9:00 am - 7:00 pm",
+    domain: "grupotutierra.com",
+    instagram: "https://instagram.com/tutierra.pe",
+    facebook: "https://facebook.com/tutierragrupoinmobiliario",
+    tiktok: "https://tiktok.com/@tutierra.pe",
+    youtube: "",
+    linkedin: ""
+  },
   nosotros: {
     timeline: [],
     cifras: [],
@@ -113,7 +139,7 @@ function safeMergeContent(defaultObj: SiteContent, incomingObj: any): SiteConten
 
 export default function AdminDashboardPage() {
   const [loading, setLoading] = useState(true);
-  const [activeTab, setActiveTab] = useState<"general" | "nosotros" | "proyectos" | "blog" | "testimonios" | "imagenes">("general");
+  const [activeTab, setActiveTab] = useState<"general" | "nosotros" | "proyectos" | "blog" | "testimonios" | "contacto" | "imagenes">("general");
 
   // Data States (Inicializado siempre con datos por defecto para que NUNCA sea nulo)
   const [content, setContent] = useState<SiteContent>(DEFAULT_SITE_CONTENT);
@@ -377,7 +403,7 @@ export default function AdminDashboardPage() {
 
         {/* Tab Buttons */}
         <div className="flex border-b border-brand-gray/10 mb-8 overflow-x-auto gap-2">
-          {(["general", "nosotros", "proyectos", "blog", "testimonios", "imagenes"] as const).map((tab) => (
+          {(["general", "nosotros", "proyectos", "blog", "testimonios", "contacto", "imagenes"] as const).map((tab) => (
             <button
               key={tab}
               onClick={() => setActiveTab(tab)}
@@ -387,7 +413,7 @@ export default function AdminDashboardPage() {
                   : "border-transparent text-brand-gray/70 hover:text-brand-gray"
               }`}
             >
-              {tab === "general" ? "Páginas Generales" : tab}
+              {tab === "general" ? "Páginas Generales" : tab === "contacto" ? "Footer & Contacto" : tab}
             </button>
           ))}
         </div>
@@ -2624,6 +2650,202 @@ export default function AdminDashboardPage() {
                 </div>
               </div>
             )}
+          </div>
+        )}
+
+        {/* Tab Content: CONTACTO / FOOTER */}
+        {activeTab === "contacto" && content && (
+          <div className="flex flex-col gap-8 bg-white/[0.02] border border-brand-gray/10 rounded-[1.2rem] p-8">
+            <h2 className="text-[1.2rem] font-display font-light text-tech-green border-b border-brand-gray/10 pb-2">
+              Información de Contacto y Pie de Página (Footer)
+            </h2>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Teléfono Principal</label>
+                <input
+                  type="text"
+                  value={content?.contact?.phone ?? "+51 925 561 830"}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), phone: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Número de WhatsApp (Sin + o Link completo)</label>
+                <input
+                  type="text"
+                  value={content?.contact?.whatsapp ?? "51925561830"}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), whatsapp: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Correo Electrónico</label>
+                <input
+                  type="email"
+                  value={content?.contact?.email ?? "tutierrab@gmail.com"}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), email: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Dirección / Ubicación Física</label>
+                <input
+                  type="text"
+                  value={content?.contact?.address ?? "Av. El Sol 123, Cusco, Perú"}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), address: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Horarios de Atención</label>
+                <input
+                  type="text"
+                  value={content?.contact?.hours ?? "Lun - Sáb: 9:00 am - 7:00 pm"}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), hours: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">Dominio Oficial</label>
+                <input
+                  type="text"
+                  value={content?.contact?.domain ?? "grupotutierra.com"}
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), domain: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+            </div>
+
+            <h3 className="text-[1rem] font-display font-light text-tech-green border-b border-brand-gray/10 pb-2 mt-4">
+              Enlaces de Redes Sociales (Editable desde CMS)
+            </h3>
+
+            <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">URL Instagram</label>
+                <input
+                  type="text"
+                  value={content?.contact?.instagram ?? ""}
+                  placeholder="https://instagram.com/tutierra.pe"
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), instagram: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">URL Facebook</label>
+                <input
+                  type="text"
+                  value={content?.contact?.facebook ?? ""}
+                  placeholder="https://facebook.com/tutierragrupoinmobiliario"
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), facebook: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">URL TikTok</label>
+                <input
+                  type="text"
+                  value={content?.contact?.tiktok ?? ""}
+                  placeholder="https://tiktok.com/@tutierra.pe"
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), tiktok: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">URL YouTube (Opcional)</label>
+                <input
+                  type="text"
+                  value={content?.contact?.youtube ?? ""}
+                  placeholder="https://youtube.com/@tutierra"
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), youtube: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+
+              <div>
+                <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">URL LinkedIn (Opcional)</label>
+                <input
+                  type="text"
+                  value={content?.contact?.linkedin ?? ""}
+                  placeholder="https://linkedin.com/company/tutierra"
+                  onChange={(e) =>
+                    setContent((prev) => ({
+                      ...prev,
+                      contact: { ...(prev.contact || {}), linkedin: e.target.value },
+                    }))
+                  }
+                  className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green"
+                />
+              </div>
+            </div>
+
+            <div>
+              <button
+                onClick={saveGeneralContent}
+                className="rounded-full bg-tech-green px-8 py-3 text-[0.9rem] font-semibold text-brand-ink transition-transform hover:scale-[0.98] active:scale-[0.98]"
+              >
+                Guardar Información de Contacto
+              </button>
+            </div>
           </div>
         )}
 
