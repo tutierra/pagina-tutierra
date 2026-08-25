@@ -35,6 +35,10 @@ interface Project {
   mapLink?: string;
   activo?: boolean;
   clausurado?: boolean;
+  status?: string;
+  estado?: string;
+  finalizado?: boolean;
+  isCompleted?: boolean;
 }
 
 interface BlogPost {
@@ -216,9 +220,30 @@ export default function AdminDashboardPage() {
         const computedSlug = (p.slug && p.slug.trim())
           ? slugifyAdmin(p.slug)
           : slugifyAdmin(p.nombre || "proyecto");
+
+        const statusStr = (p.status || p.estado || "").toString().toLowerCase().trim();
+        const isClosed = Boolean(
+          p.clausurado ||
+          statusStr === "finalizado" ||
+          statusStr === "culminado" ||
+          statusStr === "entregado" ||
+          statusStr === "vendido" ||
+          statusStr === "completed" ||
+          p.finalizado === true ||
+          p.isCompleted === true ||
+          p.lotesDisponiblesPct === 0
+        );
+
+        const projectStatus = isClosed ? "finalizado" : "en_venta";
+
         return {
           ...p,
           slug: computedSlug || `proyecto-${Date.now()}`,
+          status: projectStatus,
+          estado: projectStatus,
+          clausurado: isClosed,
+          finalizado: isClosed,
+          isCompleted: isClosed,
         };
       });
 
@@ -1975,11 +2000,38 @@ export default function AdminDashboardPage() {
                     Publicado (Visible en la Web)
                   </label>
                 </div>
+                <div className="flex flex-col gap-2">
+                  <label className="block text-[0.85rem] text-brand-gray/80 uppercase font-semibold mb-1">
+                    Estado de Comercialización (propiedad status)
+                  </label>
+                  <select
+                    value={
+                      currentProj.clausurado || currentProj.status === "finalizado" || currentProj.estado === "finalizado"
+                        ? "finalizado"
+                        : "en_venta"
+                    }
+                    onChange={(e) => {
+                      const list = [...projects];
+                      const isFin = e.target.value === "finalizado";
+                      list[selectedProjIndex].clausurado = isFin;
+                      (list[selectedProjIndex] as any).status = isFin ? "finalizado" : "en_venta";
+                      (list[selectedProjIndex] as any).estado = isFin ? "finalizado" : "en_venta";
+                      (list[selectedProjIndex] as any).finalizado = isFin;
+                      (list[selectedProjIndex] as any).isCompleted = isFin;
+                      setProjects(list);
+                    }}
+                    className="w-full rounded-[0.6rem] border border-brand-gray/20 bg-white/[0.06] px-4 py-3 text-[0.95rem] text-white outline-none focus:border-tech-green cursor-pointer"
+                  >
+                    <option value="en_venta" className="bg-brand-ink text-white">En Venta (Proyecto Activo)</option>
+                    <option value="finalizado" className="bg-brand-ink text-white">finalizado (Concluido / 100% Vendido)</option>
+                  </select>
+                </div>
+
                 <div className="flex items-center gap-3">
                   <input
                     type="checkbox"
                     id={`closed-${currentProj.slug}`}
-                    checked={!!currentProj.clausurado}
+                    checked={!!currentProj.clausurado || currentProj.status === "finalizado"}
                     onChange={(e) => {
                       const list = [...projects];
                       const val = e.target.checked;
