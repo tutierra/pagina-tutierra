@@ -32,13 +32,15 @@ const DEFAULT_CONTENT = {
     misionText: "Desarrollar proyectos inmobiliarios sostenibles en ubicaciones estratégicas, ofreciendo terrenos con saneamiento urbano e independización garantizada.",
     misionItalic: "Brindando oportunidades de inversión seguras y rentables, integrando la naturaleza y el respeto por el entorno.",
     visionTitle: "Visión",
+    visionText: "Ser el grupo inmobiliario de referencia en Cusco, liderando el desarrollo de comunidades planificadas y sostenibles con absoluta seguridad legal.",
+    visionItalic: "Inspirando un estilo de vida consciente y creando valor patrimonial intergeneracional para nuestros clientes.",
     image: "/images/global/manifesto-equipo.png"
   },
   founder: {
     title: "Una visión nacida en el Valle Sagrado",
     text: "“Crecí viendo cómo muchas familias soñaban con un pedazo de tierra propio, pero se topaban con trámites, informalidad y promesas vacías. Fundé Tutierra para que ese sueño fuera seguro, legal y real. Cada lote que entregamos es una familia que echa raíces.”",
     name: "Carlos Mendoza",
-    "role": "Fundador y Director General",
+    role: "Fundador y Director General",
     img: "/images/testimonios/cliente-01.jpg"
   },
   general: {
@@ -48,21 +50,38 @@ const DEFAULT_CONTENT = {
   },
   nosotros: {
     timeline: [
-      { "year": "2016", "titulo": "Nace Tutierra", "texto": "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra.", "img": "/images/nosotros/oficina.jpg" }
+      { year: "2016", titulo: "Nace Tutierra", texto: "Fundada en Cusco con un propósito: crear y unir familias a través de la tierra.", img: "/images/nosotros/oficina.jpg" }
     ],
     cifras: [
-      { "valor": "6", "label": "Proyectos activos en el Valle Sagrado" }
+      { valor: "6", label: "Proyectos activos en el Valle Sagrado" }
     ],
     equipo: [
       {
-        "area": "Gerencia",
-        "personas": [
-          { "nombre": "Lucía Ramírez", "puesto": "Gerente Comercial", "foto": "/images/testimonios/cliente-01.jpg" }
+        area: "Gerencia",
+        personas: [
+          { nombre: "Lucía Ramírez", puesto: "Gerente Comercial", foto: "/images/testimonios/cliente-01.jpg" }
         ]
       }
     ]
   }
 };
+
+// Función auxiliar para combinar profundamente objetos y garantizar fallbacks
+function mergeDeep(target: any, source: any) {
+  if (!source) return target;
+  if (!target) return source;
+  const output = { ...target };
+  Object.keys(source).forEach((key) => {
+    if (source[key] !== undefined && source[key] !== null) {
+      if (typeof source[key] === "object" && !Array.isArray(source[key])) {
+        output[key] = mergeDeep(target[key] || {}, source[key]);
+      } else {
+        output[key] = source[key];
+      }
+    }
+  });
+  return output;
+}
 
 function ensureDir() {
   try {
@@ -73,6 +92,8 @@ function ensureDir() {
 }
 
 export async function getSiteContent() {
+  let rawContent: any = null;
+
   if (supabase) {
     try {
       const { data, error } = await supabase
@@ -81,24 +102,29 @@ export async function getSiteContent() {
         .eq("id", "general_content")
         .single();
       if (!error && data?.data) {
-        return data.data;
+        rawContent = data.data;
       }
     } catch (e) {
       console.error("Error fetching site_content from Supabase DB:", e);
     }
   }
 
-  ensureDir();
-  try {
-    if (fs.existsSync(CONTENT_FILE)) {
-      return JSON.parse(fs.readFileSync(CONTENT_FILE, "utf-8"));
-    }
-    const orig = path.join(ORIGINAL_DATA_DIR, "site-content.json");
-    if (fs.existsSync(orig)) {
-      return JSON.parse(fs.readFileSync(orig, "utf-8"));
-    }
-  } catch (e) {}
-  return DEFAULT_CONTENT;
+  if (!rawContent) {
+    ensureDir();
+    try {
+      if (fs.existsSync(CONTENT_FILE)) {
+        rawContent = JSON.parse(fs.readFileSync(CONTENT_FILE, "utf-8"));
+      } else {
+        const orig = path.join(ORIGINAL_DATA_DIR, "site-content.json");
+        if (fs.existsSync(orig)) {
+          rawContent = JSON.parse(fs.readFileSync(orig, "utf-8"));
+        }
+      }
+    } catch (e) {}
+  }
+
+  // Garantiza siempre un objeto estructurado válido combinando con DEFAULT_CONTENT
+  return mergeDeep(DEFAULT_CONTENT, rawContent || {});
 }
 
 export async function saveSiteContent(data: any) {
@@ -127,7 +153,7 @@ export async function getProjectsContent(): Promise<Proyecto[]> {
         .select("data")
         .eq("id", "projects_content")
         .single();
-      if (!error && data?.data) {
+      if (!error && Array.isArray(data?.data) && data.data.length > 0) {
         return data.data;
       }
     } catch (e) {
@@ -138,11 +164,13 @@ export async function getProjectsContent(): Promise<Proyecto[]> {
   ensureDir();
   try {
     if (fs.existsSync(PROJECTS_FILE)) {
-      return JSON.parse(fs.readFileSync(PROJECTS_FILE, "utf-8"));
+      const parsed = JSON.parse(fs.readFileSync(PROJECTS_FILE, "utf-8"));
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
     const orig = path.join(ORIGINAL_DATA_DIR, "projects-content.json");
     if (fs.existsSync(orig)) {
-      return JSON.parse(fs.readFileSync(orig, "utf-8"));
+      const parsedOrig = JSON.parse(fs.readFileSync(orig, "utf-8"));
+      if (Array.isArray(parsedOrig) && parsedOrig.length > 0) return parsedOrig;
     }
   } catch (e) {}
   return PROYECTOS;
@@ -174,7 +202,7 @@ export async function getPostsContent(): Promise<Post[]> {
         .select("data")
         .eq("id", "posts_content")
         .single();
-      if (!error && data?.data) {
+      if (!error && Array.isArray(data?.data) && data.data.length > 0) {
         return data.data;
       }
     } catch (e) {
@@ -185,11 +213,13 @@ export async function getPostsContent(): Promise<Post[]> {
   ensureDir();
   try {
     if (fs.existsSync(POSTS_FILE)) {
-      return JSON.parse(fs.readFileSync(POSTS_FILE, "utf-8"));
+      const parsed = JSON.parse(fs.readFileSync(POSTS_FILE, "utf-8"));
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
     const orig = path.join(ORIGINAL_DATA_DIR, "posts-content.json");
     if (fs.existsSync(orig)) {
-      return JSON.parse(fs.readFileSync(orig, "utf-8"));
+      const parsedOrig = JSON.parse(fs.readFileSync(orig, "utf-8"));
+      if (Array.isArray(parsedOrig) && parsedOrig.length > 0) return parsedOrig;
     }
   } catch (e) {}
   return POSTS;
@@ -228,7 +258,7 @@ export async function getTestimoniosContent(): Promise<Testimonio[]> {
         .select("data")
         .eq("id", "testimonios_content")
         .single();
-      if (!error && data?.data) {
+      if (!error && Array.isArray(data?.data) && data.data.length > 0) {
         return data.data;
       }
     } catch (e) {
@@ -239,11 +269,13 @@ export async function getTestimoniosContent(): Promise<Testimonio[]> {
   ensureDir();
   try {
     if (fs.existsSync(TESTIMONIOS_FILE)) {
-      return JSON.parse(fs.readFileSync(TESTIMONIOS_FILE, "utf-8"));
+      const parsed = JSON.parse(fs.readFileSync(TESTIMONIOS_FILE, "utf-8"));
+      if (Array.isArray(parsed) && parsed.length > 0) return parsed;
     }
     const orig = path.join(ORIGINAL_DATA_DIR, "testimonios-content.json");
     if (fs.existsSync(orig)) {
-      return JSON.parse(fs.readFileSync(orig, "utf-8"));
+      const parsedOrig = JSON.parse(fs.readFileSync(orig, "utf-8"));
+      if (Array.isArray(parsedOrig) && parsedOrig.length > 0) return parsedOrig;
     }
   } catch (e) {}
   return [];

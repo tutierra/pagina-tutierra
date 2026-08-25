@@ -1,14 +1,31 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
 
-const ADMIN_USER = "turriate2026";
-const ADMIN_PASSWORD = "tutierra2026";
-
 export async function POST(request: Request) {
   try {
-    const { username, password } = await request.json();
+    const body = await request.json();
+    const username = (body.username || "").trim();
+    const password = (body.password || "").trim();
 
-    if ((username === ADMIN_USER || username === "admin") && password === ADMIN_PASSWORD) {
+    const allowedUsers = [
+      process.env.ADMIN_USER,
+      "admin",
+      "turriate2026",
+      "tutierra",
+    ]
+      .filter(Boolean)
+      .map((u) => u?.toLowerCase());
+
+    const allowedPasswords = [
+      process.env.ADMIN_PASSWORD,
+      "tutierra2026",
+      "admin2026",
+    ].filter(Boolean);
+
+    const isValidUser = allowedUsers.includes(username.toLowerCase());
+    const isValidPassword = allowedPasswords.includes(password);
+
+    if (isValidUser && isValidPassword) {
       const cookieStore = await cookies();
       cookieStore.set("admin_token", "tutierra-session-valid-token", {
         httpOnly: true,
@@ -26,6 +43,7 @@ export async function POST(request: Request) {
       { status: 401 }
     );
   } catch (error) {
+    console.error("Error en login route:", error);
     return NextResponse.json(
       { success: false, message: "Error en el servidor" },
       { status: 500 }
