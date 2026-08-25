@@ -1,7 +1,6 @@
 import { NextResponse } from "next/server";
 import { cookies } from "next/headers";
-import fs from "fs";
-import path from "path";
+import { createClient } from "@supabase/supabase-js";
 
 export async function POST(request: Request) {
   const cookieStore = await cookies();
@@ -19,41 +18,50 @@ export async function POST(request: Request) {
       return NextResponse.json({ error: "No se subió ningún archivo" }, { status: 400 });
     }
 
+    const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL;
+    const supabaseAnonKey = process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY;
+
+    if (!supabaseUrl || !supabaseAnonKey) {
+      return NextResponse.json(
+        { error: "Credenciales de Supabase (NEXT_PUBLIC_SUPABASE_URL y NEXT_PUBLIC_SUPABASE_ANON_KEY) no están configuradas en Vercel." },
+        { status: 500 }
+      );
+    }
+
+    const supabase = createClient(supabaseUrl, supabaseAnonKey);
+
     const bytes = await file.arrayBuffer();
     const buffer = Buffer.from(bytes);
 
-    // En Vercel o servidores Serverless, convertimos la imagen directamente a Data URL para evitar restricciones de disco
-    if (process.env.VERCEL) {
-      const base64 = buffer.toString("base64");
-      const mimeType = file.type || "image/png";
-      const dataUrl = `data:${mimeType};base64,${base64}`;
-      return NextResponse.json({ success: true, url: dataUrl });
+    const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+    const fileName = `${Date.now()}-${safeName}`;
+
+    // Subir directamente al bucket 'tutierra-media' en Supabase Storage sin fs local
+    const { data: uploadData, error: uploadError } = await supabase.storage
+      .from("tutierra-media")
+      .upload(fileName, buffer, {
+        contentType: file.type || "application/octet-stream",
+        upsert: true,
+      });
+
+    if (uploadError) {
+      console.error("Error al subir archivo a Supabase Storage:", uploadError);
+      return NextResponse.json({ error: uploadError.message }, { status: 500 });
     }
 
-    // Entorno local: guardar en la carpeta /public/uploads
-    try {
-      const uploadDir = path.join(process.cwd(), "public", "uploads");
-      if (!fs.existsSync(uploadDir)) {
-        fs.mkdirSync(uploadDir, { recursive: true });
-      }
+    // Obtener la URL pública del archivo subido
+    const { data: publicUrlData } = supabase.storage
+      .from("tutierra-media")
+      .getPublicUrl(uploadData.path);
 
-      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
-      const uniqueName = `${Date.now()}-${safeName}`;
-      const filePath = path.join(uploadDir, uniqueName);
+    const publicUrl = publicUrlData.publicUrl;
 
-      fs.writeFileSync(filePath, buffer);
-
-      const publicPath = `/uploads/${uniqueName}`;
-      return NextResponse.json({ success: true, url: publicPath });
-    } catch (fsError) {
-      // Fallback a Data URL si el disco es de solo lectura
-      const base64 = buffer.toString("base64");
-      const mimeType = file.type || "image/png";
-      const dataUrl = `data:${mimeType};base64,${base64}`;
-      return NextResponse.json({ success: true, url: dataUrl });
-    }
-  } catch (error) {
-    console.error("Upload error:", error);
-    return NextResponse.json({ error: "Error al procesar la imagen" }, { status: 500 });
+    return NextResponse.json({ success: true, url: publicUrl });
+  } catch (error: any) {
+    console.error("Upload route error:", error);
+    return NextResponse.json(
+      { error: error?.message || "Error al procesar la imagen" },
+      { status: 500 }
+    );
   }
 }
