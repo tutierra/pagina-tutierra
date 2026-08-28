@@ -124,11 +124,13 @@ const DEFAULT_SITE_CONTENT: SiteContent = {
 
 function safeMergeContent(defaultObj: SiteContent, incomingObj: any): SiteContent {
   if (!incomingObj) return defaultObj;
+  const contactSource = incomingObj.contact || incomingObj.footer || incomingObj.company_info || incomingObj.general?.contact || {};
   return {
     hero: { ...defaultObj.hero, ...(incomingObj.hero || {}) },
     manifesto: { ...defaultObj.manifesto, ...(incomingObj.manifesto || {}) },
     founder: { ...defaultObj.founder, ...(incomingObj.founder || {}) },
     general: { ...defaultObj.general, ...(incomingObj.general || {}) },
+    contact: { ...defaultObj.contact, ...(contactSource || {}) },
     nosotros: {
       timeline: incomingObj.nosotros?.timeline || defaultObj.nosotros?.timeline || [],
       cifras: incomingObj.nosotros?.cifras || defaultObj.nosotros?.cifras || [],
