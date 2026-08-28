@@ -13,16 +13,15 @@ export default function GlobalFooter({ initialContactData }: GlobalFooterProps) 
   const [contactData, setContactData] = useState<any>(initialContactData || null);
 
   useEffect(() => {
-    fetch("/api/admin/get-data")
+    fetch("/api/content", { cache: "no-store" })
       .then((res) => res.json())
-      .then((resData) => {
-        const content = resData?.content || {};
+      .then((content) => {
         const extracted =
-          content.contact ||
-          content.footer ||
-          content.company_info ||
-          content.general?.contact ||
-          content.general?.footer ||
+          content?.contact ||
+          content?.footer ||
+          content?.company_info ||
+          content?.general?.contact ||
+          content?.general?.footer ||
           null;
 
         if (extracted) {

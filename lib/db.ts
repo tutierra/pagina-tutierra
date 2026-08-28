@@ -192,15 +192,27 @@ export async function saveSiteContent(data: any) {
 
   if (supabase) {
     try {
+      const { data: mainData } = await supabase
+        .from("site_content")
+        .select("data")
+        .eq("id", "main_content")
+        .single();
+
+      const existingData = mainData?.data || {};
+      const mergedData = {
+        ...existingData,
+        ...data,
+      };
+
       await Promise.all([
         supabase.from("site_content").upsert({
           id: "main_content",
-          data: data,
+          data: mergedData,
           updated_at: new Date().toISOString(),
         }),
         supabase.from("site_content").upsert({
           id: "general_content",
-          data: data,
+          data: mergedData,
           updated_at: new Date().toISOString(),
         }),
       ]);
