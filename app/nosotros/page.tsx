@@ -117,6 +117,21 @@ export default async function NosotrosPage() {
   const founder = content.founder;
   const nosotros = (content.nosotros || {}) as any;
 
+  const c = content?.contact || content?.footer || content?.company_info || content?.general?.contact || {};
+
+  const contact = {
+    phone: c.phone || c.telefono || CONTACT.phone,
+    whatsapp: c.whatsapp || c.ws || CONTACT.whatsapp,
+    email: c.email || c.correo || CONTACT.email,
+    address: c.address || c.direccion || CONTACT.address,
+    hours: c.hours || c.schedule || c.horario || CONTACT.hours,
+    instagram: c.instagram || SOCIAL.instagram,
+    facebook: c.facebook || SOCIAL.facebook,
+    tiktok: c.tiktok || SOCIAL.tiktok,
+    youtube: c.youtube || "",
+    linkedin: c.linkedin || "",
+  };
+
   const timeline = (nosotros.timeline || TIMELINE) as typeof TIMELINE;
   const equipoGrupos = (nosotros.equipo || EQUIPO_GRUPOS) as typeof EQUIPO_GRUPOS;
   const cifras = (nosotros.cifras || CIFRAS) as typeof CIFRAS;
@@ -189,23 +204,14 @@ export default async function NosotrosPage() {
           </Reveal>
 
           <div className="mt-[3em] flex flex-col gap-[3em]">
-            {equipoGrupos.map((grupo, gi) => (
+            {equipoGrupos.map((grupo) => (
               <div key={grupo.area}>
-                <Reveal>
-                  <div className="flex items-center gap-[1em]">
-                    <h3 className="shrink-0 text-[0.8rem] tracking-[0.15em] text-tech-green">
-                      {grupo.area.toUpperCase()}
-                    </h3>
-                    <span className="h-px flex-1 bg-brand-gray/15" />
-                    <span className="shrink-0 text-[0.75rem] text-brand-gray/40">
-                      {String(grupo.personas.length).padStart(2, "0")}
-                    </span>
-                  </div>
-                </Reveal>
-
-                <div className="mt-[1.4em] grid grid-cols-2 gap-[1.5em] sm:grid-cols-3 lg:grid-cols-4">
+                <h3 className="mb-[1.5em] text-[0.85rem] tracking-[0.15em] text-tech-green uppercase border-b border-brand-gray/10 pb-[0.5em]">
+                  {grupo.area}
+                </h3>
+                <div className="grid grid-cols-2 gap-[1.5em] sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                   {grupo.personas.map((persona, i) => (
-                    <Reveal key={persona.nombre} delay={Math.min(i * 0.06 + gi * 0.03, 0.4)}>
+                    <Reveal key={persona.nombre} delay={Math.min(i * 0.05, 0.3)}>
                       <div className="group cursor-default">
                         <Avatar nombre={persona.nombre} foto={persona.foto} />
                         <h4 className="mt-[0.9em] font-display text-[1.05rem] font-normal text-brand-gray transition-colors duration-300 ease-out group-hover:text-tech-green">
@@ -222,20 +228,21 @@ export default async function NosotrosPage() {
         </div>
       </section>
 
-      {/* 4 — Contacto + cifras */}
-      <section className="flex min-h-dvh lg:h-dvh lg:min-h-0 flex-col justify-between border-t border-brand-gray/10 pt-[5vh] lg:pt-[4vh] pb-0">
-        <div className="mx-auto w-[90%] flex-1 flex flex-col justify-center py-[2%]">
-          <Reveal>
-            <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[04] CONTÁCTANOS</p>
-            <h2 className="mt-[0.4em] max-w-[22ch] font-display text-[clamp(2rem,4vw,3.2rem)] font-light text-brand-gray">
-              Hablemos de tu próxima inversión
-            </h2>
-          </Reveal>
-
-          <div className="mt-[3em] grid grid-cols-1 gap-[3em] lg:grid-cols-[1fr_1.1fr]">
+      {/* 5 — Cifras e Impacto + Formulario de Contacto */}
+      <section className="flex min-h-dvh w-full items-center border-t border-brand-gray/10 py-[8%] bg-transparent">
+        <div className="mx-auto w-[90%]">
+          <div className="grid grid-cols-1 gap-[3em] lg:grid-cols-[1fr_1.1fr]">
             <Reveal>
               <div>
-                <div className="grid grid-cols-2 gap-[1.5em]">
+                <p className="text-[0.85rem] tracking-[0.2em] text-tech-green">[05] CONTÁCTANOS</p>
+                <h2 className="mt-[0.4em] max-w-[20ch] font-display text-[clamp(2rem,3.8vw,3.2rem)] font-light text-brand-gray">
+                  Hablemos de tu próxima inversión
+                </h2>
+                <p className="mt-[1em] max-w-[44ch] text-[0.95rem] leading-[1.7] text-brand-gray/70">
+                  Déjanos tus datos y un asesor se pondrá en contacto para brindarte información detallada sobre disponibilidad y financiamiento.
+                </p>
+
+                <div className="mt-[2.5em] grid grid-cols-2 gap-x-[1.5em] gap-y-[2em] border-t border-brand-gray/15 pt-[2em]">
                   {cifras.map((cifra) => (
                     <div
                       key={cifra.label}
@@ -253,39 +260,40 @@ export default async function NosotrosPage() {
 
                 <div className="mt-[2.5em] flex flex-col gap-[1.4em]">
                   <div>
-                    <h3 className="text-[0.8rem] tracking-[0.15em] text-tech-green">TELÉFONO / WHATSAPP</h3>
+                    <h3 className="text-[0.8rem] tracking-[0.15em] text-tech-green uppercase font-semibold">TELÉFONO / WHATSAPP</h3>
                     <a
-                      href={`https://wa.me/${CONTACT.whatsapp}`}
+                      href={`https://wa.me/${contact.whatsapp}`}
                       target="_blank"
                       rel="noopener noreferrer"
                       className="group mt-[0.3em] inline-flex items-center gap-[0.4em] text-[1.05rem] text-brand-gray transition-colors duration-200 ease-out hover:text-tech-green"
                     >
-                      {CONTACT.phone}
+                      {contact.phone}
                       <span className="translate-x-[-0.3em] opacity-0 transition-all duration-200 ease-out-strong group-hover:translate-x-0 group-hover:opacity-100">
                         →
                       </span>
                     </a>
                   </div>
                   <div>
-                    <h3 className="text-[0.8rem] tracking-[0.15em] text-tech-green">OFICINA</h3>
-                    <p className="mt-[0.3em] text-[1.05rem] text-brand-gray">{CONTACT.address}</p>
-                    <p className="text-[0.85rem] text-brand-gray/55">{CONTACT.hours}</p>
+                    <h3 className="text-[0.8rem] tracking-[0.15em] text-tech-green uppercase font-semibold">OFICINA</h3>
+                    <p className="mt-[0.3em] text-[1.05rem] text-brand-gray">{contact.address}</p>
+                    <p className="text-[0.85rem] text-brand-gray/55">{contact.hours}</p>
                   </div>
-                  <div className="flex gap-[1.4em] text-[0.9rem] text-brand-gray/80">
+                  <div className="flex flex-wrap gap-[1.4em] text-[0.9rem] text-brand-gray/80">
                     {[
-                      { href: SOCIAL.instagram, label: "Instagram" },
-                      { href: SOCIAL.facebook, label: "Facebook" },
-                      { href: SOCIAL.tiktok, label: "TikTok" },
-                    ].map((s) => (
+                      { href: contact.instagram, label: "Instagram" },
+                      { href: contact.facebook, label: "Facebook" },
+                      { href: contact.tiktok, label: "TikTok" },
+                      { href: contact.youtube, label: "YouTube" },
+                      { href: contact.linkedin, label: "LinkedIn" },
+                    ].filter((s) => Boolean(s.href)).map((s) => (
                       <a
                         key={s.label}
                         href={s.href}
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="group relative transition-colors duration-200 ease-out hover:text-tech-green"
+                        className="hover:text-tech-green transition-colors"
                       >
                         {s.label}
-                        <span className="absolute -bottom-[0.25em] left-0 h-[1.5px] w-0 bg-tech-green transition-[width] duration-300 ease-out-strong group-hover:w-full" />
                       </a>
                     ))}
                   </div>
@@ -293,11 +301,9 @@ export default async function NosotrosPage() {
               </div>
             </Reveal>
 
-            <Reveal delay={0.12}>
-              <div className="rounded-[1.5rem] bg-white/[0.04] p-[0.5rem] ring-1 ring-white/10">
-                <div className="rounded-[1.2rem] border border-brand-gray/10 p-[6%] shadow-[inset_0_1px_0_0_rgba(255,255,255,0.05)]">
-                  <ContactForm />
-                </div>
+            <Reveal delay={0.15}>
+              <div className="rounded-[1.5rem] border border-brand-gray/10 bg-white/[0.02] p-[1.5em] ring-1 ring-white/5">
+                <ContactForm />
               </div>
             </Reveal>
           </div>
