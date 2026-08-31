@@ -4,15 +4,15 @@ type LogoProps = {
 };
 
 export default function Logo({ className = "", withWordmark = true }: LogoProps) {
-  // Por defecto, al ser fondo oscuro, mostramos el logo en blanco (logo-white / emblem-white).
-  // Si explícitamente se pide verde/original o no es blanco, mostramos el original.
+  // Por defecto, al ser fondo oscuro, mostramos el logo vector SVG en blanco (/logo-white.svg).
+  // Si explícitamente se pide verde/original, mostramos /logo.svg.
   const isWhite = !className.includes("text-tech-green");
 
   if (withWordmark) {
     return (
       <div className={`flex items-center ${className}`}>
         <img
-          src={isWhite ? "/logo-white.png" : "/logo.png"}
+          src={isWhite ? "/logo-white.svg" : "/logo.svg"}
           alt="Tutierra — Grupo Inmobiliario"
           className="h-[1.25em] w-auto object-contain shrink-0"
         />
