@@ -102,6 +102,33 @@ export const PROYECTOS: Proyecto[] = [
     beneficiosCortos: ["Saneamiento legal", "Independización", "Acceso asfaltado", "Cerco perimétrico"],
   },
   {
+    slug: "club-del-valle",
+    nombre: "Club del Valle",
+    ubicacion: "Paucarbamba, Cusco",
+    precioDesde: "USD 55,000",
+    areaDesde: "200 m²",
+    resumen: "Exclusivo condominio en Paucarbamba con vistas panorámicas al valle.",
+    descripcion:
+      "Desarrollo residencial exclusivo en Paucarbamba, Urubamba, con clima privilegiado y terrenos con independización garantizada.",
+    caracteristicas: [
+      "Saneamiento físico legal garantizado",
+      "Independización individual",
+      "Clima templado todo el año",
+      "Áreas verdes y vistas panorámicas",
+      "Cerco perimétrico",
+    ],
+    imagenPrincipal: "https://qqygqderrewsjvoeoqww.supabase.co/storage/v1/object/public/tutierra-media/1787671083861-CLUB_DEL_VALLE_VISTA_PANORAMICA.webp",
+    videoHero: "https://qqygqderrewsjvoeoqww.supabase.co/storage/v1/object/public/tutierra-media/1788380483736-club_del_valle_.mp4",
+    galeria: [
+      "https://qqygqderrewsjvoeoqww.supabase.co/storage/v1/object/public/tutierra-media/1787671083861-CLUB_DEL_VALLE_VISTA_PANORAMICA.webp"
+    ],
+    logo: "https://qqygqderrewsjvoeoqww.supabase.co/storage/v1/object/public/tutierra-media/1787645244472-club_del_valle.svg",
+    extension: "200 m² y 300 m²",
+    lotesDisponiblesPct: 80,
+    areasComunes: ["Parque central", "Áreas verdes", "Portón vigilado"],
+    beneficiosCortos: ["Saneamiento legal", "Independización", "Clima templado", "Cerco perimétrico"],
+  },
+  {
     slug: "urubamba",
     nombre: "Tutierra Urubamba",
     ubicacion: "Urubamba, Valle Sagrado",
