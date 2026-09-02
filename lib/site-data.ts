@@ -118,6 +118,7 @@ export const PROYECTOS: Proyecto[] = [
       "Cerco perimétrico",
     ],
     imagenPrincipal: "/images/proyectos/proyecto-urubamba-01.jpg",
+    videoHero: "https://qqygqderrewsjvoeoqww.supabase.co/storage/v1/object/public/tutierra-media/1788380483736-club_del_valle_.mp4",
     galeria: [
       "/images/proyectos/proyecto-urubamba-01.jpg",
       "/images/proyectos/proyecto-urubamba-02.jpg",

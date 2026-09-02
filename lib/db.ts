@@ -75,6 +75,7 @@ export function normalizeProyecto(p: any): Proyecto {
   const masterPlanAmenities = Array.isArray(p.masterPlanAmenities) ? p.masterPlanAmenities : [];
   const areasComunes = Array.isArray(p.areasComunes) ? p.areasComunes : [];
   const beneficiosCortos = Array.isArray(p.beneficiosCortos) ? p.beneficiosCortos : [];
+  const videoHero = p.videoHero || p.video || p.heroVideo || "";
 
   const statusStr = (p.status || p.estado || "").toString().toLowerCase().trim();
   const isCompleted = (
@@ -100,6 +101,7 @@ export function normalizeProyecto(p: any): Proyecto {
     descripcion,
     caracteristicas,
     imagenPrincipal,
+    videoHero,
     galeria,
     logo,
     lotesDisponiblesPct,
