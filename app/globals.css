@@ -31,17 +31,43 @@ html {
      (texto, espaciados, contenedores en rem/em) mantenga el mismo % de
      ocupación en cualquier resolución mayor (1080p, 1440p, 4K, 8K...). */
   font-size: clamp(16px, 1.1111vw, 1000px);
+  scroll-behavior: smooth;
 }
 
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: var(--font-sans), Arial, Helvetica, sans-serif;
+  overflow-x: hidden;
 }
 
 ::selection {
   background: var(--color-tech-green);
   color: var(--color-brand-ink);
+}
+
+/* Destello sutil en el borde derecho en todas las páginas */
+@keyframes rightEdgeShimmer {
+  0%, 75%, 100% {
+    opacity: 0.2;
+    box-shadow: 0 0 4px rgba(57, 167, 132, 0.15);
+  }
+  88% {
+    opacity: 0.9;
+    box-shadow: 0 0 16px rgba(57, 167, 132, 0.8), 0 0 28px rgba(57, 167, 132, 0.4);
+  }
+}
+
+.right-edge-glow {
+  position: fixed;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 2px;
+  background: linear-gradient(180deg, transparent 0%, rgba(57, 167, 132, 0.85) 50%, transparent 100%);
+  pointer-events: none;
+  z-index: 99;
+  animation: rightEdgeShimmer 5.5s infinite ease-in-out;
 }
 
 /* Zoom 5% de la imagen del carrusel al pasar el cursor (solo punteros finos:

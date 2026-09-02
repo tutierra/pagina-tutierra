@@ -3,7 +3,6 @@ import Script from "next/script";
 import { grotesk, groteskDisplay, breeSerif } from "./fonts";
 import GradientCanvas from "@/components/3d/gradient-canvas";
 import Nav from "@/components/Nav";
-import ScrollJacker from "@/components/ScrollJacker";
 import FloatingPills from "@/components/FloatingPills";
 import CookieConsent from "@/components/CookieConsent";
 import GlobalFooter from "@/components/GlobalFooter";
@@ -63,8 +62,9 @@ j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
             style={{ display: "none", visibility: "hidden" }}
           />
         </noscript>
+        {/* Destello sutil en el borde derecho en todas las páginas */}
+        <div className="right-edge-glow" aria-hidden="true" />
         <GradientCanvas />
-        <ScrollJacker />
         <Nav />
         <main className="flex-1">
           <ErrorBoundary>
