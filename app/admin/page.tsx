@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect } from "react";
+import { supabase } from "@/lib/supabase";
 
 interface SiteContent {
   hero: { title: string; description: string; images?: string[] };
@@ -190,6 +191,30 @@ export default function AdminDashboardPage() {
 
   // Reusable inline upload handler
   async function uploadFileDirectly(file: File): Promise<string | null> {
+    try {
+      const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, "_");
+      const fileName = `${Date.now()}-${safeName}`;
+
+      const { data: uploadData, error: uploadError } = await supabase.storage
+        .from("tutierra-media")
+        .upload(fileName, file, {
+          contentType: file.type || "application/octet-stream",
+          upsert: true,
+        });
+
+      if (!uploadError && uploadData?.path) {
+        const { data: publicUrlData } = supabase.storage
+          .from("tutierra-media")
+          .getPublicUrl(uploadData.path);
+
+        if (publicUrlData?.publicUrl) {
+          return publicUrlData.publicUrl;
+        }
+      }
+    } catch (directErr) {
+      console.warn("Direct Supabase storage upload failed, falling back to API route:", directErr);
+    }
+
     const formData = new FormData();
     formData.append("file", file);
     try {
@@ -201,10 +226,10 @@ export default function AdminDashboardPage() {
       if (data.success) {
         return data.url;
       } else {
-        alert(data.error || "Error al subir la imagen");
+        alert(data.error || "Error al subir el archivo");
       }
     } catch (err) {
-      alert("Error al conectar con la API de subida");
+      alert(`El archivo "${file.name}" supera el límite de peso permitido para la función de carga (máximo 4.5 MB por servidor). Por favor comprímelo o usa un video más ligero.`);
     }
     return null;
   }
